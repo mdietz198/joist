@@ -4,7 +4,7 @@ repositories.remote << 'http://www.ibiblio.org/maven2'
 repositories.remote << 'http://repo.joist.ws'
 # http://download.java.net/maven/1/
 
-THIS_VERSION = '2010072701'
+THIS_VERSION = "2010072701"
 
 C3P0 = 'c3p0:c3p0:jar:0.9.1.2'
 COMMONS_LANG = 'commons-lang:commons-lang:jar:2.4'
