@@ -77,8 +77,8 @@ public class GenerateBindingCodegenPass implements Pass {
         bindingCodegen.addImports(Link.class);
       } else {
         field.type(LinkCollection.class);
+        bindingCodegen.addImports(LinkCollection.class);
       }
-      bindingCodegen.addImports(LinkCollection.class);
     }
   }
 
