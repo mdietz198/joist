@@ -1,6 +1,7 @@
 package joist.rs.codegen.passes;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 import joist.codegen.dtos.Entity;
 import joist.codegen.passes.Pass;
@@ -55,12 +56,13 @@ public class GenerateRestResourceCodegenPass implements Pass {
     GMethod get = resourceCodegen.getMethod("get");
     get.argument("final @PathParam(\"id\") Long", "id");
     // TODO replace Object with <entity>Binding
+    get.returnType(Object.class);
     get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {");
     get.body.line("_   public Object go() {");
-    get.body.line("_   _   return BindingMapper.toDto(Object.queries.find(id))");
+    get.body.line("_   _   return BindingMapper.toDto({}.queries.find(id));", restEntity.entity.getClassName());
     get.body.line("_   }");
     get.body.line("});");
-    resourceCodegen.addImports(UoW.class, BlockWithReturn.class);
+    resourceCodegen.addImports(PathParam.class, UoW.class, BlockWithReturn.class);
     // TODO replace with injected repository reference
     resourceCodegen.addImports("features.Registry", restEntity.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
   }

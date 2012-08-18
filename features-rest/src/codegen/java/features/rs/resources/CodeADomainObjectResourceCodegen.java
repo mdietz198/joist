@@ -4,6 +4,7 @@ import features.Registry;
 import features.domain.CodeADomainObject;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import joist.domain.orm.Repository;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
@@ -13,10 +14,10 @@ public abstract class CodeADomainObjectResourceCodegen {
 
   protected final Repository repository;
 
-  public void get(final @PathParam("id") Long id) {
+  public Object get(final @PathParam("id") Long id) {
     return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
       public Object go() {
-        return BindingMapper.toDto(Object.queries.find(id))
+        return BindingMapper.toDto(CodeADomainObject.queries.find(id));
       }
     });
   }
