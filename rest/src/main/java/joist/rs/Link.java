@@ -29,7 +29,7 @@ public class Link {
 
   public Link(Class<? extends DomainObject> type, Long id) {
     this.id = id;
-    this.relativeUrl = "/" + type.getSimpleName() + "s/" + this.id;
+    this.relativeUrl = "/" + StringUtils.uncapitalize(type.getSimpleName()) + "s/" + this.id;
   }
 
   public String getName() {
