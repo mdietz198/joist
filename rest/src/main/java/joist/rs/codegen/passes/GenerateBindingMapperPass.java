@@ -1,10 +1,13 @@
 package joist.rs.codegen.passes;
 
 import joist.codegen.dtos.Entity;
+import joist.codegen.dtos.ManyToManyProperty;
 import joist.codegen.dtos.ManyToOneProperty;
+import joist.codegen.dtos.OneToManyProperty;
 import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
 import joist.rs.Link;
+import joist.rs.LinkCollection;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.Argument;
 import joist.sourcegen.GClass;
@@ -38,9 +41,12 @@ public class GenerateBindingMapperPass implements Pass {
     to.body.line("{} binding = new {}();", restEntity.getBindingClassName(), restEntity.getBindingClassName());
     this.addCopyPrimitiveProperties(to, restEntity);
     this.addCopyManyToOneProperties(to, restEntity);
+    this.addCopyOneToManyProperties(to, restEntity);
+    this.addCopyManyToManyProperties(to, restEntity);
     to.body.line("return binding;");
 
     bindingMapper.addImports(Link.class);
+    bindingMapper.addImports(LinkCollection.class);
     bindingMapper.addImports(restEntity.entity.getFullClassName());
   }
 
@@ -57,6 +63,28 @@ public class GenerateBindingMapperPass implements Pass {
       } else {
         to.body.line("binding.{} = new Link(domainObject.get{}());", p.getVariableName(), p.getCapitalVariableName());
       }
+    }
+  }
+
+  private void addCopyOneToManyProperties(GMethod to, RestEntity restEntity) {
+    for (OneToManyProperty p : restEntity.entity.getOneToManyProperties()) {
+      if (p.isCollectionSkipped() || p.isManyToMany()) {
+        continue;
+      }
+      if (p.isOneToOne()) {
+        to.body.line("binding.{} = new Link(domainObject.get{}());", p.getVariableName(), p.getCapitalVariableNameSingular());
+      } else {
+        to.body.line("binding.{} = new LinkCollection(0, domainObject.get{}());", p.getVariableName(), p.getCapitalVariableName());
+      }
+    }
+  }
+
+  private void addCopyManyToManyProperties(GMethod to, RestEntity restEntity) {
+    for (ManyToManyProperty p : restEntity.entity.getManyToManyProperties()) {
+      if (p.getMySideOneToMany().isCollectionSkipped()) {
+        continue;
+      }
+      to.body.line("binding.{} = new LinkCollection(0, domainObject.get{}());", p.getVariableName(), p.getCapitalVariableName());
     }
   }
 }
