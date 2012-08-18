@@ -2,7 +2,6 @@ package joist.rs.codegen.passes;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import joist.codegen.dtos.Entity;
@@ -10,12 +9,13 @@ import joist.codegen.passes.Pass;
 import joist.domain.orm.Repository;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.LinkCollection;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
 import joist.sourcegen.GField;
 import joist.sourcegen.GMethod;
 
-public class GenerateResourceCodegenPass implements Pass {
+public class GenerateCollectionResourceCodegenPass implements Pass {
 
   public void pass(joist.codegen.Codegen c) {
     // TODO Nasty hack to get my subclassed codegen
@@ -26,7 +26,7 @@ public class GenerateResourceCodegenPass implements Pass {
       }
 
       RestEntity restEntity = new RestEntity(entity);
-      GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceClassName());
+      GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceCollectionClassName());
       resourceCodegen.addImports(entity.getFullClassName());
       // TODO do I need a base class?
       // resourceCodegen.baseClass(???)
@@ -34,13 +34,12 @@ public class GenerateResourceCodegenPass implements Pass {
       this.annotations(resourceCodegen, restEntity);
       this.addRepository(resourceCodegen);
       this.addGet(resourceCodegen, restEntity);
-      this.addPut(resourceCodegen, restEntity);
-      this.addDelete(resourceCodegen, restEntity);
+      this.addPost(resourceCodegen, restEntity);
     }
   }
 
   private void annotations(GClass resourceCodegen, RestEntity restEntity) {
-    resourceCodegen.addAnnotation("@Path(\"/" + restEntity.entity.getVariableName() + "s/{id}\")");
+    resourceCodegen.addAnnotation("@Path(\"/" + restEntity.entity.getVariableName() + "s\")");
     resourceCodegen.addImports(Path.class);
   }
 
@@ -56,25 +55,21 @@ public class GenerateResourceCodegenPass implements Pass {
     GMethod get = resourceCodegen.getMethod("get");
     // TODO add application/json
     get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/xml\" })");
-    get.argument("final @PathParam(\"id\") Long", "id");
-    get.returnType(restEntity.getBindingClassName());
-    get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<{}>() {", restEntity.getBindingClassName());
-    get.body.line("_   public {} go() {", restEntity.getBindingClassName());
-    get.body.line("_   _   return BindingMapper.toBinding({}.queries.find(id));", restEntity.entity.getClassName());
+    get.returnType(LinkCollection.class);
+    get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<LinkCollection>() {");
+    get.body.line("_   public LinkCollection go() {");
+    get.body.line(
+      "_   _   return new LinkCollection(0, {}.class, {}.queries.findAllIds());",
+      restEntity.entity.getClassName(),
+      restEntity.entity.getClassName());
     get.body.line("_   }");
     get.body.line("});");
-    resourceCodegen.addImports(GET.class, Produces.class, PathParam.class, UoW.class, BlockWithReturn.class);
+    resourceCodegen.addImports(GET.class, Produces.class, LinkCollection.class, UoW.class, BlockWithReturn.class);
     // TODO replace with injected repository reference
-    resourceCodegen.addImports(restEntity.getFullBindingClassName(), "features.Registry", restEntity.getRsConfig().getRestHelpersPackage()
-      + ".BindingMapper");
+    resourceCodegen.addImports("features.Registry");
   }
 
-  private void addPut(GClass resourceCodegen, RestEntity restEntity) {
-    // TODO Auto-generated method stub
-
-  }
-
-  private void addDelete(GClass resourceCodegen, RestEntity restEntity) {
+  private void addPost(GClass resourceCodegen, RestEntity restEntity) {
     // TODO Auto-generated method stub
 
   }

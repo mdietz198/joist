@@ -28,6 +28,13 @@ public class LinkCollection {
     }
   }
 
+  public LinkCollection(int startIndex, Class<? extends DomainObject> type, List<Long> ids) {
+    this.startIndex = startIndex;
+    for (Long id : ids) {
+      this.links.add(new Link(type, id));
+    }
+  }
+
   public int getStartIndex() {
     return this.startIndex;
   }

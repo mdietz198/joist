@@ -27,8 +27,16 @@ public class RestEntity {
     return this.getRsConfig().getResourcePackage() + "." + this.getResourceClassName();
   }
 
+  public String getFullResourceCollectionClassName() {
+    return this.getRsConfig().getResourcePackage() + "." + this.getResourceCollectionClassName();
+  }
+
   public String getResourceClassName() {
     return this.entity.getClassName() + "ResourceCodegen";
+  }
+
+  public String getResourceCollectionClassName() {
+    return this.entity.getClassName() + "ResourceCollectionCodegen";
   }
 
   public String getFullBindingClassName() {

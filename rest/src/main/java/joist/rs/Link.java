@@ -18,9 +18,13 @@ public class Link {
   }
 
   public Link(DomainObject o) {
+    this(o.getClass(), o.getId());
     this.name = o.toTextString();
-    this.id = o.getId();
-    this.relativeUrl = "/" + o.getClass().getSimpleName() + "s/" + this.id;
+  }
+
+  public Link(Class<? extends DomainObject> type, Long id) {
+    this.id = id;
+    this.relativeUrl = "/" + type.getSimpleName() + "s/" + this.id;
   }
 
   public String getName() {

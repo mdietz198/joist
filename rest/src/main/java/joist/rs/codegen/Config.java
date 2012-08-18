@@ -12,6 +12,7 @@ import joist.codegen.passes.Pass;
 import joist.domain.orm.Db;
 import joist.rs.codegen.passes.GenerateBindingCodegenPass;
 import joist.rs.codegen.passes.GenerateBindingMapperPass;
+import joist.rs.codegen.passes.GenerateCollectionResourceCodegenPass;
 import joist.rs.codegen.passes.GenerateResourceCodegenPass;
 import joist.util.Copy;
 
@@ -41,6 +42,7 @@ public class Config extends joist.codegen.Config {
     this.getPasses().clear();
     this.getPasses().addAll(this.getFindPasses());
     this.getPasses().add(new GenerateResourceCodegenPass());
+    this.getPasses().add(new GenerateCollectionResourceCodegenPass());
     this.getPasses().add(new GenerateBindingCodegenPass());
     this.getPasses().add(new GenerateBindingMapperPass());
     this.getPasses().add(new OutputPass());
