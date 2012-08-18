@@ -58,10 +58,11 @@ public class GenerateBindingMapperPass implements Pass {
 
   private void addCopyManyToOneProperties(GMethod to, RestEntity restEntity) {
     for (ManyToOneProperty p : restEntity.entity.getManyToOneProperties()) {
+      String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
       if (p.getOneSide().isCodeEntity()) {
-        to.body.line("binding.{} = domainObject.get{}().toString();", p.getVariableName(), p.getCapitalVariableName());
+        to.body.line("binding.{} = {} == null ? null : {}.toString();", p.getVariableName(), domainGetter, domainGetter);
       } else {
-        to.body.line("binding.{} = new Link(domainObject.get{}());", p.getVariableName(), p.getCapitalVariableName());
+        to.body.line("binding.{} = {} == null ? null : new Link({});", p.getVariableName(), domainGetter, domainGetter);
       }
     }
   }
@@ -72,9 +73,11 @@ public class GenerateBindingMapperPass implements Pass {
         continue;
       }
       if (p.isOneToOne()) {
-        to.body.line("binding.{} = new Link(domainObject.get{}());", p.getVariableName(), p.getCapitalVariableNameSingular());
+        String domainGetter = "domainObject.get" + p.getCapitalVariableNameSingular() + "()";
+        to.body.line("binding.{} = {} == null ? null : new Link({});", p.getVariableName(), domainGetter, domainGetter);
       } else {
-        to.body.line("binding.{} = new LinkCollection(0, domainObject.get{}());", p.getVariableName(), p.getCapitalVariableName());
+        String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
+        to.body.line("binding.{} = {} == null ? null : new LinkCollection(0, {});", p.getVariableName(), domainGetter, domainGetter);
       }
     }
   }
@@ -84,7 +87,8 @@ public class GenerateBindingMapperPass implements Pass {
       if (p.getMySideOneToMany().isCollectionSkipped()) {
         continue;
       }
-      to.body.line("binding.{} = new LinkCollection(0, domainObject.get{}());", p.getVariableName(), p.getCapitalVariableName());
+      String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
+      to.body.line("binding.{} = {} == null ? null :new LinkCollection(0, {});", p.getVariableName(), domainGetter, domainGetter);
     }
   }
 }
