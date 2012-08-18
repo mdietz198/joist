@@ -145,14 +145,22 @@ public class BindingMapper {
 
   public static InheritanceASubOneBinding toBinding(InheritanceASubOne domainObject) {
     InheritanceASubOneBinding binding = new InheritanceASubOneBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     binding.one = domainObject.getOne();
+    binding.inheritanceAOwner = domainObject.getInheritanceAOwner() == null ? null : new Link(domainObject.getInheritanceAOwner());
     binding.inheritanceAThing = domainObject.getInheritanceAThing() == null ? null : new Link(domainObject.getInheritanceAThing());
     return binding;
   }
 
   public static InheritanceASubTwoBinding toBinding(InheritanceASubTwo domainObject) {
     InheritanceASubTwoBinding binding = new InheritanceASubTwoBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     binding.two = domainObject.getTwo();
+    binding.inheritanceAOwner = domainObject.getInheritanceAOwner() == null ? null : new Link(domainObject.getInheritanceAOwner());
     binding.inheritanceAThing = domainObject.getInheritanceAThing() == null ? null : new Link(domainObject.getInheritanceAThing());
     return binding;
   }
@@ -169,7 +177,12 @@ public class BindingMapper {
 
   public static InheritanceBBottomBinding toBinding(InheritanceBBottom domainObject) {
     InheritanceBBottomBinding binding = new InheritanceBBottomBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
+    binding.middleName = domainObject.getMiddleName();
     binding.bottomName = domainObject.getBottomName();
+    binding.inheritanceBRootChilds = domainObject.getInheritanceBRootChilds() == null ? null : new LinkCollection(0, domainObject.getInheritanceBRootChilds());
     return binding;
   }
 
@@ -184,12 +197,18 @@ public class BindingMapper {
 
   public static InheritanceCFoo1Binding toBinding(InheritanceCFoo1 domainObject) {
     InheritanceCFoo1Binding binding = new InheritanceCFoo1Binding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     binding.foo = domainObject.getFoo();
     return binding;
   }
 
   public static InheritanceCFoo2Binding toBinding(InheritanceCFoo2 domainObject) {
     InheritanceCFoo2Binding binding = new InheritanceCFoo2Binding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     binding.foo = domainObject.getFoo();
     return binding;
   }

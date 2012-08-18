@@ -51,13 +51,13 @@ public class GenerateBindingMapperPass implements Pass {
   }
 
   private void addCopyPrimitiveProperties(GMethod to, RestEntity restEntity) {
-    for (PrimitiveProperty p : restEntity.entity.getPrimitiveProperties()) {
+    for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
       to.body.line("binding.{} = domainObject.get{}();", p.getVariableName(), p.getCapitalVariableName());
     }
   }
 
   private void addCopyManyToOneProperties(GMethod to, RestEntity restEntity) {
-    for (ManyToOneProperty p : restEntity.entity.getManyToOneProperties()) {
+    for (ManyToOneProperty p : restEntity.getManyToOnePropertiesIncludingInherited()) {
       String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
       if (p.getOneSide().isCodeEntity()) {
         to.body.line("binding.{} = {} == null ? null : {}.toString();", p.getVariableName(), domainGetter, domainGetter);
@@ -68,7 +68,7 @@ public class GenerateBindingMapperPass implements Pass {
   }
 
   private void addCopyOneToManyProperties(GMethod to, RestEntity restEntity) {
-    for (OneToManyProperty p : restEntity.entity.getOneToManyProperties()) {
+    for (OneToManyProperty p : restEntity.getOneToManyPropertiesIncludingInherited()) {
       if (p.isCollectionSkipped() || p.isManyToMany()) {
         continue;
       }
@@ -83,7 +83,7 @@ public class GenerateBindingMapperPass implements Pass {
   }
 
   private void addCopyManyToManyProperties(GMethod to, RestEntity restEntity) {
-    for (ManyToManyProperty p : restEntity.entity.getManyToManyProperties()) {
+    for (ManyToManyProperty p : restEntity.getManyToManyPropertiesIncludingInherited()) {
       if (p.getMySideOneToMany().isCollectionSkipped()) {
         continue;
       }

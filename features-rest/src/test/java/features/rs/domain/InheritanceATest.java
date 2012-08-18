@@ -1,5 +1,7 @@
 package features.rs.domain;
 
+import static features.domain.builders.Builders.aInheritanceAOwner;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,6 +15,7 @@ public class InheritanceATest extends AbstractFeaturesTest {
     InheritanceASubTwo b = new InheritanceASubTwo();
     b.setName("name");
     b.setTwo("two");
+    b.setInheritanceAOwner(aInheritanceAOwner().defaults().get());
     this.commitAndReOpen();
     Assert.assertEquals(1, b.getId().intValue());
 
