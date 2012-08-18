@@ -6,9 +6,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import joist.domain.DomainObject;
 
+import org.apache.commons.lang.StringUtils;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Link {
+
+  // TODO find better way to inject base service URL than a system property
+  private static final String baseUrl = StringUtils.removeEnd(System.getProperty("baseServiceUrl"), "/");;
 
   private String name;
   private Long id;
@@ -51,4 +56,16 @@ public class Link {
     this.relativeUrl = relativeUrl;
   }
 
+  public String getUrl() {
+    if (Link.baseUrl == null) {
+      return null;
+    }
+    return Link.baseUrl + this.relativeUrl;
+  }
+
+  public void setUrl(String url) {
+    if (Link.baseUrl != null) {
+      this.setRelativeUrl(url.replace(Link.baseUrl, ""));
+    }
+  }
 }

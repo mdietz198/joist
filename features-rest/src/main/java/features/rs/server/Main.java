@@ -20,6 +20,7 @@ public class Main {
   public static final URI BASE_URI = getBaseURI();
 
   protected static HttpServer startServer() throws IOException {
+    System.setProperty("baseServiceUrl", BASE_URI.toString());
     System.out.println("Starting grizzly...");
     ResourceConfig rc = new PackagesResourceConfig("features.rs.resources");
     return GrizzlyServerFactory.createHttpServer(BASE_URI, rc);
