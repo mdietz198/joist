@@ -4,9 +4,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name="validationAFoo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ValidationAFooBinding extends Object {
+public class ValidationAFooBinding extends Object {
 
   public Long id;
   public String name;

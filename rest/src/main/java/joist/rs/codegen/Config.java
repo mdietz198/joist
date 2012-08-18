@@ -7,17 +7,15 @@ import joist.codegen.passes.FindForeignKeysPass;
 import joist.codegen.passes.FindManyToManyPropertiesPass;
 import joist.codegen.passes.FindPrimitivePropertiesPass;
 import joist.codegen.passes.FindTablesPass;
+import joist.codegen.passes.OutputPass;
 import joist.codegen.passes.Pass;
 import joist.domain.orm.Db;
 import joist.rs.codegen.passes.GenerateBindingCodegenPass;
+import joist.rs.codegen.passes.GenerateBindingMapperPass;
 import joist.rs.codegen.passes.GenerateResourceCodegenPass;
-import joist.rs.codegen.passes.OutputPass;
 import joist.util.Copy;
 
 public class Config extends joist.codegen.Config {
-
-  /** Where the re-generated base classes (e.g. EmployeeDto) that you do not edit go. @return E.g. <code>src/codegen</code> */
-  public String outputRestServerCodegenDirectory = "./src/codegen/java";
 
   /** The package name of your resource classes. @return E.g. <code>app.rs.resources</code> */
   public String resourcePackage;
@@ -44,6 +42,7 @@ public class Config extends joist.codegen.Config {
     this.getPasses().addAll(this.getFindPasses());
     this.getPasses().add(new GenerateResourceCodegenPass());
     this.getPasses().add(new GenerateBindingCodegenPass());
+    this.getPasses().add(new GenerateBindingMapperPass());
     this.getPasses().add(new OutputPass());
   }
 
@@ -54,10 +53,6 @@ public class Config extends joist.codegen.Config {
       new FindForeignKeysPass(),
       new FindCodeValuesPass(),
       new FindManyToManyPropertiesPass());
-  }
-
-  public String getRestServerOutputCodegenDirectory() {
-    return this.outputRestServerCodegenDirectory;
   }
 
   public String getResourcePackage() {

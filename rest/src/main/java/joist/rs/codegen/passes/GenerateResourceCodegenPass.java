@@ -1,7 +1,9 @@
 package joist.rs.codegen.passes;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import joist.codegen.dtos.Entity;
 import joist.codegen.passes.Pass;
@@ -19,14 +21,13 @@ public class GenerateResourceCodegenPass implements Pass {
     // TODO Nasty hack to get my subclassed codegen
     joist.rs.codegen.Codegen codegen = (joist.rs.codegen.Codegen) c;
     for (Entity entity : codegen.getEntities().values()) {
-      if (entity.isCodeEntity()) {
+      if (entity.isCodeEntity() || entity.isAbstract()) {
         continue;
       }
 
       RestEntity restEntity = new RestEntity(entity);
-      GClass resourceCodegen = codegen.getOutputRestServerCodegenDirectory().getClass(restEntity.getFullResourceClassName());
+      GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceClassName());
       resourceCodegen.addImports(entity.getFullClassName());
-      resourceCodegen.setAbstract();
       // TODO do I need a base class?
       // resourceCodegen.baseClass(???)
 
@@ -45,7 +46,7 @@ public class GenerateResourceCodegenPass implements Pass {
   }
 
   private void addRepository(GClass resourceCodegen) {
-    GField repoRef = resourceCodegen.getField("repository").setProtected().setFinal();
+    GField repoRef = resourceCodegen.getField("repository").setProtected();
     repoRef.type(Repository.class);
     // TODO add annotation so I can inject Repository
     // See http://stackoverflow.com/questions/7985231/injecting-into-a-jersey-resource-class
@@ -54,14 +55,16 @@ public class GenerateResourceCodegenPass implements Pass {
 
   private void addGet(GClass resourceCodegen, RestEntity restEntity) {
     GMethod get = resourceCodegen.getMethod("get");
+    // TODO add application/json
+    get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/xml\" })");
     get.argument("final @PathParam(\"id\") Long", "id");
-    get.returnType(restEntity.getRestBindingClassName());
-    get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<{}>() {", restEntity.getRestBindingClassName());
-    get.body.line("_   public {} go() {", restEntity.getRestBindingClassName());
+    get.returnType(restEntity.getBindingClassName());
+    get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<{}>() {", restEntity.getBindingClassName());
+    get.body.line("_   public {} go() {", restEntity.getBindingClassName());
     get.body.line("_   _   return BindingMapper.toBinding({}.queries.find(id));", restEntity.entity.getClassName());
     get.body.line("_   }");
     get.body.line("});");
-    resourceCodegen.addImports(PathParam.class, UoW.class, BlockWithReturn.class);
+    resourceCodegen.addImports(GET.class, Produces.class, PathParam.class, UoW.class, BlockWithReturn.class);
     // TODO replace with injected repository reference
     resourceCodegen.addImports(restEntity.getFullBindingClassName(), "features.Registry", restEntity.getRsConfig().getRestHelpersPackage()
       + ".BindingMapper");

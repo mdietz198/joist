@@ -4,9 +4,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name="manyToManyBFoo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ManyToManyBFooBinding extends Object {
+public class ManyToManyBFooBinding extends Object {
 
   public Long id;
   public String name;

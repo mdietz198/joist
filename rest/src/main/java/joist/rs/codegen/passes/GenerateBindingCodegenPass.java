@@ -22,8 +22,10 @@ public class GenerateBindingCodegenPass implements Pass {
       }
 
       RestEntity restEntity = new RestEntity(entity);
-      GClass bindingCodegen = codegen.getOutputRestServerCodegenDirectory().getClass(restEntity.getFullBindingClassName());
-      bindingCodegen.setAbstract();
+      GClass bindingCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullBindingClassName());
+      if (entity.isAbstract()) {
+        bindingCodegen.setAbstract();
+      }
       bindingCodegen.baseClassName(restEntity.getParentBindingClassName());
       this.annotations(bindingCodegen, restEntity);
       this.addPrimitiveProperties(bindingCodegen, restEntity);
@@ -31,7 +33,7 @@ public class GenerateBindingCodegenPass implements Pass {
   }
 
   private void annotations(GClass resourceCodegen, RestEntity restEntity) {
-    resourceCodegen.addAnnotation("@XmlRootElement");
+    resourceCodegen.addAnnotation("@XmlRootElement(name=\"{}\")", restEntity.entity.getVariableName());
     resourceCodegen.addAnnotation("@XmlAccessorType(XmlAccessType.FIELD)");
     resourceCodegen.addImports(XmlRootElement.class, XmlAccessorType.class, XmlAccessType.class);
   }

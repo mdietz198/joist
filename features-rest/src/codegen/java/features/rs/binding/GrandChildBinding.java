@@ -4,9 +4,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name="grandChild")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class GrandChildBinding extends Object {
+public class GrandChildBinding extends Object {
 
   public Long id;
   public String name;

@@ -6,9 +6,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name="primitivesC")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class PrimitivesCBinding extends Object {
+public class PrimitivesCBinding extends Object {
 
   public Money dollarAmount;
   public Long id;

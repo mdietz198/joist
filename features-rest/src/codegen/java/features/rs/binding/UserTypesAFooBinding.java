@@ -5,9 +5,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name="userTypesAFoo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class UserTypesAFooBinding extends Object {
+public class UserTypesAFooBinding extends Object {
 
   public CalendarDate created;
   public Long id;

@@ -4,9 +4,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name="primitivesB")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class PrimitivesBBinding extends Object {
+public class PrimitivesBBinding extends Object {
 
   public Long big1;
   public Long big2;

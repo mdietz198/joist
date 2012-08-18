@@ -25,16 +25,16 @@ public class RestEntity {
   }
 
   public String getFullBindingClassName() {
-    return this.getRsConfig().getBindingPackage() + "." + this.getRestBindingClassName();
+    return this.getRsConfig().getBindingPackage() + "." + this.getBindingClassName();
   }
 
-  public String getRestBindingClassName() {
+  public String getBindingClassName() {
     return this.entity.getClassName() + "Binding";
   }
 
   public String getParentBindingClassName() {
     if (this.entity.isSubclass()) {
-      return new RestEntity(this.entity.getBaseEntity()).getRestBindingClassName();
+      return new RestEntity(this.entity.getBaseEntity()).getBindingClassName();
     } else {
       return "Object";
     }

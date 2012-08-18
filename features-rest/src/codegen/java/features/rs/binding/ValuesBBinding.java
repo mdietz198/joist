@@ -5,9 +5,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name="valuesB")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ValuesBBinding extends Object {
+public class ValuesBBinding extends Object {
 
   public Long id;
   public String name;

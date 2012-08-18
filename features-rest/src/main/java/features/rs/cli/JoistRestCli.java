@@ -19,7 +19,7 @@ public class JoistRestCli extends AbstractJoistRestCli {
 
   public JoistRestCli() {
     super("features", db);
-    this.config.outputRestServerCodegenDirectory = "src/codegen/java";
+    this.config.outputCodegenDirectory = "src/codegen/java";
     GSettings.setDefaultIndentation("  ");
   }
 }

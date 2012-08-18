@@ -4,17 +4,21 @@ import features.Registry;
 import features.domain.ParentBChildFoo;
 import features.rs.binding.ParentBChildFooBinding;
 import features.rs.helpers.BindingMapper;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import joist.domain.orm.Repository;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 
 @Path("/parentBChildFoos/{id}")
-public abstract class ParentBChildFooResourceCodegen {
+public class ParentBChildFooResourceCodegen {
 
-  protected final Repository repository;
+  protected Repository repository;
 
+  @GET
+  @Produces({ "application/xml" })
   public ParentBChildFooBinding get(final @PathParam("id") Long id) {
     return UoW.read(Registry.getRepository(), new BlockWithReturn<ParentBChildFooBinding>() {
       public ParentBChildFooBinding go() {
