@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.InheritanceBRoot;
+import features.rs.binding.InheritanceBRootBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class InheritanceBRootResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(InheritanceBRoot.queries.find(id));
+  public InheritanceBRootBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<InheritanceBRootBinding>() {
+      public InheritanceBRootBinding go() {
+        return BindingMapper.toBinding(InheritanceBRoot.queries.find(id));
       }
     });
   }

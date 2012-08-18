@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.UserTypesAFoo;
+import features.rs.binding.UserTypesAFooBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class UserTypesAFooResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(UserTypesAFoo.queries.find(id));
+  public UserTypesAFooBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<UserTypesAFooBinding>() {
+      public UserTypesAFooBinding go() {
+        return BindingMapper.toBinding(UserTypesAFoo.queries.find(id));
       }
     });
   }

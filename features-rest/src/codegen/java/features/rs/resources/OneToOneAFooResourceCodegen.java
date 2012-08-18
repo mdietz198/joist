@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.OneToOneAFoo;
+import features.rs.binding.OneToOneAFooBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class OneToOneAFooResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(OneToOneAFoo.queries.find(id));
+  public OneToOneAFooBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<OneToOneAFooBinding>() {
+      public OneToOneAFooBinding go() {
+        return BindingMapper.toBinding(OneToOneAFoo.queries.find(id));
       }
     });
   }

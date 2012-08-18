@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.ManyToManyAFooToBar;
+import features.rs.binding.ManyToManyAFooToBarBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class ManyToManyAFooToBarResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(ManyToManyAFooToBar.queries.find(id));
+  public ManyToManyAFooToBarBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<ManyToManyAFooToBarBinding>() {
+      public ManyToManyAFooToBarBinding go() {
+        return BindingMapper.toBinding(ManyToManyAFooToBar.queries.find(id));
       }
     });
   }

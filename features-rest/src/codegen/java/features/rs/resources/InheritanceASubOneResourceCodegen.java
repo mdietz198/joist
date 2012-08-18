@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.InheritanceASubOne;
+import features.rs.binding.InheritanceASubOneBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class InheritanceASubOneResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(InheritanceASubOne.queries.find(id));
+  public InheritanceASubOneBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<InheritanceASubOneBinding>() {
+      public InheritanceASubOneBinding go() {
+        return BindingMapper.toBinding(InheritanceASubOne.queries.find(id));
       }
     });
   }

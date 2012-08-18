@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.InheritanceCFoo2;
+import features.rs.binding.InheritanceCFoo2Binding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class InheritanceCFoo2ResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(InheritanceCFoo2.queries.find(id));
+  public InheritanceCFoo2Binding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<InheritanceCFoo2Binding>() {
+      public InheritanceCFoo2Binding go() {
+        return BindingMapper.toBinding(InheritanceCFoo2.queries.find(id));
       }
     });
   }

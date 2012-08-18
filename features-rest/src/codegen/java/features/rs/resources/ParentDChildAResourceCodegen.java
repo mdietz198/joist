@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.ParentDChildA;
+import features.rs.binding.ParentDChildABinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class ParentDChildAResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(ParentDChildA.queries.find(id));
+  public ParentDChildABinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<ParentDChildABinding>() {
+      public ParentDChildABinding go() {
+        return BindingMapper.toBinding(ParentDChildA.queries.find(id));
       }
     });
   }

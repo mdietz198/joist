@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.InheritanceAThing;
+import features.rs.binding.InheritanceAThingBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class InheritanceAThingResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(InheritanceAThing.queries.find(id));
+  public InheritanceAThingBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<InheritanceAThingBinding>() {
+      public InheritanceAThingBinding go() {
+        return BindingMapper.toBinding(InheritanceAThing.queries.find(id));
       }
     });
   }

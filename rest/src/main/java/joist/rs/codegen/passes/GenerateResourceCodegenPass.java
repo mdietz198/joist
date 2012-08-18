@@ -13,7 +13,7 @@ import joist.sourcegen.GClass;
 import joist.sourcegen.GField;
 import joist.sourcegen.GMethod;
 
-public class GenerateRestResourceCodegenPass implements Pass {
+public class GenerateResourceCodegenPass implements Pass {
 
   public void pass(joist.codegen.Codegen c) {
     // TODO Nasty hack to get my subclassed codegen
@@ -55,16 +55,16 @@ public class GenerateRestResourceCodegenPass implements Pass {
   private void addGet(GClass resourceCodegen, RestEntity restEntity) {
     GMethod get = resourceCodegen.getMethod("get");
     get.argument("final @PathParam(\"id\") Long", "id");
-    // TODO replace Object with <entity>Binding
-    get.returnType(Object.class);
-    get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {");
-    get.body.line("_   public Object go() {");
-    get.body.line("_   _   return BindingMapper.toDto({}.queries.find(id));", restEntity.entity.getClassName());
+    get.returnType(restEntity.getRestBindingClassName());
+    get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<{}>() {", restEntity.getRestBindingClassName());
+    get.body.line("_   public {} go() {", restEntity.getRestBindingClassName());
+    get.body.line("_   _   return BindingMapper.toBinding({}.queries.find(id));", restEntity.entity.getClassName());
     get.body.line("_   }");
     get.body.line("});");
     resourceCodegen.addImports(PathParam.class, UoW.class, BlockWithReturn.class);
     // TODO replace with injected repository reference
-    resourceCodegen.addImports("features.Registry", restEntity.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
+    resourceCodegen.addImports(restEntity.getFullBindingClassName(), "features.Registry", restEntity.getRsConfig().getRestHelpersPackage()
+      + ".BindingMapper");
   }
 
   private void addPut(GClass resourceCodegen, RestEntity restEntity) {

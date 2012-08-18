@@ -24,4 +24,19 @@ public class RestEntity {
     return this.entity.getClassName() + "ResourceCodegen";
   }
 
+  public String getFullBindingClassName() {
+    return this.getRsConfig().getBindingPackage() + "." + this.getRestBindingClassName();
+  }
+
+  public String getRestBindingClassName() {
+    return this.entity.getClassName() + "Binding";
+  }
+
+  public String getParentBindingClassName() {
+    if (this.entity.isSubclass()) {
+      return new RestEntity(this.entity.getBaseEntity()).getRestBindingClassName();
+    } else {
+      return "Object";
+    }
+  }
 }

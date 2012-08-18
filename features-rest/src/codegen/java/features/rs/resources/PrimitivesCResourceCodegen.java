@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.PrimitivesC;
+import features.rs.binding.PrimitivesCBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class PrimitivesCResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(PrimitivesC.queries.find(id));
+  public PrimitivesCBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<PrimitivesCBinding>() {
+      public PrimitivesCBinding go() {
+        return BindingMapper.toBinding(PrimitivesC.queries.find(id));
       }
     });
   }

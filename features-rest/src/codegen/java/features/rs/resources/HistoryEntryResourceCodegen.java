@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.HistoryEntry;
+import features.rs.binding.HistoryEntryBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class HistoryEntryResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(HistoryEntry.queries.find(id));
+  public HistoryEntryBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<HistoryEntryBinding>() {
+      public HistoryEntryBinding go() {
+        return BindingMapper.toBinding(HistoryEntry.queries.find(id));
       }
     });
   }

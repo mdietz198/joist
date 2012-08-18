@@ -2,6 +2,7 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.InheritanceBBottom;
+import features.rs.binding.InheritanceBBottomBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +15,10 @@ public abstract class InheritanceBBottomResourceCodegen {
 
   protected final Repository repository;
 
-  public Object get(final @PathParam("id") Long id) {
-    return UoW.read(Registry.getRepository(), new BlockWithReturn<Object>() {
-      public Object go() {
-        return BindingMapper.toDto(InheritanceBBottom.queries.find(id));
+  public InheritanceBBottomBinding get(final @PathParam("id") Long id) {
+    return UoW.read(Registry.getRepository(), new BlockWithReturn<InheritanceBBottomBinding>() {
+      public InheritanceBBottomBinding go() {
+        return BindingMapper.toBinding(InheritanceBBottom.queries.find(id));
       }
     });
   }
