@@ -1,6 +1,7 @@
 package joist.rs.codegen.passes;
 
 import joist.codegen.dtos.Entity;
+import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.Argument;
@@ -33,9 +34,15 @@ public class GenerateBindingMapperPass implements Pass {
     to.returnType(restEntity.getFullBindingClassName());
 
     to.body.line("{} binding = new {}();", restEntity.getBindingClassName(), restEntity.getBindingClassName());
-
+    this.addCopyPrimitiveProperties(to, restEntity);
     to.body.line("return binding;");
 
     bindingMapper.addImports(restEntity.entity.getFullClassName());
+  }
+
+  private void addCopyPrimitiveProperties(GMethod to, RestEntity restEntity) {
+    for (PrimitiveProperty p : restEntity.entity.getPrimitiveProperties()) {
+      to.body.line("binding.{} = domainObject.get{}();", p.getVariableName(), p.getCapitalVariableName());
+    }
   }
 }

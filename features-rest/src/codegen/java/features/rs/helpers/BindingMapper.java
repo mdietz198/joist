@@ -90,206 +90,342 @@ public class BindingMapper {
 
   public static ChildBinding toBinding(Child domainObject) {
     ChildBinding binding = new ChildBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static CodeADomainObjectBinding toBinding(CodeADomainObject domainObject) {
     CodeADomainObjectBinding binding = new CodeADomainObjectBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static GrandChildBinding toBinding(GrandChild domainObject) {
     GrandChildBinding binding = new GrandChildBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static HistoryEntryBinding toBinding(HistoryEntry domainObject) {
     HistoryEntryBinding binding = new HistoryEntryBinding();
+    binding.id = domainObject.getId();
+    binding.newValue = domainObject.getNewValue();
+    binding.oldValue = domainObject.getOldValue();
+    binding.primaryKey = domainObject.getPrimaryKey();
+    binding.propertyName = domainObject.getPropertyName();
+    binding.rootTableName = domainObject.getRootTableName();
+    binding.type = domainObject.getType();
+    binding.updateTime = domainObject.getUpdateTime();
+    binding.updater = domainObject.getUpdater();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static InheritanceAOwnerBinding toBinding(InheritanceAOwner domainObject) {
     InheritanceAOwnerBinding binding = new InheritanceAOwnerBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static InheritanceASubOneBinding toBinding(InheritanceASubOne domainObject) {
     InheritanceASubOneBinding binding = new InheritanceASubOneBinding();
+    binding.one = domainObject.getOne();
     return binding;
   }
 
   public static InheritanceASubTwoBinding toBinding(InheritanceASubTwo domainObject) {
     InheritanceASubTwoBinding binding = new InheritanceASubTwoBinding();
+    binding.two = domainObject.getTwo();
     return binding;
   }
 
   public static InheritanceAThingBinding toBinding(InheritanceAThing domainObject) {
     InheritanceAThingBinding binding = new InheritanceAThingBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static InheritanceBBottomBinding toBinding(InheritanceBBottom domainObject) {
     InheritanceBBottomBinding binding = new InheritanceBBottomBinding();
+    binding.bottomName = domainObject.getBottomName();
     return binding;
   }
 
   public static InheritanceBRootChildBinding toBinding(InheritanceBRootChild domainObject) {
     InheritanceBRootChildBinding binding = new InheritanceBRootChildBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static InheritanceCFoo1Binding toBinding(InheritanceCFoo1 domainObject) {
     InheritanceCFoo1Binding binding = new InheritanceCFoo1Binding();
+    binding.foo = domainObject.getFoo();
     return binding;
   }
 
   public static InheritanceCFoo2Binding toBinding(InheritanceCFoo2 domainObject) {
     InheritanceCFoo2Binding binding = new InheritanceCFoo2Binding();
+    binding.foo = domainObject.getFoo();
     return binding;
   }
 
   public static ManyToManyABarBinding toBinding(ManyToManyABar domainObject) {
     ManyToManyABarBinding binding = new ManyToManyABarBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ManyToManyAFooBinding toBinding(ManyToManyAFoo domainObject) {
     ManyToManyAFooBinding binding = new ManyToManyAFooBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ManyToManyAFooToBarBinding toBinding(ManyToManyAFooToBar domainObject) {
     ManyToManyAFooToBarBinding binding = new ManyToManyAFooToBarBinding();
+    binding.id = domainObject.getId();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ManyToManyBBarBinding toBinding(ManyToManyBBar domainObject) {
     ManyToManyBBarBinding binding = new ManyToManyBBarBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ManyToManyBFooBinding toBinding(ManyToManyBFoo domainObject) {
     ManyToManyBFooBinding binding = new ManyToManyBFooBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ManyToManyBFooToBarBinding toBinding(ManyToManyBFooToBar domainObject) {
     ManyToManyBFooToBarBinding binding = new ManyToManyBFooToBarBinding();
+    binding.id = domainObject.getId();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static OneToOneABarBinding toBinding(OneToOneABar domainObject) {
     OneToOneABarBinding binding = new OneToOneABarBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static OneToOneAFooBinding toBinding(OneToOneAFoo domainObject) {
     OneToOneAFooBinding binding = new OneToOneAFooBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static OneToOneBBarBinding toBinding(OneToOneBBar domainObject) {
     OneToOneBBarBinding binding = new OneToOneBBarBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static OneToOneBFooBinding toBinding(OneToOneBFoo domainObject) {
     OneToOneBFooBinding binding = new OneToOneBFooBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentBinding toBinding(Parent domainObject) {
     ParentBinding binding = new ParentBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentBChildBarBinding toBinding(ParentBChildBar domainObject) {
     ParentBChildBarBinding binding = new ParentBChildBarBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentBChildFooBinding toBinding(ParentBChildFoo domainObject) {
     ParentBChildFooBinding binding = new ParentBChildFooBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentBParentBinding toBinding(ParentBParent domainObject) {
     ParentBParentBinding binding = new ParentBParentBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentCBarBinding toBinding(ParentCBar domainObject) {
     ParentCBarBinding binding = new ParentCBarBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentCFooBinding toBinding(ParentCFoo domainObject) {
     ParentCFooBinding binding = new ParentCFooBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentDBinding toBinding(ParentD domainObject) {
     ParentDBinding binding = new ParentDBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentDChildABinding toBinding(ParentDChildA domainObject) {
     ParentDChildABinding binding = new ParentDChildABinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentDChildBBinding toBinding(ParentDChildB domainObject) {
     ParentDChildBBinding binding = new ParentDChildBBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentDChildCBinding toBinding(ParentDChildC domainObject) {
     ParentDChildCBinding binding = new ParentDChildCBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentDToChildCBinding toBinding(ParentDToChildC domainObject) {
     ParentDToChildCBinding binding = new ParentDToChildCBinding();
+    binding.id = domainObject.getId();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ParentEBinding toBinding(ParentE domainObject) {
     ParentEBinding binding = new ParentEBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static PrimitivesBinding toBinding(Primitives domainObject) {
     PrimitivesBinding binding = new PrimitivesBinding();
+    binding.flag = domainObject.getFlag();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.skipped = domainObject.getSkipped();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static PrimitivesBBinding toBinding(PrimitivesB domainObject) {
     PrimitivesBBinding binding = new PrimitivesBBinding();
+    binding.big1 = domainObject.getBig1();
+    binding.big2 = domainObject.getBig2();
+    binding.bool1 = domainObject.getBool1();
+    binding.bool2 = domainObject.getBool2();
+    binding.boolNullableWithDefaultFalse = domainObject.getBoolNullableWithDefaultFalse();
+    binding.boolWithDefaultTrue = domainObject.getBoolWithDefaultTrue();
+    binding.id = domainObject.getId();
+    binding.int1 = domainObject.getInt1();
+    binding.int2 = domainObject.getInt2();
+    binding.small1 = domainObject.getSmall1();
+    binding.small2 = domainObject.getSmall2();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static PrimitivesCBinding toBinding(PrimitivesC domainObject) {
     PrimitivesCBinding binding = new PrimitivesCBinding();
+    binding.dollarAmount = domainObject.getDollarAmount();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.timestamp = domainObject.getTimestamp();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static UserTypesAFooBinding toBinding(UserTypesAFoo domainObject) {
     UserTypesAFooBinding binding = new UserTypesAFooBinding();
+    binding.created = domainObject.getCreated();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ValidationAFooBinding toBinding(ValidationAFoo domainObject) {
     ValidationAFooBinding binding = new ValidationAFooBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ValuesABinding toBinding(ValuesA domainObject) {
     ValuesABinding binding = new ValuesABinding();
+    binding.a = domainObject.getA();
+    binding.b = domainObject.getB();
+    binding.i = domainObject.getI();
+    binding.id = domainObject.getId();
+    binding.j = domainObject.getJ();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
   public static ValuesBBinding toBinding(ValuesB domainObject) {
     ValuesBBinding binding = new ValuesBBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.start = domainObject.getStart();
+    binding.version = domainObject.getVersion();
     return binding;
   }
 
