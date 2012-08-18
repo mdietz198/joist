@@ -82,6 +82,7 @@ import features.rs.binding.UserTypesAFooBinding;
 import features.rs.binding.ValidationAFooBinding;
 import features.rs.binding.ValuesABinding;
 import features.rs.binding.ValuesBBinding;
+import joist.rs.Link;
 
 public class BindingMapper {
 
@@ -93,6 +94,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.parent = new Link(domainObject.getParent());
     return binding;
   }
 
@@ -101,6 +103,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.codeAColor = domainObject.getCodeAColor().toString();
+    binding.codeASize = domainObject.getCodeASize().toString();
     return binding;
   }
 
@@ -109,6 +113,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.child = new Link(domainObject.getChild());
     return binding;
   }
 
@@ -138,12 +143,14 @@ public class BindingMapper {
   public static InheritanceASubOneBinding toBinding(InheritanceASubOne domainObject) {
     InheritanceASubOneBinding binding = new InheritanceASubOneBinding();
     binding.one = domainObject.getOne();
+    binding.inheritanceAThing = new Link(domainObject.getInheritanceAThing());
     return binding;
   }
 
   public static InheritanceASubTwoBinding toBinding(InheritanceASubTwo domainObject) {
     InheritanceASubTwoBinding binding = new InheritanceASubTwoBinding();
     binding.two = domainObject.getTwo();
+    binding.inheritanceAThing = new Link(domainObject.getInheritanceAThing());
     return binding;
   }
 
@@ -166,6 +173,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.inheritanceBRoot = new Link(domainObject.getInheritanceBRoot());
     return binding;
   }
 
@@ -201,6 +209,8 @@ public class BindingMapper {
     ManyToManyAFooToBarBinding binding = new ManyToManyAFooToBarBinding();
     binding.id = domainObject.getId();
     binding.version = domainObject.getVersion();
+    binding.manyToManyABar = new Link(domainObject.getManyToManyABar());
+    binding.manyToManyAFoo = new Link(domainObject.getManyToManyAFoo());
     return binding;
   }
 
@@ -224,6 +234,8 @@ public class BindingMapper {
     ManyToManyBFooToBarBinding binding = new ManyToManyBFooToBarBinding();
     binding.id = domainObject.getId();
     binding.version = domainObject.getVersion();
+    binding.owned = new Link(domainObject.getOwned());
+    binding.ownerManyToManyBFoo = new Link(domainObject.getOwnerManyToManyBFoo());
     return binding;
   }
 
@@ -232,6 +244,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.oneToOneAFoo = new Link(domainObject.getOneToOneAFoo());
     return binding;
   }
 
@@ -248,6 +261,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.oneToOneBFoo = new Link(domainObject.getOneToOneBFoo());
     return binding;
   }
 
@@ -272,6 +286,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.parentBParent = new Link(domainObject.getParentBParent());
     return binding;
   }
 
@@ -280,6 +295,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.parentBParent = new Link(domainObject.getParentBParent());
     return binding;
   }
 
@@ -296,6 +312,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.firstParent = new Link(domainObject.getFirstParent());
+    binding.secondParent = new Link(domainObject.getSecondParent());
     return binding;
   }
 
@@ -320,6 +338,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.parentD = new Link(domainObject.getParentD());
     return binding;
   }
 
@@ -328,6 +347,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.parentD = new Link(domainObject.getParentD());
     return binding;
   }
 
@@ -343,6 +363,8 @@ public class BindingMapper {
     ParentDToChildCBinding binding = new ParentDToChildCBinding();
     binding.id = domainObject.getId();
     binding.version = domainObject.getVersion();
+    binding.parentDChildC = new Link(domainObject.getParentDChildC());
+    binding.parentD = new Link(domainObject.getParentD());
     return binding;
   }
 
@@ -351,6 +373,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
+    binding.parentE = new Link(domainObject.getParentE());
     return binding;
   }
 
@@ -359,7 +382,6 @@ public class BindingMapper {
     binding.flag = domainObject.getFlag();
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
-    binding.skipped = domainObject.getSkipped();
     binding.version = domainObject.getVersion();
     return binding;
   }

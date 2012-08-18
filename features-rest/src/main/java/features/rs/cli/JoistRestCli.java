@@ -20,6 +20,11 @@ public class JoistRestCli extends AbstractJoistRestCli {
   public JoistRestCli() {
     super("features", db);
     this.config.outputCodegenDirectory = "src/codegen/java";
+    // TODO These are copied form JoistCli. This should be shared
+    this.config.setCollectionSkipped("ParentD", "parentDChildAs");
+    this.config.setCollectionSkipped("ParentD", "parentDToChildCs");
+    this.config.setPropertySkipped("Primitives", "skipped");
+    this.config.setPropertySkipped("Primitives", "parent");
     GSettings.setDefaultIndentation("  ");
   }
 }

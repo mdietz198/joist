@@ -1,8 +1,10 @@
 package joist.rs.codegen.passes;
 
 import joist.codegen.dtos.Entity;
+import joist.codegen.dtos.ManyToOneProperty;
 import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
+import joist.rs.Link;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.Argument;
 import joist.sourcegen.GClass;
@@ -35,14 +37,26 @@ public class GenerateBindingMapperPass implements Pass {
 
     to.body.line("{} binding = new {}();", restEntity.getBindingClassName(), restEntity.getBindingClassName());
     this.addCopyPrimitiveProperties(to, restEntity);
+    this.addCopyManyToOneProperties(to, restEntity);
     to.body.line("return binding;");
 
+    bindingMapper.addImports(Link.class);
     bindingMapper.addImports(restEntity.entity.getFullClassName());
   }
 
   private void addCopyPrimitiveProperties(GMethod to, RestEntity restEntity) {
     for (PrimitiveProperty p : restEntity.entity.getPrimitiveProperties()) {
       to.body.line("binding.{} = domainObject.get{}();", p.getVariableName(), p.getCapitalVariableName());
+    }
+  }
+
+  private void addCopyManyToOneProperties(GMethod to, RestEntity restEntity) {
+    for (ManyToOneProperty p : restEntity.entity.getManyToOneProperties()) {
+      if (p.getOneSide().isCodeEntity()) {
+        to.body.line("binding.{} = domainObject.get{}().toString();", p.getVariableName(), p.getCapitalVariableName());
+      } else {
+        to.body.line("binding.{} = new Link(domainObject.get{}());", p.getVariableName(), p.getCapitalVariableName());
+      }
     }
   }
 }

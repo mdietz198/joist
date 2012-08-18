@@ -4,6 +4,7 @@ import com.domainlanguage.time.CalendarDate;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import joist.rs.Link;
 
 @XmlRootElement(name="userTypesAFoo")
 @XmlAccessorType(XmlAccessType.FIELD)
