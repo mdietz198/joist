@@ -46,4 +46,5 @@ public class SimpleResourceTest extends AbstractFeaturesTest {
     UoW.open(Registry.getRepository(), null);
     Assert.assertEquals(child.name(), "new name");
   }
+
 }

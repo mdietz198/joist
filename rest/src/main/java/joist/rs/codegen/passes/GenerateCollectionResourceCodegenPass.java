@@ -1,6 +1,8 @@
 package joist.rs.codegen.passes;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -70,8 +72,24 @@ public class GenerateCollectionResourceCodegenPass implements Pass {
   }
 
   private void addPost(GClass resourceCodegen, RestEntity restEntity) {
-    // TODO Auto-generated method stub
-
+    final String varName = restEntity.entity.getVariableName();
+    final String className = restEntity.entity.getClassName();
+    GMethod post = resourceCodegen.getMethod("post");
+    post.returnType(Long.class);
+    // TODO add application/json
+    post.addAnnotation("@POST").addAnnotation("@Consumes({ \"application/xml\" })");
+    post.argument("final " + restEntity.getBindingClassName(), varName);
+    post.body.line("return UoW.go(Registry.getRepository(), null, new BlockWithReturn<" + className + ">() {");
+    post.body.line("_   public " + className + " go() {");
+    post.body.line("_   _   " + className + " domainObject = new " + className + "();");
+    post.body.line("_   _   BindingMapper.toDomain(" + varName + ", domainObject);");
+    post.body.line("_   _   return domainObject;");
+    post.body.line("_   }");
+    post.body.line("}).getId();");
+    // TODO make POST return the URL of the newly created object in the response header
+    resourceCodegen.addImports(POST.class, Consumes.class);
+    resourceCodegen.addImports(restEntity.getFullBindingClassName(), //
+      "features.Registry",
+      restEntity.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
   }
-
 }

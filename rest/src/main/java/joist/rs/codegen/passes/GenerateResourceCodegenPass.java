@@ -68,8 +68,9 @@ public class GenerateResourceCodegenPass implements Pass {
     get.body.line("});");
     resourceCodegen.addImports(GET.class, Produces.class, PathParam.class, UoW.class, BlockWithReturn.class);
     // TODO replace with injected repository reference
-    resourceCodegen.addImports(restEntity.getFullBindingClassName(), "features.Registry", restEntity.getRsConfig().getRestHelpersPackage()
-      + ".BindingMapper");
+    resourceCodegen.addImports(restEntity.getFullBindingClassName(),//
+      "features.Registry",
+      restEntity.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
   }
 
   private void addPut(GClass resourceCodegen, RestEntity restEntity) {

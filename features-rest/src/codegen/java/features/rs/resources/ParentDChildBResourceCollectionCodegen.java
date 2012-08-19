@@ -2,7 +2,11 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.ParentDChildB;
+import features.rs.binding.ParentDChildBBinding;
+import features.rs.helpers.BindingMapper;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import joist.domain.orm.Repository;
@@ -23,6 +27,18 @@ public class ParentDChildBResourceCollectionCodegen {
         return new LinkCollection(0, ParentDChildB.class, ParentDChildB.queries.findAllIds());
       }
     });
+  }
+
+  @POST
+  @Consumes({ "application/xml" })
+  public Long post(final ParentDChildBBinding parentDChildB) {
+    return UoW.go(Registry.getRepository(), null, new BlockWithReturn<ParentDChildB>() {
+      public ParentDChildB go() {
+        ParentDChildB domainObject = new ParentDChildB();
+        BindingMapper.toDomain(parentDChildB, domainObject);
+        return domainObject;
+      }
+    }).getId();
   }
 
 }

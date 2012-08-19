@@ -2,7 +2,11 @@ package features.rs.resources;
 
 import features.Registry;
 import features.domain.InheritanceASubTwo;
+import features.rs.binding.InheritanceASubTwoBinding;
+import features.rs.helpers.BindingMapper;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import joist.domain.orm.Repository;
@@ -23,6 +27,18 @@ public class InheritanceASubTwoResourceCollectionCodegen {
         return new LinkCollection(0, InheritanceASubTwo.class, InheritanceASubTwo.queries.findAllIds());
       }
     });
+  }
+
+  @POST
+  @Consumes({ "application/xml" })
+  public Long post(final InheritanceASubTwoBinding inheritanceASubTwo) {
+    return UoW.go(Registry.getRepository(), null, new BlockWithReturn<InheritanceASubTwo>() {
+      public InheritanceASubTwo go() {
+        InheritanceASubTwo domainObject = new InheritanceASubTwo();
+        BindingMapper.toDomain(inheritanceASubTwo, domainObject);
+        return domainObject;
+      }
+    }).getId();
   }
 
 }
