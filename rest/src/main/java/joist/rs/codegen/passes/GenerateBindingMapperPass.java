@@ -1,5 +1,8 @@
 package joist.rs.codegen.passes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import joist.codegen.dtos.Entity;
 import joist.codegen.dtos.ManyToManyProperty;
 import joist.codegen.dtos.ManyToOneProperty;
@@ -100,6 +103,7 @@ public class GenerateBindingMapperPass implements Pass {
 
     this.copyPrimitivePropertiesToDomain(to, restEntity);
     this.copyManyToOnePropertiesToDomain(bindingMapper, to, restEntity);
+    this.copyOneToManyPropertiesToDomain(bindingMapper, to, restEntity);
 
     bindingMapper.addImports(restEntity.getBindingClassName(), restEntity.entity.getFullClassName());
   }
@@ -132,6 +136,36 @@ public class GenerateBindingMapperPass implements Pass {
           p.getVariableName());
       }
       bindingMapper.addImports(p.getOneSide().getFullClassName());
+    }
+  }
+
+  private void copyOneToManyPropertiesToDomain(GClass bindingMapper, GMethod to, RestEntity restEntity) {
+    for (OneToManyProperty p : restEntity.getOneToManyPropertiesIncludingInherited()) {
+      if (p.isCollectionSkipped() || p.isManyToMany()) {
+        continue;
+      }
+      if (p.isOneToOne()) {
+        to.body.line(
+          "domainObject.set{}(binding.{} == null ? null : binding.{}.getId() == null ? null : {}.queries.find(binding.{}.getId()));",
+          p.getCapitalVariableNameSingular(),
+          p.getVariableName(),
+          p.getVariableName(),
+          p.getManySide().getClassName(),
+          p.getVariableName());
+      } else {
+        to.body.line("final " + p.getJavaType() + " " + p.getVariableName() + " = new ArrayList<" + p.getManySide().getClassName() + ">();");
+        to.body.line("for (final Link l : binding.{}.getLinks()) {", p.getVariableName());
+        to.body.line("_   {} o = l.getId() == null ? null : {}.queries.find(l.getId());",//
+          p.getManySide().getClassName(),
+          p.getManySide().getClassName());
+        to.body.line("_   {}.add(o);", p.getVariableName());
+        to.body.line("}");
+
+        to.body.line("domainObject.set{}({});", p.getCapitalVariableName(), p.getVariableName());
+        bindingMapper.addImports(List.class, ArrayList.class);
+      }
+      bindingMapper.addImports(p.getManySide().getFullClassName());
+      bindingMapper.addImports(Link.class);
     }
   }
 }

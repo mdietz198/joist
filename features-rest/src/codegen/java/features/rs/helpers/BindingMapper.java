@@ -6,6 +6,7 @@ import features.domain.CodeADomainObject;
 import features.domain.CodeASize;
 import features.domain.GrandChild;
 import features.domain.HistoryEntry;
+import features.domain.InheritanceABase;
 import features.domain.InheritanceAOwner;
 import features.domain.InheritanceASubOne;
 import features.domain.InheritanceASubTwo;
@@ -85,6 +86,8 @@ import features.rs.binding.UserTypesAFooBinding;
 import features.rs.binding.ValidationAFooBinding;
 import features.rs.binding.ValuesABinding;
 import features.rs.binding.ValuesBBinding;
+import java.util.ArrayList;
+import java.util.List;
 import joist.rs.Link;
 import joist.rs.LinkCollection;
 
@@ -106,6 +109,12 @@ public class BindingMapper {
   public static void toDomain(ChildBinding binding, Child domainObject) {
     domainObject.setName(binding.name);
     domainObject.setParent(binding.parent == null ? null : binding.parent.getId() == null ? null : Parent.queries.find(binding.parent.getId()));
+    final List<GrandChild> grandChilds = new ArrayList<GrandChild>();
+    for (final Link l : binding.grandChilds.getLinks()) {
+      GrandChild o = l.getId() == null ? null : GrandChild.queries.find(l.getId());
+      grandChilds.add(o);
+    }
+    domainObject.setGrandChilds(grandChilds);
   }
 
   public static CodeADomainObjectBinding toBinding(CodeADomainObject domainObject) {
@@ -175,6 +184,12 @@ public class BindingMapper {
 
   public static void toDomain(InheritanceAOwnerBinding binding, InheritanceAOwner domainObject) {
     domainObject.setName(binding.name);
+    final List<InheritanceABase> inheritanceABases = new ArrayList<InheritanceABase>();
+    for (final Link l : binding.inheritanceABases.getLinks()) {
+      InheritanceABase o = l.getId() == null ? null : InheritanceABase.queries.find(l.getId());
+      inheritanceABases.add(o);
+    }
+    domainObject.setInheritanceABases(inheritanceABases);
   }
 
   public static InheritanceASubOneBinding toBinding(InheritanceASubOne domainObject) {
@@ -225,6 +240,18 @@ public class BindingMapper {
 
   public static void toDomain(InheritanceAThingBinding binding, InheritanceAThing domainObject) {
     domainObject.setName(binding.name);
+    final List<InheritanceASubOne> inheritanceASubOnes = new ArrayList<InheritanceASubOne>();
+    for (final Link l : binding.inheritanceASubOnes.getLinks()) {
+      InheritanceASubOne o = l.getId() == null ? null : InheritanceASubOne.queries.find(l.getId());
+      inheritanceASubOnes.add(o);
+    }
+    domainObject.setInheritanceASubOnes(inheritanceASubOnes);
+    final List<InheritanceASubTwo> inheritanceASubTwos = new ArrayList<InheritanceASubTwo>();
+    for (final Link l : binding.inheritanceASubTwos.getLinks()) {
+      InheritanceASubTwo o = l.getId() == null ? null : InheritanceASubTwo.queries.find(l.getId());
+      inheritanceASubTwos.add(o);
+    }
+    domainObject.setInheritanceASubTwos(inheritanceASubTwos);
   }
 
   public static InheritanceBBottomBinding toBinding(InheritanceBBottom domainObject) {
@@ -242,6 +269,12 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     domainObject.setMiddleName(binding.middleName);
     domainObject.setBottomName(binding.bottomName);
+    final List<InheritanceBRootChild> inheritanceBRootChilds = new ArrayList<InheritanceBRootChild>();
+    for (final Link l : binding.inheritanceBRootChilds.getLinks()) {
+      InheritanceBRootChild o = l.getId() == null ? null : InheritanceBRootChild.queries.find(l.getId());
+      inheritanceBRootChilds.add(o);
+    }
+    domainObject.setInheritanceBRootChilds(inheritanceBRootChilds);
   }
 
   public static InheritanceBRootChildBinding toBinding(InheritanceBRootChild domainObject) {
@@ -391,6 +424,7 @@ public class BindingMapper {
 
   public static void toDomain(OneToOneAFooBinding binding, OneToOneAFoo domainObject) {
     domainObject.setName(binding.name);
+    domainObject.setOneToOneABar(binding.oneToOneABars == null ? null : binding.oneToOneABars.getId() == null ? null : OneToOneABar.queries.find(binding.oneToOneABars.getId()));
   }
 
   public static OneToOneBBarBinding toBinding(OneToOneBBar domainObject) {
@@ -418,6 +452,12 @@ public class BindingMapper {
 
   public static void toDomain(OneToOneBFooBinding binding, OneToOneBFoo domainObject) {
     domainObject.setName(binding.name);
+    final List<OneToOneBBar> oneToOneBBars = new ArrayList<OneToOneBBar>();
+    for (final Link l : binding.oneToOneBBars.getLinks()) {
+      OneToOneBBar o = l.getId() == null ? null : OneToOneBBar.queries.find(l.getId());
+      oneToOneBBars.add(o);
+    }
+    domainObject.setOneToOneBBars(oneToOneBBars);
   }
 
   public static ParentBinding toBinding(Parent domainObject) {
@@ -431,6 +471,12 @@ public class BindingMapper {
 
   public static void toDomain(ParentBinding binding, Parent domainObject) {
     domainObject.setName(binding.name);
+    final List<Child> childs = new ArrayList<Child>();
+    for (final Link l : binding.childs.getLinks()) {
+      Child o = l.getId() == null ? null : Child.queries.find(l.getId());
+      childs.add(o);
+    }
+    domainObject.setChilds(childs);
   }
 
   public static ParentBChildBarBinding toBinding(ParentBChildBar domainObject) {
@@ -473,6 +519,18 @@ public class BindingMapper {
 
   public static void toDomain(ParentBParentBinding binding, ParentBParent domainObject) {
     domainObject.setName(binding.name);
+    final List<ParentBChildBar> parentBChildBars = new ArrayList<ParentBChildBar>();
+    for (final Link l : binding.parentBChildBars.getLinks()) {
+      ParentBChildBar o = l.getId() == null ? null : ParentBChildBar.queries.find(l.getId());
+      parentBChildBars.add(o);
+    }
+    domainObject.setParentBChildBars(parentBChildBars);
+    final List<ParentBChildFoo> parentBChildFoos = new ArrayList<ParentBChildFoo>();
+    for (final Link l : binding.parentBChildFoos.getLinks()) {
+      ParentBChildFoo o = l.getId() == null ? null : ParentBChildFoo.queries.find(l.getId());
+      parentBChildFoos.add(o);
+    }
+    domainObject.setParentBChildFoos(parentBChildFoos);
   }
 
   public static ParentCBarBinding toBinding(ParentCBar domainObject) {
@@ -503,6 +561,18 @@ public class BindingMapper {
 
   public static void toDomain(ParentCFooBinding binding, ParentCFoo domainObject) {
     domainObject.setName(binding.name);
+    final List<ParentCBar> firstParentParentCBars = new ArrayList<ParentCBar>();
+    for (final Link l : binding.firstParentParentCBars.getLinks()) {
+      ParentCBar o = l.getId() == null ? null : ParentCBar.queries.find(l.getId());
+      firstParentParentCBars.add(o);
+    }
+    domainObject.setFirstParentParentCBars(firstParentParentCBars);
+    final List<ParentCBar> secondParentParentCBars = new ArrayList<ParentCBar>();
+    for (final Link l : binding.secondParentParentCBars.getLinks()) {
+      ParentCBar o = l.getId() == null ? null : ParentCBar.queries.find(l.getId());
+      secondParentParentCBars.add(o);
+    }
+    domainObject.setSecondParentParentCBars(secondParentParentCBars);
   }
 
   public static ParentDBinding toBinding(ParentD domainObject) {
@@ -516,6 +586,12 @@ public class BindingMapper {
 
   public static void toDomain(ParentDBinding binding, ParentD domainObject) {
     domainObject.setName(binding.name);
+    final List<ParentDChildB> parentDChildBs = new ArrayList<ParentDChildB>();
+    for (final Link l : binding.parentDChildBs.getLinks()) {
+      ParentDChildB o = l.getId() == null ? null : ParentDChildB.queries.find(l.getId());
+      parentDChildBs.add(o);
+    }
+    domainObject.setParentDChildBs(parentDChildBs);
   }
 
   public static ParentDChildABinding toBinding(ParentDChildA domainObject) {
@@ -586,6 +662,12 @@ public class BindingMapper {
   public static void toDomain(ParentEBinding binding, ParentE domainObject) {
     domainObject.setName(binding.name);
     domainObject.setParentE(binding.parentE == null ? null : binding.parentE.getId() == null ? null : ParentE.queries.find(binding.parentE.getId()));
+    final List<ParentE> parentEs = new ArrayList<ParentE>();
+    for (final Link l : binding.parentEs.getLinks()) {
+      ParentE o = l.getId() == null ? null : ParentE.queries.find(l.getId());
+      parentEs.add(o);
+    }
+    domainObject.setParentEs(parentEs);
   }
 
   public static PrimitivesBinding toBinding(Primitives domainObject) {
