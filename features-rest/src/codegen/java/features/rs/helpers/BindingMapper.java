@@ -324,12 +324,18 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.manyToManyAFoos = domainObject.getManyToManyAFoos() == null ? null :new LinkCollection(0, domainObject.getManyToManyAFoos());
+    binding.manyToManyAFoos = domainObject.getManyToManyAFoos() == null ? null : new LinkCollection(0, domainObject.getManyToManyAFoos());
     return binding;
   }
 
   public static void toDomain(ManyToManyABarBinding binding, ManyToManyABar domainObject) {
     domainObject.setName(binding.name);
+    final List<ManyToManyAFoo> manyToManyAFoos = new ArrayList<ManyToManyAFoo>();
+    for (final Link l : binding.manyToManyAFoos.getLinks()) {
+      ManyToManyAFoo o = l.getId() == null ? null : ManyToManyAFoo.queries.find(l.getId());
+      manyToManyAFoos.add(o);
+    }
+    domainObject.setManyToManyAFoos(manyToManyAFoos);
   }
 
   public static ManyToManyAFooBinding toBinding(ManyToManyAFoo domainObject) {
@@ -337,12 +343,18 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.manyToManyABars = domainObject.getManyToManyABars() == null ? null :new LinkCollection(0, domainObject.getManyToManyABars());
+    binding.manyToManyABars = domainObject.getManyToManyABars() == null ? null : new LinkCollection(0, domainObject.getManyToManyABars());
     return binding;
   }
 
   public static void toDomain(ManyToManyAFooBinding binding, ManyToManyAFoo domainObject) {
     domainObject.setName(binding.name);
+    final List<ManyToManyABar> manyToManyABars = new ArrayList<ManyToManyABar>();
+    for (final Link l : binding.manyToManyABars.getLinks()) {
+      ManyToManyABar o = l.getId() == null ? null : ManyToManyABar.queries.find(l.getId());
+      manyToManyABars.add(o);
+    }
+    domainObject.setManyToManyABars(manyToManyABars);
   }
 
   public static ManyToManyAFooToBarBinding toBinding(ManyToManyAFooToBar domainObject) {
@@ -364,12 +376,18 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.ownerManyToManyBFoos = domainObject.getOwnerManyToManyBFoos() == null ? null :new LinkCollection(0, domainObject.getOwnerManyToManyBFoos());
+    binding.ownerManyToManyBFoos = domainObject.getOwnerManyToManyBFoos() == null ? null : new LinkCollection(0, domainObject.getOwnerManyToManyBFoos());
     return binding;
   }
 
   public static void toDomain(ManyToManyBBarBinding binding, ManyToManyBBar domainObject) {
     domainObject.setName(binding.name);
+    final List<ManyToManyBFoo> ownerManyToManyBFoos = new ArrayList<ManyToManyBFoo>();
+    for (final Link l : binding.ownerManyToManyBFoos.getLinks()) {
+      ManyToManyBFoo o = l.getId() == null ? null : ManyToManyBFoo.queries.find(l.getId());
+      ownerManyToManyBFoos.add(o);
+    }
+    domainObject.setOwnerManyToManyBFoos(ownerManyToManyBFoos);
   }
 
   public static ManyToManyBFooBinding toBinding(ManyToManyBFoo domainObject) {
@@ -377,12 +395,18 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.owneds = domainObject.getOwneds() == null ? null :new LinkCollection(0, domainObject.getOwneds());
+    binding.owneds = domainObject.getOwneds() == null ? null : new LinkCollection(0, domainObject.getOwneds());
     return binding;
   }
 
   public static void toDomain(ManyToManyBFooBinding binding, ManyToManyBFoo domainObject) {
     domainObject.setName(binding.name);
+    final List<ManyToManyBBar> owneds = new ArrayList<ManyToManyBBar>();
+    for (final Link l : binding.owneds.getLinks()) {
+      ManyToManyBBar o = l.getId() == null ? null : ManyToManyBBar.queries.find(l.getId());
+      owneds.add(o);
+    }
+    domainObject.setOwneds(owneds);
   }
 
   public static ManyToManyBFooToBarBinding toBinding(ManyToManyBFooToBar domainObject) {
@@ -627,12 +651,18 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentDs = domainObject.getParentDs() == null ? null :new LinkCollection(0, domainObject.getParentDs());
+    binding.parentDs = domainObject.getParentDs() == null ? null : new LinkCollection(0, domainObject.getParentDs());
     return binding;
   }
 
   public static void toDomain(ParentDChildCBinding binding, ParentDChildC domainObject) {
     domainObject.setName(binding.name);
+    final List<ParentD> parentDs = new ArrayList<ParentD>();
+    for (final Link l : binding.parentDs.getLinks()) {
+      ParentD o = l.getId() == null ? null : ParentD.queries.find(l.getId());
+      parentDs.add(o);
+    }
+    domainObject.setParentDs(parentDs);
   }
 
   public static ParentDToChildCBinding toBinding(ParentDToChildC domainObject) {

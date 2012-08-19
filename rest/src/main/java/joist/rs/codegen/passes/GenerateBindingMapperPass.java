@@ -91,7 +91,7 @@ public class GenerateBindingMapperPass implements Pass {
         continue;
       }
       String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
-      to.body.line("binding.{} = {} == null ? null :new LinkCollection(0, {});", p.getVariableName(), domainGetter, domainGetter);
+      to.body.line("binding.{} = {} == null ? null : new LinkCollection(0, {});", p.getVariableName(), domainGetter, domainGetter);
     }
   }
 
@@ -104,6 +104,7 @@ public class GenerateBindingMapperPass implements Pass {
     this.copyPrimitivePropertiesToDomain(to, restEntity);
     this.copyManyToOnePropertiesToDomain(bindingMapper, to, restEntity);
     this.copyOneToManyPropertiesToDomain(bindingMapper, to, restEntity);
+    this.copyManyToManyPropertiesToDomain(bindingMapper, to, restEntity);
 
     bindingMapper.addImports(restEntity.getBindingClassName(), restEntity.entity.getFullClassName());
   }
@@ -160,12 +161,26 @@ public class GenerateBindingMapperPass implements Pass {
           p.getManySide().getClassName());
         to.body.line("_   {}.add(o);", p.getVariableName());
         to.body.line("}");
-
         to.body.line("domainObject.set{}({});", p.getCapitalVariableName(), p.getVariableName());
         bindingMapper.addImports(List.class, ArrayList.class);
       }
       bindingMapper.addImports(p.getManySide().getFullClassName());
       bindingMapper.addImports(Link.class);
+    }
+  }
+
+  private void copyManyToManyPropertiesToDomain(GClass bindingMapper, GMethod to, RestEntity restEntity) {
+    for (ManyToManyProperty p : restEntity.getManyToManyPropertiesIncludingInherited()) {
+      if (p.getMySideOneToMany().isCollectionSkipped()) {
+        continue;
+      }
+      to.body.line("final " + p.getJavaType() + " " + p.getVariableName() + " = new ArrayList<" + p.getTargetJavaType() + ">();");
+      to.body.line("for (final Link l : binding.{}.getLinks()) {", p.getVariableName());
+      to.body.line("_   {} o = l.getId() == null ? null : {}.queries.find(l.getId());", p.getTargetJavaType(), p.getTargetJavaType());
+      to.body.line("_   {}.add(o);", p.getVariableName());
+      to.body.line("}");
+      to.body.line("domainObject.set{}({});", p.getCapitalVariableName(), p.getVariableName());
+      bindingMapper.addImports(List.class, ArrayList.class);
     }
   }
 }
