@@ -155,11 +155,13 @@ public class GenerateBindingMapperPass implements Pass {
           p.getVariableName());
       } else {
         to.body.line("final " + p.getJavaType() + " " + p.getVariableName() + " = new ArrayList<" + p.getManySide().getClassName() + ">();");
-        to.body.line("for (final Link l : binding.{}.getLinks()) {", p.getVariableName());
-        to.body.line("_   {} o = l.getId() == null ? null : {}.queries.find(l.getId());",//
+        to.body.line("if (binding.{} != null) {", p.getVariableName());
+        to.body.line("_   for (final Link l : binding.{}.getLinks()) {", p.getVariableName());
+        to.body.line("_   _   {} o = l.getId() == null ? null : {}.queries.find(l.getId());",//
           p.getManySide().getClassName(),
           p.getManySide().getClassName());
-        to.body.line("_   {}.add(o);", p.getVariableName());
+        to.body.line("_   _   {}.add(o);", p.getVariableName());
+        to.body.line("_   }");
         to.body.line("}");
         to.body.line("domainObject.set{}({});", p.getCapitalVariableName(), p.getVariableName());
         bindingMapper.addImports(List.class, ArrayList.class);
