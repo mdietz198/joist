@@ -28,7 +28,7 @@ public class SimpleCollectionResourceTest extends AbstractFeaturesTest {
     binding.parent = new Link(p.get());
 
     UoW.close();
-    Long id = this.resource.post(binding);
+    Long id = this.resource.post(repo, binding);
     UoW.open(Registry.getRepository(), null);
     Assert.assertEquals(Child.queries.find(id).getName(), "new child");
   }

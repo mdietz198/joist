@@ -33,7 +33,7 @@ public class PutManyToOneReferenceResourceTest extends AbstractFeaturesTest {
     reference.setId(manyToOneReferencedObject.id());
     binding.inheritanceAThing = reference;
 
-    this.resource.put(id, binding);
+    this.resource.put(repo, id, binding);
 
     UoW.open(Registry.getRepository(), null);
     Assert.assertEquals(object.inheritanceAThing(), manyToOneReferencedObject);

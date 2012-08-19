@@ -36,7 +36,7 @@ public class PutOneToManyReferenceResourceTest extends AbstractFeaturesTest {
     binding.inheritanceASubTwos.getLinks().add(linkToReference2);
 
     UoW.close();
-    this.resource.put(id, binding);
+    this.resource.put(repo, id, binding);
 
     UoW.open(Registry.getRepository(), null);
     Assert.assertEquals(object.inheritanceASubTwo(0), reference1);

@@ -6,6 +6,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import joist.codegen.dtos.Entity;
 import joist.codegen.passes.Pass;
@@ -15,7 +16,6 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
-import joist.sourcegen.GField;
 import joist.sourcegen.GMethod;
 
 public class GenerateResourceCodegenPass implements Pass {
@@ -31,11 +31,11 @@ public class GenerateResourceCodegenPass implements Pass {
       RestEntity restEntity = new RestEntity(entity);
       GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceClassName());
       resourceCodegen.addImports(entity.getFullClassName());
+      resourceCodegen.addImports(Context.class, Repository.class);
       // TODO do I need a base class?
       // resourceCodegen.baseClass(???)
 
       this.annotations(resourceCodegen, restEntity);
-      this.addRepository(resourceCodegen);
       this.addGet(resourceCodegen, restEntity);
       this.addPut(resourceCodegen, restEntity);
       this.addDelete(resourceCodegen, restEntity);
@@ -47,30 +47,21 @@ public class GenerateResourceCodegenPass implements Pass {
     resourceCodegen.addImports(Path.class);
   }
 
-  private void addRepository(GClass resourceCodegen) {
-    GField repoRef = resourceCodegen.getField("repository").setProtected();
-    repoRef.type(Repository.class);
-    // TODO add annotation so I can inject Repository
-    // See http://stackoverflow.com/questions/7985231/injecting-into-a-jersey-resource-class
-    // repoRef.addAnnotation(annotation, args)
-  }
-
   private void addGet(GClass resourceCodegen, RestEntity restEntity) {
     GMethod get = resourceCodegen.getMethod("get");
     // TODO add application/json
     get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/xml\" })");
+    get.argument("final @Context Repository", "repo");
     get.argument("final @PathParam(\"id\") Long", "id");
     get.returnType(restEntity.getBindingClassName());
-    get.body.line("return UoW.read(Registry.getRepository(), new BlockWithReturn<{}>() {", restEntity.getBindingClassName());
+    get.body.line("return UoW.read(repo, new BlockWithReturn<{}>() {", restEntity.getBindingClassName());
     get.body.line("_   public {} go() {", restEntity.getBindingClassName());
     get.body.line("_   _   return BindingMapper.toBinding({}.queries.find(id));", restEntity.entity.getClassName());
     get.body.line("_   }");
     get.body.line("});");
     resourceCodegen.addImports(GET.class, Produces.class, PathParam.class, UoW.class, BlockWithReturn.class);
     // TODO replace with injected repository reference
-    resourceCodegen.addImports(restEntity.getFullBindingClassName(),//
-      "features.Registry",
-      restEntity.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
+    resourceCodegen.addImports(restEntity.getFullBindingClassName(), restEntity.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
   }
 
   private void addPut(GClass resourceCodegen, RestEntity restEntity) {
@@ -80,15 +71,16 @@ public class GenerateResourceCodegenPass implements Pass {
     put.addAnnotation("@PUT");
     // TODO add json
     put.addAnnotation("@Consumes({ \"application/xml\" })");
+    put.argument("final @Context Repository", "repo");
     put.argument("final @PathParam(\"id\") Long", "id");
     put.argument("final " + restEntity.getBindingClassName(), varName);
-    put.body.line("UoW.go(Registry.getRepository(), null, new Block() {");
+    put.body.line("UoW.go(repo, null, new Block() {");
     put.body.line("_   public void go() {");
     put.body.line("_   _   BindingMapper.toDomain(" + varName + ", " + className + ".queries.find(id));");
     put.body.line("_   }");
     put.body.line("});");
     resourceCodegen.addImports(PUT.class, Consumes.class, PathParam.class, Block.class);
-    resourceCodegen.addImports("features.Registry", restEntity.entity.getFullClassName());
+    resourceCodegen.addImports(restEntity.entity.getFullClassName());
   }
 
   private void addDelete(GClass resourceCodegen, RestEntity restEntity) {

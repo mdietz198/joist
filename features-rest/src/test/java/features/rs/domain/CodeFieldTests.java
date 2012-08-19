@@ -31,7 +31,7 @@ public class CodeFieldTests extends AbstractFeaturesTest {
     CodeADomainObjectBinding binding = BindingMapper.toBinding(object.get());
     binding.codeAColor = CodeAColor.GREEN.toString();
     binding.codeASize = CodeASize.TWO.toString();
-    this.resource.put(id, binding);
+    this.resource.put(repo, id, binding);
 
     UoW.open(Registry.getRepository(), null);
     Assert.assertEquals(object.codeAColor(), CodeAColor.GREEN);

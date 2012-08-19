@@ -36,7 +36,7 @@ public class PutManyToManyReferenceResourceTest extends AbstractFeaturesTest {
     binding.manyToManyABars.getLinks().add(linkToReference2);
 
     UoW.close();
-    this.resource.put(id, binding);
+    this.resource.put(repo, id, binding);
 
     UoW.open(Registry.getRepository(), null);
     Assert.assertEquals(object.manyToManyABar(0), reference1);
