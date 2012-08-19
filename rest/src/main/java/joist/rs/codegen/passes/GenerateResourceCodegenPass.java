@@ -1,6 +1,8 @@
 package joist.rs.codegen.passes;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -8,6 +10,7 @@ import javax.ws.rs.Produces;
 import joist.codegen.dtos.Entity;
 import joist.codegen.passes.Pass;
 import joist.domain.orm.Repository;
+import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.codegen.entities.RestEntity;
@@ -70,8 +73,21 @@ public class GenerateResourceCodegenPass implements Pass {
   }
 
   private void addPut(GClass resourceCodegen, RestEntity restEntity) {
-    // TODO Auto-generated method stub
-
+    final String varName = restEntity.entity.getVariableName();
+    final String className = restEntity.entity.getClassName();
+    GMethod put = resourceCodegen.getMethod("put");
+    put.addAnnotation("@PUT");
+    // TODO add json
+    put.addAnnotation("@Consumes({ \"application/xml\" })");
+    put.argument("final @PathParam(\"id\") Long", "id");
+    put.argument("final " + restEntity.getBindingClassName(), varName);
+    put.body.line("UoW.go(Registry.getRepository(), null, new Block() {");
+    put.body.line("_   public void go() {");
+    put.body.line("_   _   BindingMapper.toDomain(" + varName + ", " + className + ".queries.find(id));");
+    put.body.line("_   }");
+    put.body.line("});");
+    resourceCodegen.addImports(PUT.class, Consumes.class, PathParam.class, Block.class);
+    resourceCodegen.addImports("features.Registry", restEntity.entity.getFullClassName());
   }
 
   private void addDelete(GClass resourceCodegen, RestEntity restEntity) {

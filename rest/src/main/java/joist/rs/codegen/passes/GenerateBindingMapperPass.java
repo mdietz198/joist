@@ -23,12 +23,13 @@ public class GenerateBindingMapperPass implements Pass {
     bindingMapper.getConstructor().setPrivate();
 
     for (Entity entity : codegen.getEntities().values()) {
-      if (entity.isCodeEntity() || entity.isAbstract()) {
+      if (entity.isAbstract() || entity.isCodeEntity()) {
         continue;
       }
       RestEntity restEntity = new RestEntity(entity);
 
       this.addToBinding(bindingMapper, restEntity);
+      this.addToDomain(bindingMapper, restEntity);
     }
   }
 
@@ -39,24 +40,23 @@ public class GenerateBindingMapperPass implements Pass {
     to.returnType(restEntity.getFullBindingClassName());
 
     to.body.line("{} binding = new {}();", restEntity.getBindingClassName(), restEntity.getBindingClassName());
-    this.addCopyPrimitiveProperties(to, restEntity);
-    this.addCopyManyToOneProperties(to, restEntity);
-    this.addCopyOneToManyProperties(to, restEntity);
-    this.addCopyManyToManyProperties(to, restEntity);
+    this.copyPrimitivePropertiesToBinding(to, restEntity);
+    this.copyManyToOnePropertiesToBinding(to, restEntity);
+    this.copyOneToManyPropertiesToBinding(to, restEntity);
+    this.copyManyToManyPropertiesToBinding(to, restEntity);
     to.body.line("return binding;");
 
-    bindingMapper.addImports(Link.class);
-    bindingMapper.addImports(LinkCollection.class);
-    bindingMapper.addImports(restEntity.entity.getFullClassName());
+    bindingMapper.addImports(Link.class, LinkCollection.class);
+    bindingMapper.addImports(restEntity.entity.getFullClassName(), restEntity.getFullBindingClassName());
   }
 
-  private void addCopyPrimitiveProperties(GMethod to, RestEntity restEntity) {
+  private void copyPrimitivePropertiesToBinding(GMethod to, RestEntity restEntity) {
     for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
       to.body.line("binding.{} = domainObject.get{}();", p.getVariableName(), p.getCapitalVariableName());
     }
   }
 
-  private void addCopyManyToOneProperties(GMethod to, RestEntity restEntity) {
+  private void copyManyToOnePropertiesToBinding(GMethod to, RestEntity restEntity) {
     for (ManyToOneProperty p : restEntity.getManyToOnePropertiesIncludingInherited()) {
       String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
       if (p.getOneSide().isCodeEntity()) {
@@ -67,7 +67,7 @@ public class GenerateBindingMapperPass implements Pass {
     }
   }
 
-  private void addCopyOneToManyProperties(GMethod to, RestEntity restEntity) {
+  private void copyOneToManyPropertiesToBinding(GMethod to, RestEntity restEntity) {
     for (OneToManyProperty p : restEntity.getOneToManyPropertiesIncludingInherited()) {
       if (p.isCollectionSkipped() || p.isManyToMany()) {
         continue;
@@ -82,13 +82,56 @@ public class GenerateBindingMapperPass implements Pass {
     }
   }
 
-  private void addCopyManyToManyProperties(GMethod to, RestEntity restEntity) {
+  private void copyManyToManyPropertiesToBinding(GMethod to, RestEntity restEntity) {
     for (ManyToManyProperty p : restEntity.getManyToManyPropertiesIncludingInherited()) {
       if (p.getMySideOneToMany().isCollectionSkipped()) {
         continue;
       }
       String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
       to.body.line("binding.{} = {} == null ? null :new LinkCollection(0, {});", p.getVariableName(), domainGetter, domainGetter);
+    }
+  }
+
+  private void addToDomain(GClass bindingMapper, RestEntity restEntity) {
+    Argument arg1 = new Argument(restEntity.getBindingClassName(), "binding");
+    Argument arg2 = new Argument(restEntity.entity.getClassName(), "domainObject");
+    GMethod to = bindingMapper.getMethod("toDomain", arg1, arg2);
+    to.setStatic();
+
+    this.copyPrimitivePropertiesToDomain(to, restEntity);
+    this.copyManyToOnePropertiesToDomain(bindingMapper, to, restEntity);
+
+    bindingMapper.addImports(restEntity.getBindingClassName(), restEntity.entity.getFullClassName());
+  }
+
+  private void copyPrimitivePropertiesToDomain(GMethod to, RestEntity restEntity) {
+    for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
+      if (p.getVariableName().equals("id") || p.getVariableName().equals("version")) {
+        continue;
+      }
+      to.body.line("domainObject.set{}(binding.{});", p.getCapitalVariableName(), p.getVariableName());
+    }
+  }
+
+  private void copyManyToOnePropertiesToDomain(GClass bindingMapper, GMethod to, RestEntity restEntity) {
+    for (ManyToOneProperty p : restEntity.getManyToOnePropertiesIncludingInherited()) {
+      if (p.getOneSide().isCodeEntity()) {
+        to.body.line(
+          "domainObject.set{}(binding.{} == null ? null : {}.fromCode(binding.{}));",
+          p.getJavaType(),
+          p.getVariableName(),
+          p.getCapitalVariableName(),
+          p.getVariableName());
+      } else {
+        to.body.line(
+          "domainObject.set{}(binding.{} == null ? null : binding.{}.getId() == null ? null : {}.queries.find(binding.{}.getId()));",
+          p.getCapitalVariableName(),
+          p.getVariableName(),
+          p.getVariableName(),
+          p.getJavaType(),
+          p.getVariableName());
+      }
+      bindingMapper.addImports(p.getOneSide().getFullClassName());
     }
   }
 }
