@@ -11,25 +11,23 @@ import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
 import joist.rs.Link;
 import joist.rs.LinkCollection;
+import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.Argument;
 import joist.sourcegen.GClass;
 import joist.sourcegen.GMethod;
 
-public class GenerateBindingMapperPass implements Pass {
+public class GenerateBindingMapperPass implements Pass<RestCodegen> {
 
-  public void pass(joist.codegen.Codegen c) {
-    // TODO Nasty hack to get my subclassed codegen
-    joist.rs.codegen.Codegen codegen = (joist.rs.codegen.Codegen) c;
-
-    GClass bindingMapper = codegen.getOutputCodegenDirectory().getClass(codegen.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
+  public void pass(RestCodegen codegen) {
+    GClass bindingMapper = codegen.getOutputCodegenDirectory().getClass(codegen.getConfig().getRestHelpersPackage() + ".BindingMapper");
     bindingMapper.getConstructor().setPrivate();
 
-    for (Entity entity : codegen.getEntities().values()) {
+    for (Entity entity : codegen.getSchema().getEntities().values()) {
       if (entity.isAbstract() || entity.isCodeEntity()) {
         continue;
       }
-      RestEntity restEntity = new RestEntity(entity);
+      RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
 
       this.addToBinding(bindingMapper, restEntity);
       this.addToDomain(bindingMapper, restEntity);

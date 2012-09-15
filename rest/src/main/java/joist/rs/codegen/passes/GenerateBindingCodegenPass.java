@@ -12,21 +12,22 @@ import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
 import joist.rs.Link;
 import joist.rs.LinkCollection;
+import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
 import joist.sourcegen.GField;
 
-public class GenerateBindingCodegenPass implements Pass {
+public class GenerateBindingCodegenPass implements Pass<RestCodegen> {
 
-  public void pass(joist.codegen.Codegen c) {
+  public void pass(RestCodegen c) {
     // TODO Nasty hack to get my subclassed codegen
-    joist.rs.codegen.Codegen codegen = (joist.rs.codegen.Codegen) c;
-    for (Entity entity : codegen.getEntities().values()) {
+    joist.rs.codegen.RestCodegen codegen = c;
+    for (Entity entity : codegen.getSchema().getEntities().values()) {
       if (entity.isCodeEntity()) {
         continue;
       }
 
-      RestEntity restEntity = new RestEntity(entity);
+      RestEntity restEntity = new RestEntity(entity, c.getConfig());
       GClass bindingCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullBindingClassName());
       if (entity.isAbstract()) {
         bindingCodegen.setAbstract();

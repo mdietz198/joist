@@ -13,21 +13,20 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.LinkCollection;
+import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
 import joist.sourcegen.GMethod;
 
-public class GenerateCollectionResourceCodegenPass implements Pass {
+public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> {
 
-  public void pass(joist.codegen.Codegen c) {
-    // TODO Nasty hack to get my subclassed codegen
-    joist.rs.codegen.Codegen codegen = (joist.rs.codegen.Codegen) c;
-    for (Entity entity : codegen.getEntities().values()) {
+  public void pass(RestCodegen codegen) {
+    for (Entity entity : codegen.getSchema().getEntities().values()) {
       if (entity.isCodeEntity() || entity.isAbstract()) {
         continue;
       }
 
-      RestEntity restEntity = new RestEntity(entity);
+      RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
       GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceCollectionClassName());
       resourceCodegen.addImports(entity.getFullClassName());
       resourceCodegen.addImports(Context.class, Repository.class);
@@ -80,6 +79,6 @@ public class GenerateCollectionResourceCodegenPass implements Pass {
     post.body.line("}).getId();");
     // TODO make POST return the URL of the newly created object in the response header
     resourceCodegen.addImports(POST.class, Consumes.class);
-    resourceCodegen.addImports(restEntity.getFullBindingClassName(), restEntity.getRsConfig().getRestHelpersPackage() + ".BindingMapper");
+    resourceCodegen.addImports(restEntity.getFullBindingClassName(), restEntity.getConfig().getRestHelpersPackage() + ".BindingMapper");
   }
 }
