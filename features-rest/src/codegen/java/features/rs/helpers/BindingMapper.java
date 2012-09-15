@@ -1,6 +1,8 @@
 package features.rs.helpers;
 
 import features.domain.Child;
+import features.domain.ChildF;
+import features.domain.ChildG;
 import features.domain.CodeAColor;
 import features.domain.CodeADomainObject;
 import features.domain.CodeASize;
@@ -38,6 +40,8 @@ import features.domain.ParentDChildB;
 import features.domain.ParentDChildC;
 import features.domain.ParentDToChildC;
 import features.domain.ParentE;
+import features.domain.ParentF;
+import features.domain.ParentG;
 import features.domain.Primitives;
 import features.domain.PrimitivesB;
 import features.domain.PrimitivesC;
@@ -46,6 +50,8 @@ import features.domain.ValidationAFoo;
 import features.domain.ValuesA;
 import features.domain.ValuesB;
 import features.rs.binding.ChildBinding;
+import features.rs.binding.ChildFBinding;
+import features.rs.binding.ChildGBinding;
 import features.rs.binding.CodeADomainObjectBinding;
 import features.rs.binding.GrandChildBinding;
 import features.rs.binding.HistoryEntryBinding;
@@ -79,6 +85,8 @@ import features.rs.binding.ParentDChildBBinding;
 import features.rs.binding.ParentDChildCBinding;
 import features.rs.binding.ParentDToChildCBinding;
 import features.rs.binding.ParentEBinding;
+import features.rs.binding.ParentFBinding;
+import features.rs.binding.ParentGBinding;
 import features.rs.binding.PrimitivesBBinding;
 import features.rs.binding.PrimitivesBinding;
 import features.rs.binding.PrimitivesCBinding;
@@ -117,6 +125,52 @@ public class BindingMapper {
       }
     }
     domainObject.setGrandChilds(grandChilds);
+  }
+
+  public static ChildFBinding toBinding(ChildF domainObject) {
+    ChildFBinding binding = new ChildFBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
+    binding.childOneParentFs = domainObject.getChildOneParentFs() == null ? null : new LinkCollection(0, domainObject.getChildOneParentFs());
+    binding.childTwoParentFs = domainObject.getChildTwoParentFs() == null ? null : new LinkCollection(0, domainObject.getChildTwoParentFs());
+    return binding;
+  }
+
+  public static void toDomain(ChildFBinding binding, ChildF domainObject) {
+    domainObject.setName(binding.name);
+    final List<ParentF> childOneParentFs = new ArrayList<ParentF>();
+    if (binding.childOneParentFs != null) {
+      for (final Link l : binding.childOneParentFs.getLinks()) {
+        ParentF o = l.getId() == null ? null : ParentF.queries.find(l.getId());
+        childOneParentFs.add(o);
+      }
+    }
+    domainObject.setChildOneParentFs(childOneParentFs);
+    final List<ParentF> childTwoParentFs = new ArrayList<ParentF>();
+    if (binding.childTwoParentFs != null) {
+      for (final Link l : binding.childTwoParentFs.getLinks()) {
+        ParentF o = l.getId() == null ? null : ParentF.queries.find(l.getId());
+        childTwoParentFs.add(o);
+      }
+    }
+    domainObject.setChildTwoParentFs(childTwoParentFs);
+  }
+
+  public static ChildGBinding toBinding(ChildG domainObject) {
+    ChildGBinding binding = new ChildGBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
+    binding.parentOne = domainObject.getParentOne() == null ? null : new Link(domainObject.getParentOne());
+    binding.parentTwo = domainObject.getParentTwo() == null ? null : new Link(domainObject.getParentTwo());
+    return binding;
+  }
+
+  public static void toDomain(ChildGBinding binding, ChildG domainObject) {
+    domainObject.setName(binding.name);
+    domainObject.setParentOne(binding.parentOne == null ? null : binding.parentOne.getId() == null ? null : ParentG.queries.find(binding.parentOne.getId()));
+    domainObject.setParentTwo(binding.parentTwo == null ? null : binding.parentTwo.getId() == null ? null : ParentG.queries.find(binding.parentTwo.getId()));
   }
 
   public static CodeADomainObjectBinding toBinding(CodeADomainObject domainObject) {
@@ -724,6 +778,38 @@ public class BindingMapper {
       }
     }
     domainObject.setParentEs(parentEs);
+  }
+
+  public static ParentFBinding toBinding(ParentF domainObject) {
+    ParentFBinding binding = new ParentFBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
+    binding.childOne = domainObject.getChildOne() == null ? null : new Link(domainObject.getChildOne());
+    binding.childTwo = domainObject.getChildTwo() == null ? null : new Link(domainObject.getChildTwo());
+    return binding;
+  }
+
+  public static void toDomain(ParentFBinding binding, ParentF domainObject) {
+    domainObject.setName(binding.name);
+    domainObject.setChildOne(binding.childOne == null ? null : binding.childOne.getId() == null ? null : ChildF.queries.find(binding.childOne.getId()));
+    domainObject.setChildTwo(binding.childTwo == null ? null : binding.childTwo.getId() == null ? null : ChildF.queries.find(binding.childTwo.getId()));
+  }
+
+  public static ParentGBinding toBinding(ParentG domainObject) {
+    ParentGBinding binding = new ParentGBinding();
+    binding.id = domainObject.getId();
+    binding.name = domainObject.getName();
+    binding.version = domainObject.getVersion();
+    binding.parentOneChildGs = domainObject.getParentOneChildG() == null ? null : new Link(domainObject.getParentOneChildG());
+    binding.parentTwoChildGs = domainObject.getParentTwoChildG() == null ? null : new Link(domainObject.getParentTwoChildG());
+    return binding;
+  }
+
+  public static void toDomain(ParentGBinding binding, ParentG domainObject) {
+    domainObject.setName(binding.name);
+    domainObject.setParentOneChildG(binding.parentOneChildGs == null ? null : binding.parentOneChildGs.getId() == null ? null : ChildG.queries.find(binding.parentOneChildGs.getId()));
+    domainObject.setParentTwoChildG(binding.parentTwoChildGs == null ? null : binding.parentTwoChildGs.getId() == null ? null : ChildG.queries.find(binding.parentTwoChildGs.getId()));
   }
 
   public static PrimitivesBinding toBinding(Primitives domainObject) {
