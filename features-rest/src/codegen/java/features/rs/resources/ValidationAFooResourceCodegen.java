@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/validationAFoos/{id}")
-public class ValidationAFooResourceCodegen {
+public class ValidationAFooResourceCodegen extends AbstractResource<ValidationAFooBinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public ValidationAFooBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ValidationAFooBinding>() {
       public ValidationAFooBinding go() {
@@ -31,7 +32,7 @@ public class ValidationAFooResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ValidationAFooBinding validationAFoo) {
     UoW.go(repo, null, new Block() {
       public void go() {

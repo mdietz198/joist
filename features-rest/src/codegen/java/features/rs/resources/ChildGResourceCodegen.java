@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/childGs/{id}")
-public class ChildGResourceCodegen {
+public class ChildGResourceCodegen extends AbstractResource<ChildGBinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public ChildGBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ChildGBinding>() {
       public ChildGBinding go() {
@@ -31,7 +32,7 @@ public class ChildGResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ChildGBinding childG) {
     UoW.go(repo, null, new Block() {
       public void go() {

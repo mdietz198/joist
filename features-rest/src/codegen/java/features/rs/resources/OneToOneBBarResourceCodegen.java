@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/oneToOneBBars/{id}")
-public class OneToOneBBarResourceCodegen {
+public class OneToOneBBarResourceCodegen extends AbstractResource<OneToOneBBarBinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public OneToOneBBarBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<OneToOneBBarBinding>() {
       public OneToOneBBarBinding go() {
@@ -31,7 +32,7 @@ public class OneToOneBBarResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final OneToOneBBarBinding oneToOneBBar) {
     UoW.go(repo, null, new Block() {
       public void go() {

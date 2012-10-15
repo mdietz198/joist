@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/parentBChildBars/{id}")
-public class ParentBChildBarResourceCodegen {
+public class ParentBChildBarResourceCodegen extends AbstractResource<ParentBChildBarBinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public ParentBChildBarBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ParentBChildBarBinding>() {
       public ParentBChildBarBinding go() {
@@ -31,7 +32,7 @@ public class ParentBChildBarResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ParentBChildBarBinding parentBChildBar) {
     UoW.go(repo, null, new Block() {
       public void go() {

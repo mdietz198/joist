@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/manyToManyABars/{id}")
-public class ManyToManyABarResourceCodegen {
+public class ManyToManyABarResourceCodegen extends AbstractResource<ManyToManyABarBinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public ManyToManyABarBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ManyToManyABarBinding>() {
       public ManyToManyABarBinding go() {
@@ -31,7 +32,7 @@ public class ManyToManyABarResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ManyToManyABarBinding manyToManyABar) {
     UoW.go(repo, null, new Block() {
       public void go() {

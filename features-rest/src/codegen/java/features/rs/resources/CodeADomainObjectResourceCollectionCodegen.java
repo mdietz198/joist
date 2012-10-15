@@ -18,7 +18,7 @@ import joist.rs.LinkCollection;
 public class CodeADomainObjectResourceCollectionCodegen {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public LinkCollection get(final @Context Repository repo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
@@ -28,7 +28,7 @@ public class CodeADomainObjectResourceCollectionCodegen {
   }
 
   @POST
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public Long post(final @Context Repository repo, final CodeADomainObjectBinding codeADomainObject) {
     return UoW.go(repo, null, new BlockWithReturn<CodeADomainObject>() {
       public CodeADomainObject go() {

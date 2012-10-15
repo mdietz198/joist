@@ -16,6 +16,7 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
@@ -32,9 +33,8 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
       RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
       GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceClassName());
       resourceCodegen.addImports(entity.getFullClassName());
-      resourceCodegen.addImports(Context.class, Repository.class);
-      // TODO do I need a base class?
-      // resourceCodegen.baseClass(???)
+      resourceCodegen.addImports(Context.class, Repository.class, AbstractResource.class);
+      resourceCodegen.baseClassName("AbstractResource<{}>", restEntity.getBindingClassName());
 
       this.annotations(resourceCodegen, restEntity);
       this.addGet(resourceCodegen, restEntity);
@@ -50,8 +50,7 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
 
   private void addGet(GClass resourceCodegen, RestEntity restEntity) {
     GMethod get = resourceCodegen.getMethod("get");
-    // TODO add application/json
-    get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/xml\" })");
+    get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/json\", \"application/xml\" })");
     get.argument("final @Context Repository", "repo");
     get.argument("final @PathParam(\"id\") Long", "id");
     get.returnType(restEntity.getBindingClassName());
@@ -61,7 +60,6 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
     get.body.line("_   }");
     get.body.line("});");
     resourceCodegen.addImports(GET.class, Produces.class, PathParam.class, UoW.class, BlockWithReturn.class);
-    // TODO replace with injected repository reference
     resourceCodegen.addImports(restEntity.getFullBindingClassName(), restEntity.getConfig().getRestHelpersPackage() + ".BindingMapper");
   }
 
@@ -70,8 +68,7 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
     final String className = restEntity.entity.getClassName();
     GMethod put = resourceCodegen.getMethod("put");
     put.addAnnotation("@PUT");
-    // TODO add json
-    put.addAnnotation("@Consumes({ \"application/xml\" })");
+    put.addAnnotation("@Consumes({ \"application/json\", \"application/xml\" })");
     put.argument("final @Context Repository", "repo");
     put.argument("final @PathParam(\"id\") Long", "id");
     put.argument("final " + restEntity.getBindingClassName(), varName);

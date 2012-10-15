@@ -18,7 +18,7 @@ import joist.rs.LinkCollection;
 public class ManyToManyAFooResourceCollectionCodegen {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public LinkCollection get(final @Context Repository repo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
@@ -28,7 +28,7 @@ public class ManyToManyAFooResourceCollectionCodegen {
   }
 
   @POST
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public Long post(final @Context Repository repo, final ManyToManyAFooBinding manyToManyAFoo) {
     return UoW.go(repo, null, new BlockWithReturn<ManyToManyAFoo>() {
       public ManyToManyAFoo go() {

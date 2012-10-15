@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/inheritanceBBottoms/{id}")
-public class InheritanceBBottomResourceCodegen {
+public class InheritanceBBottomResourceCodegen extends AbstractResource<InheritanceBBottomBinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public InheritanceBBottomBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<InheritanceBBottomBinding>() {
       public InheritanceBBottomBinding go() {
@@ -31,7 +32,7 @@ public class InheritanceBBottomResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final InheritanceBBottomBinding inheritanceBBottom) {
     UoW.go(repo, null, new Block() {
       public void go() {

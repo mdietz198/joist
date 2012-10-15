@@ -46,8 +46,7 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
 
   private void addGet(GClass resourceCodegen, RestEntity restEntity) {
     GMethod get = resourceCodegen.getMethod("get");
-    // TODO add application/json
-    get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/xml\" })");
+    get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/json\", \"application/xml\" })");
     get.argument("final @Context Repository", "repo");
     get.returnType(LinkCollection.class);
     get.body.line("return UoW.read(repo, new BlockWithReturn<LinkCollection>() {");
@@ -66,8 +65,7 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
     final String className = restEntity.entity.getClassName();
     GMethod post = resourceCodegen.getMethod("post");
     post.returnType(Long.class);
-    // TODO add application/json
-    post.addAnnotation("@POST").addAnnotation("@Consumes({ \"application/xml\" })");
+    post.addAnnotation("@POST").addAnnotation("@Consumes({ \"application/json\", \"application/xml\" })");
     post.argument("final @Context Repository", "repo");
     post.argument("final " + restEntity.getBindingClassName(), varName);
     post.body.line("return UoW.go(repo, null, new BlockWithReturn<" + className + ">() {");

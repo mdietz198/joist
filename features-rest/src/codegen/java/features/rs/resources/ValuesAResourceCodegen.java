@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/valuesAs/{id}")
-public class ValuesAResourceCodegen {
+public class ValuesAResourceCodegen extends AbstractResource<ValuesABinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public ValuesABinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ValuesABinding>() {
       public ValuesABinding go() {
@@ -31,7 +32,7 @@ public class ValuesAResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ValuesABinding valuesA) {
     UoW.go(repo, null, new Block() {
       public void go() {

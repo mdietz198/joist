@@ -18,7 +18,7 @@ import joist.rs.LinkCollection;
 public class InheritanceCFoo2ResourceCollectionCodegen {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public LinkCollection get(final @Context Repository repo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
@@ -28,7 +28,7 @@ public class InheritanceCFoo2ResourceCollectionCodegen {
   }
 
   @POST
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public Long post(final @Context Repository repo, final InheritanceCFoo2Binding inheritanceCFoo2) {
     return UoW.go(repo, null, new BlockWithReturn<InheritanceCFoo2>() {
       public InheritanceCFoo2 go() {

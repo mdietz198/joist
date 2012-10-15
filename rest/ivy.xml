@@ -13,6 +13,7 @@
 		<!-- TODO figure out why jersey-core and jsr311 are not automatically pulled in with jersey-server -->
 		<dependency org="com.sun.jersey" name="jersey-server" rev="1.13" conf="compile"/>
 		<dependency org="com.sun.jersey" name="jersey-core" rev="1.13" conf="compile"/>
+		<dependency org="com.sun.jersey" name="jersey-json" rev="1.13" conf="compile"/>
 		<dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" conf="compile"/>
 
 		<dependency org="joist" name="joist-domain-testing" rev="${joist.version}" conf="test"/>

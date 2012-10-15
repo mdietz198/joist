@@ -16,12 +16,13 @@ import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
+import joist.rs.AbstractResource;
 
 @Path("/primitivesBs/{id}")
-public class PrimitivesBResourceCodegen {
+public class PrimitivesBResourceCodegen extends AbstractResource<PrimitivesBBinding> {
 
   @GET
-  @Produces({ "application/xml" })
+  @Produces({ "application/json", "application/xml" })
   public PrimitivesBBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<PrimitivesBBinding>() {
       public PrimitivesBBinding go() {
@@ -31,7 +32,7 @@ public class PrimitivesBResourceCodegen {
   }
 
   @PUT
-  @Consumes({ "application/xml" })
+  @Consumes({ "application/json", "application/xml" })
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final PrimitivesBBinding primitivesB) {
     UoW.go(repo, null, new Block() {
       public void go() {
