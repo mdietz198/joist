@@ -2,6 +2,7 @@ package features.rs.domain;
 
 import static features.domain.builders.Builders.aChild;
 import static features.domain.builders.Builders.aGrandChild;
+import joist.domain.exceptions.NotFoundException;
 import joist.domain.uow.UoW;
 import joist.rs.Link;
 import junit.framework.Assert;
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import features.Registry;
 import features.domain.AbstractFeaturesTest;
+import features.domain.Child;
 import features.domain.builders.ChildBuilder;
 import features.rs.binding.ChildBinding;
 import features.rs.resources.ChildResourceCodegen;
@@ -48,6 +50,30 @@ public class SimpleResourceTest extends AbstractFeaturesTest {
     this.resource.put(repo, id, binding);
     UoW.open(Registry.getRepository(), null);
     Assert.assertEquals(child.name(), "new name");
+  }
+
+  @Test(expected = NotFoundException.class)
+  public void testDeleteChild() {
+    ChildBuilder child = aChild().defaults();
+    this.commitAndReOpen();
+
+    Long id = child.id();
+    UoW.close();
+    this.resource.delete(repo, id);
+    UoW.open(Registry.getRepository(), null);
+    Child.queries.find(id);
+  }
+
+  @Test
+  public void testDeleteChildIsIdempotent() {
+    ChildBuilder child = aChild().defaults();
+    this.commitAndReOpen();
+
+    Long id = child.id();
+    UoW.close();
+    this.resource.delete(repo, id);
+    // Second call returns cleanly
+    this.resource.delete(repo, id);
   }
 
 }

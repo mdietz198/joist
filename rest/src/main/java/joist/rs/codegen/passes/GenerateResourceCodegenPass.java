@@ -1,6 +1,7 @@
 package joist.rs.codegen.passes;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -10,6 +11,7 @@ import javax.ws.rs.core.Context;
 
 import joist.codegen.dtos.Entity;
 import joist.codegen.passes.Pass;
+import joist.domain.exceptions.NotFoundException;
 import joist.domain.orm.Repository;
 import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
@@ -83,8 +85,22 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
   }
 
   private void addDelete(GClass resourceCodegen, RestEntity restEntity) {
-    // TODO Auto-generated method stub
-
+    final String className = restEntity.entity.getClassName();
+    GMethod delete = resourceCodegen.getMethod("delete");
+    delete.addAnnotation("@DELETE");
+    delete.argument("final @Context Repository", "repo");
+    delete.argument("final @PathParam(\"id\") Long", "id");
+    delete.body.line("UoW.go(repo, null, new Block() {");
+    delete.body.line("_   public void go() {");
+    delete.body.line("_   _   try {");
+    delete.body.line("_   _   _   " + className + ".queries.delete(" + className + ".queries.find(id));");
+    delete.body.line("_   _   } catch (NotFoundException e) {");
+    delete.body.line("_   _   _   // Ignore to make DELETE idempotentA");
+    delete.body.line("_   _   }");
+    delete.body.line("_   }");
+    delete.body.line("});");
+    resourceCodegen.addImports(DELETE.class, PathParam.class, Block.class, NotFoundException.class);
+    resourceCodegen.addImports(restEntity.entity.getFullClassName());
   }
 
 }
