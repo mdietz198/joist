@@ -13,6 +13,13 @@ public abstract class AbstractResource<T> {
   public abstract T get(final @Context Repository repo, final @PathParam("id") Long id);
 
   @GET
+  @Path("xml")
+  @Produces({ "application/xml" })
+  public T getXml(final @Context Repository repo, final @PathParam("id") Long id) {
+    return this.get(repo, id);
+  }
+
+  @GET
   @Path("json")
   @Produces({ "application/json" })
   public T getJson(final @Context Repository repo, final @PathParam("id") Long id) {
