@@ -30,6 +30,7 @@ public class RestConfig {
 
   private List<Pass<RestCodegen>> codegenPasses;
 
+  @SuppressWarnings("unchecked")
   public RestConfig(String projectName) {
     this.setProjectNameForDefaults(projectName);
     this.codegenPasses = Copy.list(
