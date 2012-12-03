@@ -92,7 +92,7 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
     delete.body.line("_   _   try {");
     delete.body.line("_   _   _   " + className + ".queries.delete(" + className + ".queries.find(id));");
     delete.body.line("_   _   } catch (NotFoundException e) {");
-    delete.body.line("_   _   _   // Ignore to make DELETE idempotentA");
+    delete.body.line("_   _   _   // Ignore to make DELETE idempotent");
     delete.body.line("_   _   }");
     delete.body.line("_   }");
     delete.body.line("});");

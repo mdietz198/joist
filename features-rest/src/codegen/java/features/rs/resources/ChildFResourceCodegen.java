@@ -48,7 +48,7 @@ public class ChildFResourceCodegen extends AbstractResource<ChildFBinding> {
         try {
           ChildF.queries.delete(ChildF.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

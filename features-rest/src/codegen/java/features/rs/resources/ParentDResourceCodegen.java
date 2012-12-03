@@ -48,7 +48,7 @@ public class ParentDResourceCodegen extends AbstractResource<ParentDBinding> {
         try {
           ParentD.queries.delete(ParentD.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

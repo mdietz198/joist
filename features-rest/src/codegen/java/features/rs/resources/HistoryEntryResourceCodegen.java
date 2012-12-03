@@ -48,7 +48,7 @@ public class HistoryEntryResourceCodegen extends AbstractResource<HistoryEntryBi
         try {
           HistoryEntry.queries.delete(HistoryEntry.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

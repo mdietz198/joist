@@ -48,7 +48,7 @@ public class InheritanceBBottomResourceCodegen extends AbstractResource<Inherita
         try {
           InheritanceBBottom.queries.delete(InheritanceBBottom.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

@@ -48,7 +48,7 @@ public class ParentCFooResourceCodegen extends AbstractResource<ParentCFooBindin
         try {
           ParentCFoo.queries.delete(ParentCFoo.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

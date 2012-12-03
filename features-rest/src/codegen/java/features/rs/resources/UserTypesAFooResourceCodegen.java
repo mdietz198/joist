@@ -48,7 +48,7 @@ public class UserTypesAFooResourceCodegen extends AbstractResource<UserTypesAFoo
         try {
           UserTypesAFoo.queries.delete(UserTypesAFoo.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

@@ -48,7 +48,7 @@ public class ManyToManyBFooResourceCodegen extends AbstractResource<ManyToManyBF
         try {
           ManyToManyBFoo.queries.delete(ManyToManyBFoo.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

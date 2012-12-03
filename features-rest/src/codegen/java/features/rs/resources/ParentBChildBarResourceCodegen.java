@@ -48,7 +48,7 @@ public class ParentBChildBarResourceCodegen extends AbstractResource<ParentBChil
         try {
           ParentBChildBar.queries.delete(ParentBChildBar.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

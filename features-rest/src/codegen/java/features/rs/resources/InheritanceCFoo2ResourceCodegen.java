@@ -48,7 +48,7 @@ public class InheritanceCFoo2ResourceCodegen extends AbstractResource<Inheritanc
         try {
           InheritanceCFoo2.queries.delete(InheritanceCFoo2.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

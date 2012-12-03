@@ -48,7 +48,7 @@ public class OneToOneBFooResourceCodegen extends AbstractResource<OneToOneBFooBi
         try {
           OneToOneBFoo.queries.delete(OneToOneBFoo.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

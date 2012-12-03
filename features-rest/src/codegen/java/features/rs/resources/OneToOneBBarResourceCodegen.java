@@ -48,7 +48,7 @@ public class OneToOneBBarResourceCodegen extends AbstractResource<OneToOneBBarBi
         try {
           OneToOneBBar.queries.delete(OneToOneBBar.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

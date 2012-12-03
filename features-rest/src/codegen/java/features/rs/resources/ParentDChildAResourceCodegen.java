@@ -48,7 +48,7 @@ public class ParentDChildAResourceCodegen extends AbstractResource<ParentDChildA
         try {
           ParentDChildA.queries.delete(ParentDChildA.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

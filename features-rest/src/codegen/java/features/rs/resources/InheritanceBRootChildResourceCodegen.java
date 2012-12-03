@@ -48,7 +48,7 @@ public class InheritanceBRootChildResourceCodegen extends AbstractResource<Inher
         try {
           InheritanceBRootChild.queries.delete(InheritanceBRootChild.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

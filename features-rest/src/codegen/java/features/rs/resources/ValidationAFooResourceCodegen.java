@@ -48,7 +48,7 @@ public class ValidationAFooResourceCodegen extends AbstractResource<ValidationAF
         try {
           ValidationAFoo.queries.delete(ValidationAFoo.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

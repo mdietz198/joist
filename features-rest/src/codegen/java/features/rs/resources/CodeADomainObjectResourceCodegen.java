@@ -48,7 +48,7 @@ public class CodeADomainObjectResourceCodegen extends AbstractResource<CodeADoma
         try {
           CodeADomainObject.queries.delete(CodeADomainObject.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

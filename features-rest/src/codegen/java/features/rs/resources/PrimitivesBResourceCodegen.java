@@ -48,7 +48,7 @@ public class PrimitivesBResourceCodegen extends AbstractResource<PrimitivesBBind
         try {
           PrimitivesB.queries.delete(PrimitivesB.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

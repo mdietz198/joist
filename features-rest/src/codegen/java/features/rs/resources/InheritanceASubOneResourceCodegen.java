@@ -48,7 +48,7 @@ public class InheritanceASubOneResourceCodegen extends AbstractResource<Inherita
         try {
           InheritanceASubOne.queries.delete(InheritanceASubOne.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });

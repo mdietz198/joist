@@ -48,7 +48,7 @@ public class ValuesAResourceCodegen extends AbstractResource<ValuesABinding> {
         try {
           ValuesA.queries.delete(ValuesA.queries.find(id));
         } catch (NotFoundException e) {
-          // Ignore to make DELETE idempotentA
+          // Ignore to make DELETE idempotent
         }
       }
     });
