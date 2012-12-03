@@ -1,6 +1,7 @@
 package features.rs.resources;
 
 import features.domain.ManyToManyAFooToBar;
+import features.domain.ManyToManyAFooToBarAlias;
 import features.rs.binding.ManyToManyAFooToBarBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
@@ -10,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import joist.domain.orm.Repository;
+import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.LinkCollection;
@@ -22,7 +24,9 @@ public class ManyToManyAFooToBarResourceCollectionCodegen {
   public LinkCollection get(final @Context Repository repo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
-        return new LinkCollection(0, ManyToManyAFooToBar.class, ManyToManyAFooToBar.queries.findAllIds());
+        ManyToManyAFooToBarAlias mtmaftb0 = new ManyToManyAFooToBarAlias();
+        Select<ManyToManyAFooToBar> q = Select.from(mtmaftb0);
+        return new LinkCollection(0, q.list());
       }
     });
   }

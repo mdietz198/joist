@@ -5,11 +5,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import joist.codegen.dtos.Entity;
+import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
 import joist.domain.orm.Repository;
+import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.LinkCollection;
@@ -48,16 +51,38 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
     GMethod get = resourceCodegen.getMethod("get");
     get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/json\", \"application/xml\" })");
     get.argument("final @Context Repository", "repo");
+    for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
+      if (!this.skipQueryParamForProperty(p)) {
+        get.argument("final @QueryParam(\"" + p.getVariableName() + "\") " + p.getJavaType(), p.getVariableName());
+        resourceCodegen.addImports(QueryParam.class);
+      }
+    }
     get.returnType(LinkCollection.class);
     get.body.line("return UoW.read(repo, new BlockWithReturn<LinkCollection>() {");
     get.body.line("_   public LinkCollection go() {");
-    get.body.line(
-      "_   _   return new LinkCollection(0, {}.class, {}.queries.findAllIds());",
-      restEntity.entity.getClassName(),
-      restEntity.entity.getClassName());
+    get.body.line("_   _   {} {} = new {}();", restEntity.entity.getAliasName(), restEntity.entity.getAliasAlias(), restEntity.entity.getAliasName());
+    get.body.line("_   _   Select<{}> q = Select.from({});", restEntity.entity.getClassName(), restEntity.entity.getAliasAlias());
+    for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
+      if (!this.skipQueryParamForProperty(p)) {
+        get.body.line("_   _   if({} != null) {", p.getVariableName());
+        get.body.line("_   _   _   q.where({}.{}.eq({}));", restEntity.entity.getAliasAlias(), p.getVariableName(), p.getVariableName());
+        get.body.line("_   _   }");
+      }
+    }
+    get.body.line("_   _   return new LinkCollection(0, q.list());");
     get.body.line("_   }");
     get.body.line("});");
-    resourceCodegen.addImports(GET.class, Produces.class, LinkCollection.class, UoW.class, BlockWithReturn.class);
+    resourceCodegen.addImports(GET.class, Produces.class, LinkCollection.class, UoW.class, BlockWithReturn.class, Select.class);
+    resourceCodegen.addImports(restEntity.entity.getFullAliasClassName());
+  }
+
+  private boolean skipQueryParamForProperty(PrimitiveProperty p) {
+    return p.getVariableName().equals("id")
+      || p.getVariableName().equals("version")
+      || p.getJavaType().equals("com.domainlanguage.time.TimePoint")
+      || p.getJavaType().equals("com.domainlanguage.time.CalendarDate")
+      || p.getJavaType().equals("com.domainlanguage.money.Money");
+    // TODO add providers for Joist non-standard primitives
   }
 
   private void addPost(GClass resourceCodegen, RestEntity restEntity) {

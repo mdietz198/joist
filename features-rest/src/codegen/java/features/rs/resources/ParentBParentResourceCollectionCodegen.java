@@ -1,6 +1,7 @@
 package features.rs.resources;
 
 import features.domain.ParentBParent;
+import features.domain.ParentBParentAlias;
 import features.rs.binding.ParentBParentBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
@@ -8,8 +9,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import joist.domain.orm.Repository;
+import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.LinkCollection;
@@ -19,10 +22,15 @@ public class ParentBParentResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
-        return new LinkCollection(0, ParentBParent.class, ParentBParent.queries.findAllIds());
+        ParentBParentAlias pbp0 = new ParentBParentAlias();
+        Select<ParentBParent> q = Select.from(pbp0);
+        if(name != null) {
+          q.where(pbp0.name.eq(name));
+        }
+        return new LinkCollection(0, q.list());
       }
     });
   }
