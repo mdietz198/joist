@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
@@ -21,11 +22,17 @@ public class ManyToManyBFooToBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("owned") Long owned, final @QueryParam("ownerManyToManyBFoo") Long ownerManyToManyBFoo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ManyToManyBFooToBarAlias mtmbftb0 = new ManyToManyBFooToBarAlias();
         Select<ManyToManyBFooToBar> q = Select.from(mtmbftb0);
+        if(owned != null) {
+          q.where(mtmbftb0.owned.eq(owned));
+        }
+        if(ownerManyToManyBFoo != null) {
+          q.where(mtmbftb0.ownerManyToManyBFoo.eq(ownerManyToManyBFoo));
+        }
         return new LinkCollection(0, q.list());
       }
     });

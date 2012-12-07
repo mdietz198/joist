@@ -22,13 +22,16 @@ public class ParentDChildAResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("parentD") Long parentD) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ParentDChildAAlias pdca0 = new ParentDChildAAlias();
         Select<ParentDChildA> q = Select.from(pdca0);
         if(name != null) {
           q.where(pdca0.name.eq(name));
+        }
+        if(parentD != null) {
+          q.where(pdca0.parentD.eq(parentD));
         }
         return new LinkCollection(0, q.list());
       }

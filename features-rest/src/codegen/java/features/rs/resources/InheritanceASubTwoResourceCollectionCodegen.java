@@ -22,7 +22,7 @@ public class InheritanceASubTwoResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("two") String two) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("two") String two, final @QueryParam("inheritanceAThing") Long inheritanceAThing) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         InheritanceASubTwoAlias iast0 = new InheritanceASubTwoAlias();
@@ -32,6 +32,9 @@ public class InheritanceASubTwoResourceCollectionCodegen {
         }
         if(two != null) {
           q.where(iast0.two.eq(two));
+        }
+        if(inheritanceAThing != null) {
+          q.where(iast0.inheritanceAThing.eq(inheritanceAThing));
         }
         return new LinkCollection(0, q.list());
       }

@@ -22,13 +22,19 @@ public class ParentCBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("firstParent") Long firstParent, final @QueryParam("secondParent") Long secondParent) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ParentCBarAlias pcb0 = new ParentCBarAlias();
         Select<ParentCBar> q = Select.from(pcb0);
         if(name != null) {
           q.where(pcb0.name.eq(name));
+        }
+        if(firstParent != null) {
+          q.where(pcb0.firstParent.eq(firstParent));
+        }
+        if(secondParent != null) {
+          q.where(pcb0.secondParent.eq(secondParent));
         }
         return new LinkCollection(0, q.list());
       }

@@ -1,9 +1,10 @@
 package features.rs.domain;
 
 import static features.domain.builders.Builders.aParent;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import joist.domain.uow.UoW;
 import joist.rs.Link;
-import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -30,6 +31,6 @@ public class SimpleCollectionResourceTest extends AbstractFeaturesTest {
     UoW.close();
     Long id = this.resource.post(repo, binding);
     UoW.open(Registry.getRepository(), null);
-    Assert.assertEquals(Child.queries.find(id).getName(), "new child");
+    assertThat(Child.queries.find(id).getName(), is("new child"));
   }
 }

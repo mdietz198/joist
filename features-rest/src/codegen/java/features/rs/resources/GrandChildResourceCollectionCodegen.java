@@ -22,13 +22,16 @@ public class GrandChildResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("child") Long child) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         GrandChildAlias gc0 = new GrandChildAlias();
         Select<GrandChild> q = Select.from(gc0);
         if(name != null) {
           q.where(gc0.name.eq(name));
+        }
+        if(child != null) {
+          q.where(gc0.child.eq(child));
         }
         return new LinkCollection(0, q.list());
       }

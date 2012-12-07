@@ -1,7 +1,9 @@
 package features.rs.resources;
 
+import features.domain.CodeAColor;
 import features.domain.CodeADomainObject;
 import features.domain.CodeADomainObjectAlias;
+import features.domain.CodeASize;
 import features.rs.binding.CodeADomainObjectBinding;
 import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
@@ -22,13 +24,19 @@ public class CodeADomainObjectResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("codeAColor") String codeAColor, final @QueryParam("codeASize") String codeASize) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         CodeADomainObjectAlias cado0 = new CodeADomainObjectAlias();
         Select<CodeADomainObject> q = Select.from(cado0);
         if(name != null) {
           q.where(cado0.name.eq(name));
+        }
+        if(codeAColor != null) {
+          q.where(cado0.codeAColor.eq(CodeAColor.fromCode(codeAColor)));
+        }
+        if(codeASize != null) {
+          q.where(cado0.codeASize.eq(CodeASize.fromCode(codeASize)));
         }
         return new LinkCollection(0, q.list());
       }

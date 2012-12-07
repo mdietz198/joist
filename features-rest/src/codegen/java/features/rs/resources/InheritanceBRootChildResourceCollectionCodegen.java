@@ -22,13 +22,16 @@ public class InheritanceBRootChildResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("inheritanceBRoot") Long inheritanceBRoot) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         InheritanceBRootChildAlias ibrc0 = new InheritanceBRootChildAlias();
         Select<InheritanceBRootChild> q = Select.from(ibrc0);
         if(name != null) {
           q.where(ibrc0.name.eq(name));
+        }
+        if(inheritanceBRoot != null) {
+          q.where(ibrc0.inheritanceBRoot.eq(inheritanceBRoot));
         }
         return new LinkCollection(0, q.list());
       }

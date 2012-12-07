@@ -9,6 +9,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import joist.codegen.dtos.Entity;
+import joist.codegen.dtos.ManyToOneProperty;
 import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
 import joist.domain.orm.Repository;
@@ -57,6 +58,13 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
         resourceCodegen.addImports(QueryParam.class);
       }
     }
+    // TODO See if Joist can emit super class object relationships in alias so I can use
+    // getManyToOnePropertiesIncludingInherited
+    for (ManyToOneProperty p : restEntity.entity.getManyToOneProperties()) {
+      Class<?> paramType = p.getOneSide().isCodeEntity() ? String.class : Long.class;
+      get.argument("final @QueryParam(\"" + p.getVariableName() + "\") " + paramType.getSimpleName(), p.getVariableName());
+      resourceCodegen.addImports(QueryParam.class);
+    }
     get.returnType(LinkCollection.class);
     get.body.line("return UoW.read(repo, new BlockWithReturn<LinkCollection>() {");
     get.body.line("_   public LinkCollection go() {");
@@ -68,6 +76,21 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
         get.body.line("_   _   _   q.where({}.{}.eq({}));", restEntity.entity.getAliasAlias(), p.getVariableName(), p.getVariableName());
         get.body.line("_   _   }");
       }
+    }
+    // TODO See if Joist can emit super class object relationships in alias so I can use
+    // getManyToOnePropertiesIncludingInherited
+    for (ManyToOneProperty p : restEntity.entity.getManyToOneProperties()) {
+      get.body.line("_   _   if({} != null) {", p.getVariableName());
+      String eqExpr;
+      Entity propEntity = p.getOneSide();
+      if (propEntity.isCodeEntity()) {
+        eqExpr = propEntity.getClassName() + ".fromCode(" + p.getVariableName() + ")";
+        resourceCodegen.addImports(propEntity.getFullClassName());
+      } else {
+        eqExpr = p.getVariableName();
+      }
+      get.body.line("_   _   _   q.where({}.{}.eq({}));", restEntity.entity.getAliasAlias(), p.getVariableName(), eqExpr);
+      get.body.line("_   _   }");
     }
     get.body.line("_   _   return new LinkCollection(0, q.list());");
     get.body.line("_   }");

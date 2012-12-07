@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
@@ -21,11 +22,17 @@ public class ParentDToChildCResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("parentDChildC") Long parentDChildC, final @QueryParam("parentD") Long parentD) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ParentDToChildCAlias pdtcc0 = new ParentDToChildCAlias();
         Select<ParentDToChildC> q = Select.from(pdtcc0);
+        if(parentDChildC != null) {
+          q.where(pdtcc0.parentDChildC.eq(parentDChildC));
+        }
+        if(parentD != null) {
+          q.where(pdtcc0.parentD.eq(parentD));
+        }
         return new LinkCollection(0, q.list());
       }
     });

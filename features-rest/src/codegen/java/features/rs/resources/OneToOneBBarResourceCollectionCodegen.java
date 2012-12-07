@@ -22,13 +22,16 @@ public class OneToOneBBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("oneToOneBFoo") Long oneToOneBFoo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         OneToOneBBarAlias otobb0 = new OneToOneBBarAlias();
         Select<OneToOneBBar> q = Select.from(otobb0);
         if(name != null) {
           q.where(otobb0.name.eq(name));
+        }
+        if(oneToOneBFoo != null) {
+          q.where(otobb0.oneToOneBFoo.eq(oneToOneBFoo));
         }
         return new LinkCollection(0, q.list());
       }
