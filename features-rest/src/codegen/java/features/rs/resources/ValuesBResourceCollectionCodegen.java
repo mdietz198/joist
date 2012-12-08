@@ -22,7 +22,7 @@ public class ValuesBResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ValuesBAlias vb0 = new ValuesBAlias();
@@ -30,6 +30,9 @@ public class ValuesBResourceCollectionCodegen {
         if(name != null) {
           q.where(vb0.name.eq(name));
         }
+        q.orderBy(vb0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

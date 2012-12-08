@@ -34,26 +34,40 @@ public class GrandChildQueryParameterFilteringTest extends AbstractFeaturesTest 
 
   @Test
   public void testGetWithNoFilters() {
-    LinkCollection grandChildren = this.resource.get(repo, null, null);
+    LinkCollection grandChildren = this.resource.get(repo, null, null, null, null);
     assertThat(grandChildren.getLinks().size(), is(2));
   }
 
   @Test
   public void testGetWithNameFilter() {
-    LinkCollection grandChildren = this.resource.get(repo, this.grandChild.name(), null);
+    LinkCollection grandChildren = this.resource.get(repo, null, null, this.grandChild.name(), null);
     assertThat(grandChildren.getLinks().size(), is(1));
   }
 
   @Test
   public void testGetWithNameFilterNotFound() {
-    LinkCollection grandChildren = this.resource.get(repo, "this name does not exist", null);
+    LinkCollection grandChildren = this.resource.get(repo, null, null, "this name does not exist", null);
     assertThat(grandChildren.getLinks().size(), is(0));
   }
 
   @Test
   public void testGetWithChildFilter() {
-    LinkCollection grandChildren = this.resource.get(repo, null, this.child.id());
+    LinkCollection grandChildren = this.resource.get(repo, null, null, null, this.child.id());
     assertThat(grandChildren.getLinks().size(), is(1));
+  }
+
+  @Test
+  public void testGetOnlyFirstItem() {
+    LinkCollection grandChildren = this.resource.get(repo, 0, 1, null, null);
+    assertThat(grandChildren.getLinks().size(), is(1));
+    assertThat(grandChildren.getLinks().get(0).getId(), is(1L));
+  }
+
+  @Test
+  public void testGetOnlySecondItem() {
+    LinkCollection grandChildren = this.resource.get(repo, 1, 1, null, null);
+    assertThat(grandChildren.getLinks().size(), is(1));
+    assertThat(grandChildren.getLinks().get(0).getId(), is(2L));
   }
 
 }

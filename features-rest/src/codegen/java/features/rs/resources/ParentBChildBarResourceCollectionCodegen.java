@@ -22,7 +22,7 @@ public class ParentBChildBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("parentBParent") Long parentBParent) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name, final @QueryParam("parentBParent") Long parentBParent) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ParentBChildBarAlias pbcb0 = new ParentBChildBarAlias();
@@ -33,6 +33,9 @@ public class ParentBChildBarResourceCollectionCodegen {
         if(parentBParent != null) {
           q.where(pbcb0.parentBParent.eq(parentBParent));
         }
+        q.orderBy(pbcb0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

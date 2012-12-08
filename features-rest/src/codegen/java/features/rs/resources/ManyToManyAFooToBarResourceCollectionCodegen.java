@@ -22,7 +22,7 @@ public class ManyToManyAFooToBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("manyToManyABar") Long manyToManyABar, final @QueryParam("manyToManyAFoo") Long manyToManyAFoo) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("manyToManyABar") Long manyToManyABar, final @QueryParam("manyToManyAFoo") Long manyToManyAFoo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ManyToManyAFooToBarAlias mtmaftb0 = new ManyToManyAFooToBarAlias();
@@ -33,6 +33,9 @@ public class ManyToManyAFooToBarResourceCollectionCodegen {
         if(manyToManyAFoo != null) {
           q.where(mtmaftb0.manyToManyAFoo.eq(manyToManyAFoo));
         }
+        q.orderBy(mtmaftb0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

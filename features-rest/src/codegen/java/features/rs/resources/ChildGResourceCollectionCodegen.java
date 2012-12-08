@@ -22,7 +22,7 @@ public class ChildGResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("parentOne") Long parentOne, final @QueryParam("parentTwo") Long parentTwo) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name, final @QueryParam("parentOne") Long parentOne, final @QueryParam("parentTwo") Long parentTwo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         ChildGAlias cg0 = new ChildGAlias();
@@ -36,6 +36,9 @@ public class ChildGResourceCollectionCodegen {
         if(parentTwo != null) {
           q.where(cg0.parentTwo.eq(parentTwo));
         }
+        q.orderBy(cg0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

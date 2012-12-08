@@ -30,7 +30,7 @@ public class CodeADomainObjectQueryParameterFilteringTest extends AbstractFeatur
 
   @Test
   public void testGetWithCodeFilter() {
-    LinkCollection GrandChildren = this.resource.get(repo, null, "GREEN", null);
+    LinkCollection GrandChildren = this.resource.get(repo, null, null, null, "GREEN", null);
     assertThat(GrandChildren.getLinks().size(), is(1));
   }
 }

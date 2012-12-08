@@ -22,7 +22,7 @@ public class PrimitivesBResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("big1") Long big1, final @QueryParam("big2") Long big2, final @QueryParam("bool1") Boolean bool1, final @QueryParam("bool2") Boolean bool2, final @QueryParam("boolNullableWithDefaultFalse") Boolean boolNullableWithDefaultFalse, final @QueryParam("boolWithDefaultTrue") Boolean boolWithDefaultTrue, final @QueryParam("int1") Integer int1, final @QueryParam("int2") Integer int2, final @QueryParam("small1") Short small1, final @QueryParam("small2") Short small2) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("big1") Long big1, final @QueryParam("big2") Long big2, final @QueryParam("bool1") Boolean bool1, final @QueryParam("bool2") Boolean bool2, final @QueryParam("boolNullableWithDefaultFalse") Boolean boolNullableWithDefaultFalse, final @QueryParam("boolWithDefaultTrue") Boolean boolWithDefaultTrue, final @QueryParam("int1") Integer int1, final @QueryParam("int2") Integer int2, final @QueryParam("small1") Short small1, final @QueryParam("small2") Short small2) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         PrimitivesBAlias pb0 = new PrimitivesBAlias();
@@ -57,6 +57,9 @@ public class PrimitivesBResourceCollectionCodegen {
         if(small2 != null) {
           q.where(pb0.small2.eq(small2));
         }
+        q.orderBy(pb0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

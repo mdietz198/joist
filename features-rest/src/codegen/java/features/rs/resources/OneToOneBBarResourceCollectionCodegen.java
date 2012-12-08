@@ -22,7 +22,7 @@ public class OneToOneBBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("oneToOneBFoo") Long oneToOneBFoo) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name, final @QueryParam("oneToOneBFoo") Long oneToOneBFoo) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         OneToOneBBarAlias otobb0 = new OneToOneBBarAlias();
@@ -33,6 +33,9 @@ public class OneToOneBBarResourceCollectionCodegen {
         if(oneToOneBFoo != null) {
           q.where(otobb0.oneToOneBFoo.eq(oneToOneBFoo));
         }
+        q.orderBy(otobb0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

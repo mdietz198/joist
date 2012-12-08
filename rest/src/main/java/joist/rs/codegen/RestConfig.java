@@ -27,6 +27,8 @@ public class RestConfig {
   public boolean pruneCodegenDirectory = true;
   /** Whether we should remove un-needed files even outside of the directories that immediately contain classes. Assumes joist owns the entire output directory. */
   public boolean pruneInAllDirectories = false;
+  /** Maximum number of items returned from a collection by default. */
+  public int defaultMaxResults = 20;
 
   private List<Pass<RestCodegen>> codegenPasses;
 

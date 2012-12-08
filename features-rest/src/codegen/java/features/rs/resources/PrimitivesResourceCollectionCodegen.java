@@ -22,7 +22,7 @@ public class PrimitivesResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("flag") Boolean flag, final @QueryParam("name") String name) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("flag") Boolean flag, final @QueryParam("name") String name) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         PrimitivesAlias p0 = new PrimitivesAlias();
@@ -33,6 +33,9 @@ public class PrimitivesResourceCollectionCodegen {
         if(name != null) {
           q.where(p0.name.eq(name));
         }
+        q.orderBy(p0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

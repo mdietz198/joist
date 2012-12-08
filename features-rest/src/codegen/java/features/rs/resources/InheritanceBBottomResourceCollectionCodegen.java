@@ -22,7 +22,7 @@ public class InheritanceBBottomResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("middleName") String middleName, final @QueryParam("bottomName") String bottomName) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name, final @QueryParam("middleName") String middleName, final @QueryParam("bottomName") String bottomName) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         InheritanceBBottomAlias ibb0 = new InheritanceBBottomAlias();
@@ -36,6 +36,9 @@ public class InheritanceBBottomResourceCollectionCodegen {
         if(bottomName != null) {
           q.where(ibb0.bottomName.eq(bottomName));
         }
+        q.orderBy(ibb0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

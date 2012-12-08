@@ -22,7 +22,7 @@ public class HistoryEntryResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("newValue") String newValue, final @QueryParam("oldValue") String oldValue, final @QueryParam("primaryKey") Integer primaryKey, final @QueryParam("propertyName") String propertyName, final @QueryParam("rootTableName") String rootTableName, final @QueryParam("type") String type, final @QueryParam("updater") String updater) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("newValue") String newValue, final @QueryParam("oldValue") String oldValue, final @QueryParam("primaryKey") Integer primaryKey, final @QueryParam("propertyName") String propertyName, final @QueryParam("rootTableName") String rootTableName, final @QueryParam("type") String type, final @QueryParam("updater") String updater) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         HistoryEntryAlias he0 = new HistoryEntryAlias();
@@ -48,6 +48,9 @@ public class HistoryEntryResourceCollectionCodegen {
         if(updater != null) {
           q.where(he0.updater.eq(updater));
         }
+        q.orderBy(he0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

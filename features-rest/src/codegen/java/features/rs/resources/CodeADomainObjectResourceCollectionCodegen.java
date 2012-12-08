@@ -24,7 +24,7 @@ public class CodeADomainObjectResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("codeAColor") String codeAColor, final @QueryParam("codeASize") String codeASize) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name, final @QueryParam("codeAColor") String codeAColor, final @QueryParam("codeASize") String codeASize) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         CodeADomainObjectAlias cado0 = new CodeADomainObjectAlias();
@@ -38,6 +38,9 @@ public class CodeADomainObjectResourceCollectionCodegen {
         if(codeASize != null) {
           q.where(cado0.codeASize.eq(CodeASize.fromCode(codeASize)));
         }
+        q.orderBy(cado0.id.asc());
+        q.offset(startIndex == null ? 0 : startIndex);
+        q.limit(maxResults == null ? 20: maxResults);
         return new LinkCollection(0, q.list());
       }
     });

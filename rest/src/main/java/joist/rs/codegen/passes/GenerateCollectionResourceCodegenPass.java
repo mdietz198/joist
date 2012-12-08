@@ -52,10 +52,12 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
     GMethod get = resourceCodegen.getMethod("get");
     get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/json\", \"application/xml\" })");
     get.argument("final @Context Repository", "repo");
+    get.argument("final @QueryParam(\"startIndex\") Integer", "startIndex");
+    get.argument("final @QueryParam(\"maxResults\") Integer", "maxResults");
+    resourceCodegen.addImports(QueryParam.class);
     for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
       if (!this.skipQueryParamForProperty(p)) {
         get.argument("final @QueryParam(\"" + p.getVariableName() + "\") " + p.getJavaType(), p.getVariableName());
-        resourceCodegen.addImports(QueryParam.class);
       }
     }
     for (ManyToOneProperty p : restEntity.getManyToOnePropertiesIncludingInherited()) {
@@ -88,6 +90,9 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
       get.body.line("_   _   _   q.where({}.{}.eq({}));", restEntity.entity.getAliasAlias(), p.getVariableName(), eqExpr);
       get.body.line("_   _   }");
     }
+    get.body.line("_   _   q.orderBy({}.id.asc());", restEntity.entity.getAliasAlias());
+    get.body.line("_   _   q.offset(startIndex == null ? 0 : startIndex);");
+    get.body.line("_   _   q.limit(maxResults == null ? {} : maxResults);", restEntity.getConfig().defaultMaxResults);
     get.body.line("_   _   return new LinkCollection(0, q.list());");
     get.body.line("_   }");
     get.body.line("});");
