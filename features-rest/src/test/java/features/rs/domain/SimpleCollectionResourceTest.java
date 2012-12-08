@@ -4,7 +4,7 @@ import static features.domain.builders.Builders.aParent;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import joist.domain.uow.UoW;
-import joist.rs.Link;
+import joist.rs.ObjectLinkBinding;
 
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class SimpleCollectionResourceTest extends AbstractFeaturesTest {
 
     ChildBinding binding = new ChildBinding();
     binding.name = "new child";
-    binding.parent = new Link(p.get());
+    binding.parent = new ObjectLinkBinding(p.get());
 
     UoW.close();
     Long id = this.resource.post(repo, binding);

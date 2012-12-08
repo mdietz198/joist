@@ -4,6 +4,7 @@ import features.domain.ManyToManyBFooToBar;
 import features.domain.ManyToManyBFooToBarAlias;
 import features.rs.binding.ManyToManyBFooToBarBinding;
 import features.rs.helpers.BindingMapper;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,16 +16,19 @@ import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
-import joist.rs.LinkCollection;
+import joist.rs.CollectionLinkBinding;
+import joist.rs.PagedCollectionBinding;
 
 @Path("/manyToManyBFooToBars")
 public class ManyToManyBFooToBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("owned") Long owned, final @QueryParam("ownerManyToManyBFoo") Long ownerManyToManyBFoo) {
-    return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
-      public LinkCollection go() {
+  public PagedCollectionBinding get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndexParam, final @QueryParam("maxResults") Integer maxResultsParam, final @QueryParam("owned") Long owned, final @QueryParam("ownerManyToManyBFoo") Long ownerManyToManyBFoo) {
+    return UoW.read(repo, new BlockWithReturn<PagedCollectionBinding>() {
+      public PagedCollectionBinding go() {
+        Integer startIndex = startIndexParam == null ? 0 : startIndexParam;
+        Integer maxResults = maxResultsParam == null ? 20 : maxResultsParam;
         ManyToManyBFooToBarAlias mtmbftb0 = new ManyToManyBFooToBarAlias();
         Select<ManyToManyBFooToBar> q = Select.from(mtmbftb0);
         if(owned != null) {
@@ -34,9 +38,18 @@ public class ManyToManyBFooToBarResourceCollectionCodegen {
           q.where(mtmbftb0.ownerManyToManyBFoo.eq(ownerManyToManyBFoo));
         }
         q.orderBy(mtmbftb0.id.asc());
-        q.offset(startIndex == null ? 0 : startIndex);
-        q.limit(maxResults == null ? 20: maxResults);
-        return new LinkCollection(0, q.list());
+        q.offset(startIndex);
+        q.limit(maxResults );
+        List<ManyToManyBFooToBar> list = q.list();
+        PagedCollectionBinding result = new PagedCollectionBinding();
+        result.setLinksFromDomainObjects(list);
+        if (startIndex > 0) {
+          result.setPrevious(new CollectionLinkBinding(ManyToManyBFooToBar.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+        }
+        if (!list.isEmpty() && list.size() == maxResults) {
+          result.setNext(new CollectionLinkBinding(ManyToManyBFooToBar.class, startIndex + maxResults, maxResults));
+        }
+        return result;
       }
     });
   }

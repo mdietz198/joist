@@ -9,8 +9,8 @@ import joist.codegen.dtos.ManyToOneProperty;
 import joist.codegen.dtos.OneToManyProperty;
 import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
-import joist.rs.Link;
-import joist.rs.LinkCollection;
+import joist.rs.ObjectLinkBinding;
+import joist.rs.PagedCollectionBinding;
 import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.Argument;
@@ -47,7 +47,7 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
     this.copyManyToManyPropertiesToBinding(to, restEntity);
     to.body.line("return binding;");
 
-    bindingMapper.addImports(Link.class, LinkCollection.class);
+    bindingMapper.addImports(ObjectLinkBinding.class, PagedCollectionBinding.class);
     bindingMapper.addImports(restEntity.entity.getFullClassName(), restEntity.getFullBindingClassName());
   }
 
@@ -63,7 +63,7 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
       if (p.getOneSide().isCodeEntity()) {
         to.body.line("binding.{} = {} == null ? null : {}.toString();", p.getVariableName(), domainGetter, domainGetter);
       } else {
-        to.body.line("binding.{} = {} == null ? null : new Link({});", p.getVariableName(), domainGetter, domainGetter);
+        to.body.line("binding.{} = {} == null ? null : new ObjectLinkBinding({});", p.getVariableName(), domainGetter, domainGetter);
       }
     }
   }
@@ -75,10 +75,14 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
       }
       if (p.isOneToOne()) {
         String domainGetter = "domainObject.get" + p.getCapitalVariableNameSingular() + "()";
-        to.body.line("binding.{} = {} == null ? null : new Link({});", p.getVariableName(), domainGetter, domainGetter);
+        to.body.line("binding.{} = {} == null ? null : new ObjectLinkBinding({});", p.getVariableName(), domainGetter, domainGetter);
       } else {
         String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
-        to.body.line("binding.{} = {} == null ? null : new LinkCollection(0, {});", p.getVariableName(), domainGetter, domainGetter);
+        to.body.line(
+          "binding.{} = {} == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects({});",
+          p.getVariableName(),
+          domainGetter,
+          domainGetter);
       }
     }
   }
@@ -89,7 +93,11 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
         continue;
       }
       String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
-      to.body.line("binding.{} = {} == null ? null : new LinkCollection(0, {});", p.getVariableName(), domainGetter, domainGetter);
+      to.body.line(
+        "binding.{} = {} == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects({});",
+        p.getVariableName(),
+        domainGetter,
+        domainGetter);
     }
   }
 
@@ -154,7 +162,7 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
       } else {
         to.body.line("final " + p.getJavaType() + " " + p.getVariableName() + " = new ArrayList<" + p.getManySide().getClassName() + ">();");
         to.body.line("if (binding.{} != null) {", p.getVariableName());
-        to.body.line("_   for (final Link l : binding.{}.getLinks()) {", p.getVariableName());
+        to.body.line("_   for (final ObjectLinkBinding l : binding.{}.getLinks()) {", p.getVariableName());
         to.body.line("_   _   {} o = l.getId() == null ? null : {}.queries.find(l.getId());",//
           p.getManySide().getClassName(),
           p.getManySide().getClassName());
@@ -165,7 +173,7 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
         bindingMapper.addImports(List.class, ArrayList.class);
       }
       bindingMapper.addImports(p.getManySide().getFullClassName());
-      bindingMapper.addImports(Link.class);
+      bindingMapper.addImports(ObjectLinkBinding.class);
     }
   }
 
@@ -175,7 +183,7 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
         continue;
       }
       to.body.line("final " + p.getJavaType() + " " + p.getVariableName() + " = new ArrayList<" + p.getTargetJavaType() + ">();");
-      to.body.line("for (final Link l : binding.{}.getLinks()) {", p.getVariableName());
+      to.body.line("for (final ObjectLinkBinding l : binding.{}.getLinks()) {", p.getVariableName());
       to.body.line("_   {} o = l.getId() == null ? null : {}.queries.find(l.getId());", p.getTargetJavaType(), p.getTargetJavaType());
       to.body.line("_   {}.add(o);", p.getVariableName());
       to.body.line("}");

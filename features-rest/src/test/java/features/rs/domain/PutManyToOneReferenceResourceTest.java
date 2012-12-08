@@ -3,7 +3,7 @@ package features.rs.domain;
 import static features.domain.builders.Builders.aInheritanceASubTwo;
 import static features.domain.builders.Builders.aInheritanceAThing;
 import joist.domain.uow.UoW;
-import joist.rs.Link;
+import joist.rs.ObjectLinkBinding;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class PutManyToOneReferenceResourceTest extends AbstractFeaturesTest {
     Long id = object.id();
     UoW.close();
     InheritanceASubTwoBinding binding = BindingMapper.toBinding(object.get());
-    Link reference = new Link();
+    ObjectLinkBinding reference = new ObjectLinkBinding();
     reference.setId(manyToOneReferencedObject.id());
     binding.inheritanceAThing = reference;
 

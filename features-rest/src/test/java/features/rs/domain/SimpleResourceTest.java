@@ -4,7 +4,7 @@ import static features.domain.builders.Builders.aChild;
 import static features.domain.builders.Builders.aGrandChild;
 import joist.domain.exceptions.NotFoundException;
 import joist.domain.uow.UoW;
-import joist.rs.Link;
+import joist.rs.ObjectLinkBinding;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class SimpleResourceTest extends AbstractFeaturesTest {
     Long id = child.id();
     ChildBinding binding = new ChildBinding();
     binding.name = "new name";
-    binding.parent = new Link(child.parent().get());
+    binding.parent = new ObjectLinkBinding(child.parent().get());
 
     UoW.close();
     this.resource.put(repo, id, binding);

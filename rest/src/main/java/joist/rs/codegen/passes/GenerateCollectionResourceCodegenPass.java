@@ -1,5 +1,7 @@
 package joist.rs.codegen.passes;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,7 +18,8 @@ import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
-import joist.rs.LinkCollection;
+import joist.rs.CollectionLinkBinding;
+import joist.rs.PagedCollectionBinding;
 import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
@@ -52,8 +55,8 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
     GMethod get = resourceCodegen.getMethod("get");
     get.addAnnotation("@GET").addAnnotation("@Produces({ \"application/json\", \"application/xml\" })");
     get.argument("final @Context Repository", "repo");
-    get.argument("final @QueryParam(\"startIndex\") Integer", "startIndex");
-    get.argument("final @QueryParam(\"maxResults\") Integer", "maxResults");
+    get.argument("final @QueryParam(\"startIndex\") Integer", "startIndexParam");
+    get.argument("final @QueryParam(\"maxResults\") Integer", "maxResultsParam");
     resourceCodegen.addImports(QueryParam.class);
     for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
       if (!this.skipQueryParamForProperty(p)) {
@@ -65,9 +68,11 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
       get.argument("final @QueryParam(\"" + p.getVariableName() + "\") " + paramType.getSimpleName(), p.getVariableName());
       resourceCodegen.addImports(QueryParam.class);
     }
-    get.returnType(LinkCollection.class);
-    get.body.line("return UoW.read(repo, new BlockWithReturn<LinkCollection>() {");
-    get.body.line("_   public LinkCollection go() {");
+    get.returnType(PagedCollectionBinding.class);
+    get.body.line("return UoW.read(repo, new BlockWithReturn<PagedCollectionBinding>() {");
+    get.body.line("_   public PagedCollectionBinding go() {");
+    get.body.line("_   _   Integer startIndex = startIndexParam == null ? 0 : startIndexParam;");
+    get.body.line("_   _   Integer maxResults = maxResultsParam == null ? {} : maxResultsParam;", restEntity.getConfig().defaultMaxResults);
     get.body.line("_   _   {} {} = new {}();", restEntity.entity.getAliasName(), restEntity.entity.getAliasAlias(), restEntity.entity.getAliasName());
     get.body.line("_   _   Select<{}> q = Select.from({});", restEntity.entity.getClassName(), restEntity.entity.getAliasAlias());
     for (PrimitiveProperty p : restEntity.getPrimitivePropertiesIncludingInherited()) {
@@ -91,12 +96,34 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
       get.body.line("_   _   }");
     }
     get.body.line("_   _   q.orderBy({}.id.asc());", restEntity.entity.getAliasAlias());
-    get.body.line("_   _   q.offset(startIndex == null ? 0 : startIndex);");
-    get.body.line("_   _   q.limit(maxResults == null ? {} : maxResults);", restEntity.getConfig().defaultMaxResults);
-    get.body.line("_   _   return new LinkCollection(0, q.list());");
+    get.body.line("_   _   q.offset(startIndex);");
+    get.body.line("_   _   q.limit(maxResults );");
+    get.body.line("_   _   List<{}> list = q.list();", restEntity.entity.getClassName());
+    get.body.line("_   _   PagedCollectionBinding result = new PagedCollectionBinding();");
+    get.body.line("_   _   result.setLinksFromDomainObjects(list);");
+    get.body.line("_   _   if (startIndex > 0) {");
+    get.body.line(
+      "_   _   _   result.setPrevious(new CollectionLinkBinding({}.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));",
+      restEntity.entity.getClassName());
+    get.body.line("_   _   }");
+    get.body.line("_   _   if (!list.isEmpty() && list.size() == maxResults) {");
+    get.body.line(
+      "_   _   _   result.setNext(new CollectionLinkBinding({}.class, startIndex + maxResults, maxResults));",
+      restEntity.entity.getClassName());
+    get.body.line("_   _   }");
+    get.body.line("_   _   return result;");
     get.body.line("_   }");
     get.body.line("});");
-    resourceCodegen.addImports(GET.class, Produces.class, LinkCollection.class, UoW.class, BlockWithReturn.class, Select.class);
+    resourceCodegen.addImports(
+      GET.class,
+      Produces.class,
+      PagedCollectionBinding.class,
+      UoW.class,
+      BlockWithReturn.class,
+      Select.class,
+      List.class,
+      CollectionLinkBinding.class,
+      Math.class);
     resourceCodegen.addImports(restEntity.entity.getFullAliasClassName());
   }
 

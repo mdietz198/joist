@@ -10,8 +10,8 @@ import joist.codegen.dtos.ManyToOneProperty;
 import joist.codegen.dtos.OneToManyProperty;
 import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
-import joist.rs.Link;
-import joist.rs.LinkCollection;
+import joist.rs.ObjectLinkBinding;
+import joist.rs.PagedCollectionBinding;
 import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
@@ -19,15 +19,13 @@ import joist.sourcegen.GField;
 
 public class GenerateBindingCodegenPass implements Pass<RestCodegen> {
 
-  public void pass(RestCodegen c) {
-    // TODO Nasty hack to get my subclassed codegen
-    joist.rs.codegen.RestCodegen codegen = c;
+  public void pass(RestCodegen codegen) {
     for (Entity entity : codegen.getSchema().getEntities().values()) {
       if (entity.isCodeEntity()) {
         continue;
       }
 
-      RestEntity restEntity = new RestEntity(entity, c.getConfig());
+      RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
       GClass bindingCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullBindingClassName());
       if (entity.isAbstract()) {
         bindingCodegen.setAbstract();
@@ -60,8 +58,8 @@ public class GenerateBindingCodegenPass implements Pass<RestCodegen> {
       if (p.getOneSide().isCodeEntity()) {
         field.type(String.class);
       } else {
-        field.type(Link.class);
-        bindingCodegen.addImports(Link.class);
+        field.type(ObjectLinkBinding.class);
+        bindingCodegen.addImports(ObjectLinkBinding.class);
       }
     }
   }
@@ -74,11 +72,11 @@ public class GenerateBindingCodegenPass implements Pass<RestCodegen> {
 
       GField field = bindingCodegen.getField(p.getVariableName()).setPublic();
       if (p.isOneToOne()) {
-        field.type(Link.class);
-        bindingCodegen.addImports(Link.class);
+        field.type(ObjectLinkBinding.class);
+        bindingCodegen.addImports(ObjectLinkBinding.class);
       } else {
-        field.type(LinkCollection.class);
-        bindingCodegen.addImports(LinkCollection.class);
+        field.type(PagedCollectionBinding.class);
+        bindingCodegen.addImports(PagedCollectionBinding.class);
       }
     }
   }
@@ -90,8 +88,8 @@ public class GenerateBindingCodegenPass implements Pass<RestCodegen> {
       }
 
       GField field = bindingCodegen.getField(p.getVariableName()).setPublic();
-      field.type(LinkCollection.class);
-      bindingCodegen.addImports(LinkCollection.class);
+      field.type(PagedCollectionBinding.class);
+      bindingCodegen.addImports(PagedCollectionBinding.class);
     }
   }
 }

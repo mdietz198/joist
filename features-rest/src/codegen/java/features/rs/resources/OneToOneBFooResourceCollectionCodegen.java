@@ -4,6 +4,7 @@ import features.domain.OneToOneBFoo;
 import features.domain.OneToOneBFooAlias;
 import features.rs.binding.OneToOneBFooBinding;
 import features.rs.helpers.BindingMapper;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,25 +16,37 @@ import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
-import joist.rs.LinkCollection;
+import joist.rs.CollectionLinkBinding;
+import joist.rs.PagedCollectionBinding;
 
 @Path("/oneToOneBFoos")
 public class OneToOneBFooResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name) {
-    return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
-      public LinkCollection go() {
+  public PagedCollectionBinding get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndexParam, final @QueryParam("maxResults") Integer maxResultsParam, final @QueryParam("name") String name) {
+    return UoW.read(repo, new BlockWithReturn<PagedCollectionBinding>() {
+      public PagedCollectionBinding go() {
+        Integer startIndex = startIndexParam == null ? 0 : startIndexParam;
+        Integer maxResults = maxResultsParam == null ? 20 : maxResultsParam;
         OneToOneBFooAlias otobf0 = new OneToOneBFooAlias();
         Select<OneToOneBFoo> q = Select.from(otobf0);
         if(name != null) {
           q.where(otobf0.name.eq(name));
         }
         q.orderBy(otobf0.id.asc());
-        q.offset(startIndex == null ? 0 : startIndex);
-        q.limit(maxResults == null ? 20: maxResults);
-        return new LinkCollection(0, q.list());
+        q.offset(startIndex);
+        q.limit(maxResults );
+        List<OneToOneBFoo> list = q.list();
+        PagedCollectionBinding result = new PagedCollectionBinding();
+        result.setLinksFromDomainObjects(list);
+        if (startIndex > 0) {
+          result.setPrevious(new CollectionLinkBinding(OneToOneBFoo.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+        }
+        if (!list.isEmpty() && list.size() == maxResults) {
+          result.setNext(new CollectionLinkBinding(OneToOneBFoo.class, startIndex + maxResults, maxResults));
+        }
+        return result;
       }
     });
   }

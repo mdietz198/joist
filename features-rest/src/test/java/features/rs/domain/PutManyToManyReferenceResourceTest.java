@@ -3,7 +3,7 @@ package features.rs.domain;
 import static features.domain.builders.Builders.aManyToManyABar;
 import static features.domain.builders.Builders.aManyToManyAFoo;
 import joist.domain.uow.UoW;
-import joist.rs.Link;
+import joist.rs.ObjectLinkBinding;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,8 +30,8 @@ public class PutManyToManyReferenceResourceTest extends AbstractFeaturesTest {
 
     Long id = object.id();
     ManyToManyAFooBinding binding = BindingMapper.toBinding(object.get());
-    Link linkToReference1 = new Link(reference1.get());
-    Link linkToReference2 = new Link(reference2.get());
+    ObjectLinkBinding linkToReference1 = new ObjectLinkBinding(reference1.get());
+    ObjectLinkBinding linkToReference2 = new ObjectLinkBinding(reference2.get());
     binding.manyToManyABars.getLinks().add(linkToReference1);
     binding.manyToManyABars.getLinks().add(linkToReference2);
 

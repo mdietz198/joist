@@ -4,6 +4,7 @@ import features.domain.ValuesA;
 import features.domain.ValuesAAlias;
 import features.rs.binding.ValuesABinding;
 import features.rs.helpers.BindingMapper;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,16 +16,19 @@ import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
-import joist.rs.LinkCollection;
+import joist.rs.CollectionLinkBinding;
+import joist.rs.PagedCollectionBinding;
 
 @Path("/valuesAs")
 public class ValuesAResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("a") String a, final @QueryParam("b") String b, final @QueryParam("i") Integer i, final @QueryParam("j") Integer j, final @QueryParam("name") String name) {
-    return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
-      public LinkCollection go() {
+  public PagedCollectionBinding get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndexParam, final @QueryParam("maxResults") Integer maxResultsParam, final @QueryParam("a") String a, final @QueryParam("b") String b, final @QueryParam("i") Integer i, final @QueryParam("j") Integer j, final @QueryParam("name") String name) {
+    return UoW.read(repo, new BlockWithReturn<PagedCollectionBinding>() {
+      public PagedCollectionBinding go() {
+        Integer startIndex = startIndexParam == null ? 0 : startIndexParam;
+        Integer maxResults = maxResultsParam == null ? 20 : maxResultsParam;
         ValuesAAlias va0 = new ValuesAAlias();
         Select<ValuesA> q = Select.from(va0);
         if(a != null) {
@@ -43,9 +47,18 @@ public class ValuesAResourceCollectionCodegen {
           q.where(va0.name.eq(name));
         }
         q.orderBy(va0.id.asc());
-        q.offset(startIndex == null ? 0 : startIndex);
-        q.limit(maxResults == null ? 20: maxResults);
-        return new LinkCollection(0, q.list());
+        q.offset(startIndex);
+        q.limit(maxResults );
+        List<ValuesA> list = q.list();
+        PagedCollectionBinding result = new PagedCollectionBinding();
+        result.setLinksFromDomainObjects(list);
+        if (startIndex > 0) {
+          result.setPrevious(new CollectionLinkBinding(ValuesA.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+        }
+        if (!list.isEmpty() && list.size() == maxResults) {
+          result.setNext(new CollectionLinkBinding(ValuesA.class, startIndex + maxResults, maxResults));
+        }
+        return result;
       }
     });
   }

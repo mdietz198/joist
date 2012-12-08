@@ -4,6 +4,7 @@ import features.domain.ParentCBar;
 import features.domain.ParentCBarAlias;
 import features.rs.binding.ParentCBarBinding;
 import features.rs.helpers.BindingMapper;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,16 +16,19 @@ import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
-import joist.rs.LinkCollection;
+import joist.rs.CollectionLinkBinding;
+import joist.rs.PagedCollectionBinding;
 
 @Path("/parentCBars")
 public class ParentCBarResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name, final @QueryParam("firstParent") Long firstParent, final @QueryParam("secondParent") Long secondParent) {
-    return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
-      public LinkCollection go() {
+  public PagedCollectionBinding get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndexParam, final @QueryParam("maxResults") Integer maxResultsParam, final @QueryParam("name") String name, final @QueryParam("firstParent") Long firstParent, final @QueryParam("secondParent") Long secondParent) {
+    return UoW.read(repo, new BlockWithReturn<PagedCollectionBinding>() {
+      public PagedCollectionBinding go() {
+        Integer startIndex = startIndexParam == null ? 0 : startIndexParam;
+        Integer maxResults = maxResultsParam == null ? 20 : maxResultsParam;
         ParentCBarAlias pcb0 = new ParentCBarAlias();
         Select<ParentCBar> q = Select.from(pcb0);
         if(name != null) {
@@ -37,9 +41,18 @@ public class ParentCBarResourceCollectionCodegen {
           q.where(pcb0.secondParent.eq(secondParent));
         }
         q.orderBy(pcb0.id.asc());
-        q.offset(startIndex == null ? 0 : startIndex);
-        q.limit(maxResults == null ? 20: maxResults);
-        return new LinkCollection(0, q.list());
+        q.offset(startIndex);
+        q.limit(maxResults );
+        List<ParentCBar> list = q.list();
+        PagedCollectionBinding result = new PagedCollectionBinding();
+        result.setLinksFromDomainObjects(list);
+        if (startIndex > 0) {
+          result.setPrevious(new CollectionLinkBinding(ParentCBar.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+        }
+        if (!list.isEmpty() && list.size() == maxResults) {
+          result.setNext(new CollectionLinkBinding(ParentCBar.class, startIndex + maxResults, maxResults));
+        }
+        return result;
       }
     });
   }

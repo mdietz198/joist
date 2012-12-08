@@ -96,8 +96,8 @@ import features.rs.binding.ValuesABinding;
 import features.rs.binding.ValuesBBinding;
 import java.util.ArrayList;
 import java.util.List;
-import joist.rs.Link;
-import joist.rs.LinkCollection;
+import joist.rs.ObjectLinkBinding;
+import joist.rs.PagedCollectionBinding;
 
 public class BindingMapper {
 
@@ -109,8 +109,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parent = domainObject.getParent() == null ? null : new Link(domainObject.getParent());
-    binding.grandChilds = domainObject.getGrandChilds() == null ? null : new LinkCollection(0, domainObject.getGrandChilds());
+    binding.parent = domainObject.getParent() == null ? null : new ObjectLinkBinding(domainObject.getParent());
+    binding.grandChilds = domainObject.getGrandChilds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getGrandChilds());
     return binding;
   }
 
@@ -119,7 +119,7 @@ public class BindingMapper {
     domainObject.setParent(binding.parent == null ? null : binding.parent.getId() == null ? null : Parent.queries.find(binding.parent.getId()));
     final List<GrandChild> grandChilds = new ArrayList<GrandChild>();
     if (binding.grandChilds != null) {
-      for (final Link l : binding.grandChilds.getLinks()) {
+      for (final ObjectLinkBinding l : binding.grandChilds.getLinks()) {
         GrandChild o = l.getId() == null ? null : GrandChild.queries.find(l.getId());
         grandChilds.add(o);
       }
@@ -132,8 +132,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.childOneParentFs = domainObject.getChildOneParentFs() == null ? null : new LinkCollection(0, domainObject.getChildOneParentFs());
-    binding.childTwoParentFs = domainObject.getChildTwoParentFs() == null ? null : new LinkCollection(0, domainObject.getChildTwoParentFs());
+    binding.childOneParentFs = domainObject.getChildOneParentFs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getChildOneParentFs());
+    binding.childTwoParentFs = domainObject.getChildTwoParentFs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getChildTwoParentFs());
     return binding;
   }
 
@@ -141,7 +141,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<ParentF> childOneParentFs = new ArrayList<ParentF>();
     if (binding.childOneParentFs != null) {
-      for (final Link l : binding.childOneParentFs.getLinks()) {
+      for (final ObjectLinkBinding l : binding.childOneParentFs.getLinks()) {
         ParentF o = l.getId() == null ? null : ParentF.queries.find(l.getId());
         childOneParentFs.add(o);
       }
@@ -149,7 +149,7 @@ public class BindingMapper {
     domainObject.setChildOneParentFs(childOneParentFs);
     final List<ParentF> childTwoParentFs = new ArrayList<ParentF>();
     if (binding.childTwoParentFs != null) {
-      for (final Link l : binding.childTwoParentFs.getLinks()) {
+      for (final ObjectLinkBinding l : binding.childTwoParentFs.getLinks()) {
         ParentF o = l.getId() == null ? null : ParentF.queries.find(l.getId());
         childTwoParentFs.add(o);
       }
@@ -162,8 +162,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentOne = domainObject.getParentOne() == null ? null : new Link(domainObject.getParentOne());
-    binding.parentTwo = domainObject.getParentTwo() == null ? null : new Link(domainObject.getParentTwo());
+    binding.parentOne = domainObject.getParentOne() == null ? null : new ObjectLinkBinding(domainObject.getParentOne());
+    binding.parentTwo = domainObject.getParentTwo() == null ? null : new ObjectLinkBinding(domainObject.getParentTwo());
     return binding;
   }
 
@@ -194,7 +194,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.child = domainObject.getChild() == null ? null : new Link(domainObject.getChild());
+    binding.child = domainObject.getChild() == null ? null : new ObjectLinkBinding(domainObject.getChild());
     return binding;
   }
 
@@ -234,7 +234,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.inheritanceABases = domainObject.getInheritanceABases() == null ? null : new LinkCollection(0, domainObject.getInheritanceABases());
+    binding.inheritanceABases = domainObject.getInheritanceABases() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceABases());
     return binding;
   }
 
@@ -242,7 +242,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<InheritanceABase> inheritanceABases = new ArrayList<InheritanceABase>();
     if (binding.inheritanceABases != null) {
-      for (final Link l : binding.inheritanceABases.getLinks()) {
+      for (final ObjectLinkBinding l : binding.inheritanceABases.getLinks()) {
         InheritanceABase o = l.getId() == null ? null : InheritanceABase.queries.find(l.getId());
         inheritanceABases.add(o);
       }
@@ -256,8 +256,8 @@ public class BindingMapper {
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
     binding.one = domainObject.getOne();
-    binding.inheritanceAOwner = domainObject.getInheritanceAOwner() == null ? null : new Link(domainObject.getInheritanceAOwner());
-    binding.inheritanceAThing = domainObject.getInheritanceAThing() == null ? null : new Link(domainObject.getInheritanceAThing());
+    binding.inheritanceAOwner = domainObject.getInheritanceAOwner() == null ? null : new ObjectLinkBinding(domainObject.getInheritanceAOwner());
+    binding.inheritanceAThing = domainObject.getInheritanceAThing() == null ? null : new ObjectLinkBinding(domainObject.getInheritanceAThing());
     return binding;
   }
 
@@ -274,8 +274,8 @@ public class BindingMapper {
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
     binding.two = domainObject.getTwo();
-    binding.inheritanceAOwner = domainObject.getInheritanceAOwner() == null ? null : new Link(domainObject.getInheritanceAOwner());
-    binding.inheritanceAThing = domainObject.getInheritanceAThing() == null ? null : new Link(domainObject.getInheritanceAThing());
+    binding.inheritanceAOwner = domainObject.getInheritanceAOwner() == null ? null : new ObjectLinkBinding(domainObject.getInheritanceAOwner());
+    binding.inheritanceAThing = domainObject.getInheritanceAThing() == null ? null : new ObjectLinkBinding(domainObject.getInheritanceAThing());
     return binding;
   }
 
@@ -291,8 +291,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.inheritanceASubOnes = domainObject.getInheritanceASubOnes() == null ? null : new LinkCollection(0, domainObject.getInheritanceASubOnes());
-    binding.inheritanceASubTwos = domainObject.getInheritanceASubTwos() == null ? null : new LinkCollection(0, domainObject.getInheritanceASubTwos());
+    binding.inheritanceASubOnes = domainObject.getInheritanceASubOnes() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceASubOnes());
+    binding.inheritanceASubTwos = domainObject.getInheritanceASubTwos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceASubTwos());
     return binding;
   }
 
@@ -300,7 +300,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<InheritanceASubOne> inheritanceASubOnes = new ArrayList<InheritanceASubOne>();
     if (binding.inheritanceASubOnes != null) {
-      for (final Link l : binding.inheritanceASubOnes.getLinks()) {
+      for (final ObjectLinkBinding l : binding.inheritanceASubOnes.getLinks()) {
         InheritanceASubOne o = l.getId() == null ? null : InheritanceASubOne.queries.find(l.getId());
         inheritanceASubOnes.add(o);
       }
@@ -308,7 +308,7 @@ public class BindingMapper {
     domainObject.setInheritanceASubOnes(inheritanceASubOnes);
     final List<InheritanceASubTwo> inheritanceASubTwos = new ArrayList<InheritanceASubTwo>();
     if (binding.inheritanceASubTwos != null) {
-      for (final Link l : binding.inheritanceASubTwos.getLinks()) {
+      for (final ObjectLinkBinding l : binding.inheritanceASubTwos.getLinks()) {
         InheritanceASubTwo o = l.getId() == null ? null : InheritanceASubTwo.queries.find(l.getId());
         inheritanceASubTwos.add(o);
       }
@@ -323,7 +323,7 @@ public class BindingMapper {
     binding.version = domainObject.getVersion();
     binding.middleName = domainObject.getMiddleName();
     binding.bottomName = domainObject.getBottomName();
-    binding.inheritanceBRootChilds = domainObject.getInheritanceBRootChilds() == null ? null : new LinkCollection(0, domainObject.getInheritanceBRootChilds());
+    binding.inheritanceBRootChilds = domainObject.getInheritanceBRootChilds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceBRootChilds());
     return binding;
   }
 
@@ -333,7 +333,7 @@ public class BindingMapper {
     domainObject.setBottomName(binding.bottomName);
     final List<InheritanceBRootChild> inheritanceBRootChilds = new ArrayList<InheritanceBRootChild>();
     if (binding.inheritanceBRootChilds != null) {
-      for (final Link l : binding.inheritanceBRootChilds.getLinks()) {
+      for (final ObjectLinkBinding l : binding.inheritanceBRootChilds.getLinks()) {
         InheritanceBRootChild o = l.getId() == null ? null : InheritanceBRootChild.queries.find(l.getId());
         inheritanceBRootChilds.add(o);
       }
@@ -346,7 +346,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.inheritanceBRoot = domainObject.getInheritanceBRoot() == null ? null : new Link(domainObject.getInheritanceBRoot());
+    binding.inheritanceBRoot = domainObject.getInheritanceBRoot() == null ? null : new ObjectLinkBinding(domainObject.getInheritanceBRoot());
     return binding;
   }
 
@@ -388,14 +388,14 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.manyToManyAFoos = domainObject.getManyToManyAFoos() == null ? null : new LinkCollection(0, domainObject.getManyToManyAFoos());
+    binding.manyToManyAFoos = domainObject.getManyToManyAFoos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getManyToManyAFoos());
     return binding;
   }
 
   public static void toDomain(ManyToManyABarBinding binding, ManyToManyABar domainObject) {
     domainObject.setName(binding.name);
     final List<ManyToManyAFoo> manyToManyAFoos = new ArrayList<ManyToManyAFoo>();
-    for (final Link l : binding.manyToManyAFoos.getLinks()) {
+    for (final ObjectLinkBinding l : binding.manyToManyAFoos.getLinks()) {
       ManyToManyAFoo o = l.getId() == null ? null : ManyToManyAFoo.queries.find(l.getId());
       manyToManyAFoos.add(o);
     }
@@ -407,14 +407,14 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.manyToManyABars = domainObject.getManyToManyABars() == null ? null : new LinkCollection(0, domainObject.getManyToManyABars());
+    binding.manyToManyABars = domainObject.getManyToManyABars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getManyToManyABars());
     return binding;
   }
 
   public static void toDomain(ManyToManyAFooBinding binding, ManyToManyAFoo domainObject) {
     domainObject.setName(binding.name);
     final List<ManyToManyABar> manyToManyABars = new ArrayList<ManyToManyABar>();
-    for (final Link l : binding.manyToManyABars.getLinks()) {
+    for (final ObjectLinkBinding l : binding.manyToManyABars.getLinks()) {
       ManyToManyABar o = l.getId() == null ? null : ManyToManyABar.queries.find(l.getId());
       manyToManyABars.add(o);
     }
@@ -425,8 +425,8 @@ public class BindingMapper {
     ManyToManyAFooToBarBinding binding = new ManyToManyAFooToBarBinding();
     binding.id = domainObject.getId();
     binding.version = domainObject.getVersion();
-    binding.manyToManyABar = domainObject.getManyToManyABar() == null ? null : new Link(domainObject.getManyToManyABar());
-    binding.manyToManyAFoo = domainObject.getManyToManyAFoo() == null ? null : new Link(domainObject.getManyToManyAFoo());
+    binding.manyToManyABar = domainObject.getManyToManyABar() == null ? null : new ObjectLinkBinding(domainObject.getManyToManyABar());
+    binding.manyToManyAFoo = domainObject.getManyToManyAFoo() == null ? null : new ObjectLinkBinding(domainObject.getManyToManyAFoo());
     return binding;
   }
 
@@ -440,14 +440,14 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.ownerManyToManyBFoos = domainObject.getOwnerManyToManyBFoos() == null ? null : new LinkCollection(0, domainObject.getOwnerManyToManyBFoos());
+    binding.ownerManyToManyBFoos = domainObject.getOwnerManyToManyBFoos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getOwnerManyToManyBFoos());
     return binding;
   }
 
   public static void toDomain(ManyToManyBBarBinding binding, ManyToManyBBar domainObject) {
     domainObject.setName(binding.name);
     final List<ManyToManyBFoo> ownerManyToManyBFoos = new ArrayList<ManyToManyBFoo>();
-    for (final Link l : binding.ownerManyToManyBFoos.getLinks()) {
+    for (final ObjectLinkBinding l : binding.ownerManyToManyBFoos.getLinks()) {
       ManyToManyBFoo o = l.getId() == null ? null : ManyToManyBFoo.queries.find(l.getId());
       ownerManyToManyBFoos.add(o);
     }
@@ -459,14 +459,14 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.owneds = domainObject.getOwneds() == null ? null : new LinkCollection(0, domainObject.getOwneds());
+    binding.owneds = domainObject.getOwneds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getOwneds());
     return binding;
   }
 
   public static void toDomain(ManyToManyBFooBinding binding, ManyToManyBFoo domainObject) {
     domainObject.setName(binding.name);
     final List<ManyToManyBBar> owneds = new ArrayList<ManyToManyBBar>();
-    for (final Link l : binding.owneds.getLinks()) {
+    for (final ObjectLinkBinding l : binding.owneds.getLinks()) {
       ManyToManyBBar o = l.getId() == null ? null : ManyToManyBBar.queries.find(l.getId());
       owneds.add(o);
     }
@@ -477,8 +477,8 @@ public class BindingMapper {
     ManyToManyBFooToBarBinding binding = new ManyToManyBFooToBarBinding();
     binding.id = domainObject.getId();
     binding.version = domainObject.getVersion();
-    binding.owned = domainObject.getOwned() == null ? null : new Link(domainObject.getOwned());
-    binding.ownerManyToManyBFoo = domainObject.getOwnerManyToManyBFoo() == null ? null : new Link(domainObject.getOwnerManyToManyBFoo());
+    binding.owned = domainObject.getOwned() == null ? null : new ObjectLinkBinding(domainObject.getOwned());
+    binding.ownerManyToManyBFoo = domainObject.getOwnerManyToManyBFoo() == null ? null : new ObjectLinkBinding(domainObject.getOwnerManyToManyBFoo());
     return binding;
   }
 
@@ -492,7 +492,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.oneToOneAFoo = domainObject.getOneToOneAFoo() == null ? null : new Link(domainObject.getOneToOneAFoo());
+    binding.oneToOneAFoo = domainObject.getOneToOneAFoo() == null ? null : new ObjectLinkBinding(domainObject.getOneToOneAFoo());
     return binding;
   }
 
@@ -506,7 +506,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.oneToOneABars = domainObject.getOneToOneABar() == null ? null : new Link(domainObject.getOneToOneABar());
+    binding.oneToOneABars = domainObject.getOneToOneABar() == null ? null : new ObjectLinkBinding(domainObject.getOneToOneABar());
     return binding;
   }
 
@@ -520,7 +520,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.oneToOneBFoo = domainObject.getOneToOneBFoo() == null ? null : new Link(domainObject.getOneToOneBFoo());
+    binding.oneToOneBFoo = domainObject.getOneToOneBFoo() == null ? null : new ObjectLinkBinding(domainObject.getOneToOneBFoo());
     return binding;
   }
 
@@ -534,7 +534,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.oneToOneBBars = domainObject.getOneToOneBBars() == null ? null : new LinkCollection(0, domainObject.getOneToOneBBars());
+    binding.oneToOneBBars = domainObject.getOneToOneBBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getOneToOneBBars());
     return binding;
   }
 
@@ -542,7 +542,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<OneToOneBBar> oneToOneBBars = new ArrayList<OneToOneBBar>();
     if (binding.oneToOneBBars != null) {
-      for (final Link l : binding.oneToOneBBars.getLinks()) {
+      for (final ObjectLinkBinding l : binding.oneToOneBBars.getLinks()) {
         OneToOneBBar o = l.getId() == null ? null : OneToOneBBar.queries.find(l.getId());
         oneToOneBBars.add(o);
       }
@@ -555,7 +555,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.childs = domainObject.getChilds() == null ? null : new LinkCollection(0, domainObject.getChilds());
+    binding.childs = domainObject.getChilds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getChilds());
     return binding;
   }
 
@@ -563,7 +563,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<Child> childs = new ArrayList<Child>();
     if (binding.childs != null) {
-      for (final Link l : binding.childs.getLinks()) {
+      for (final ObjectLinkBinding l : binding.childs.getLinks()) {
         Child o = l.getId() == null ? null : Child.queries.find(l.getId());
         childs.add(o);
       }
@@ -576,7 +576,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentBParent = domainObject.getParentBParent() == null ? null : new Link(domainObject.getParentBParent());
+    binding.parentBParent = domainObject.getParentBParent() == null ? null : new ObjectLinkBinding(domainObject.getParentBParent());
     return binding;
   }
 
@@ -590,7 +590,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentBParent = domainObject.getParentBParent() == null ? null : new Link(domainObject.getParentBParent());
+    binding.parentBParent = domainObject.getParentBParent() == null ? null : new ObjectLinkBinding(domainObject.getParentBParent());
     return binding;
   }
 
@@ -604,8 +604,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentBChildBars = domainObject.getParentBChildBars() == null ? null : new LinkCollection(0, domainObject.getParentBChildBars());
-    binding.parentBChildFoos = domainObject.getParentBChildFoos() == null ? null : new LinkCollection(0, domainObject.getParentBChildFoos());
+    binding.parentBChildBars = domainObject.getParentBChildBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentBChildBars());
+    binding.parentBChildFoos = domainObject.getParentBChildFoos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentBChildFoos());
     return binding;
   }
 
@@ -613,7 +613,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<ParentBChildBar> parentBChildBars = new ArrayList<ParentBChildBar>();
     if (binding.parentBChildBars != null) {
-      for (final Link l : binding.parentBChildBars.getLinks()) {
+      for (final ObjectLinkBinding l : binding.parentBChildBars.getLinks()) {
         ParentBChildBar o = l.getId() == null ? null : ParentBChildBar.queries.find(l.getId());
         parentBChildBars.add(o);
       }
@@ -621,7 +621,7 @@ public class BindingMapper {
     domainObject.setParentBChildBars(parentBChildBars);
     final List<ParentBChildFoo> parentBChildFoos = new ArrayList<ParentBChildFoo>();
     if (binding.parentBChildFoos != null) {
-      for (final Link l : binding.parentBChildFoos.getLinks()) {
+      for (final ObjectLinkBinding l : binding.parentBChildFoos.getLinks()) {
         ParentBChildFoo o = l.getId() == null ? null : ParentBChildFoo.queries.find(l.getId());
         parentBChildFoos.add(o);
       }
@@ -634,8 +634,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.firstParent = domainObject.getFirstParent() == null ? null : new Link(domainObject.getFirstParent());
-    binding.secondParent = domainObject.getSecondParent() == null ? null : new Link(domainObject.getSecondParent());
+    binding.firstParent = domainObject.getFirstParent() == null ? null : new ObjectLinkBinding(domainObject.getFirstParent());
+    binding.secondParent = domainObject.getSecondParent() == null ? null : new ObjectLinkBinding(domainObject.getSecondParent());
     return binding;
   }
 
@@ -650,8 +650,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.firstParentParentCBars = domainObject.getFirstParentParentCBars() == null ? null : new LinkCollection(0, domainObject.getFirstParentParentCBars());
-    binding.secondParentParentCBars = domainObject.getSecondParentParentCBars() == null ? null : new LinkCollection(0, domainObject.getSecondParentParentCBars());
+    binding.firstParentParentCBars = domainObject.getFirstParentParentCBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getFirstParentParentCBars());
+    binding.secondParentParentCBars = domainObject.getSecondParentParentCBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getSecondParentParentCBars());
     return binding;
   }
 
@@ -659,7 +659,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<ParentCBar> firstParentParentCBars = new ArrayList<ParentCBar>();
     if (binding.firstParentParentCBars != null) {
-      for (final Link l : binding.firstParentParentCBars.getLinks()) {
+      for (final ObjectLinkBinding l : binding.firstParentParentCBars.getLinks()) {
         ParentCBar o = l.getId() == null ? null : ParentCBar.queries.find(l.getId());
         firstParentParentCBars.add(o);
       }
@@ -667,7 +667,7 @@ public class BindingMapper {
     domainObject.setFirstParentParentCBars(firstParentParentCBars);
     final List<ParentCBar> secondParentParentCBars = new ArrayList<ParentCBar>();
     if (binding.secondParentParentCBars != null) {
-      for (final Link l : binding.secondParentParentCBars.getLinks()) {
+      for (final ObjectLinkBinding l : binding.secondParentParentCBars.getLinks()) {
         ParentCBar o = l.getId() == null ? null : ParentCBar.queries.find(l.getId());
         secondParentParentCBars.add(o);
       }
@@ -680,7 +680,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentDChildBs = domainObject.getParentDChildBs() == null ? null : new LinkCollection(0, domainObject.getParentDChildBs());
+    binding.parentDChildBs = domainObject.getParentDChildBs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentDChildBs());
     return binding;
   }
 
@@ -688,7 +688,7 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     final List<ParentDChildB> parentDChildBs = new ArrayList<ParentDChildB>();
     if (binding.parentDChildBs != null) {
-      for (final Link l : binding.parentDChildBs.getLinks()) {
+      for (final ObjectLinkBinding l : binding.parentDChildBs.getLinks()) {
         ParentDChildB o = l.getId() == null ? null : ParentDChildB.queries.find(l.getId());
         parentDChildBs.add(o);
       }
@@ -701,7 +701,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentD = domainObject.getParentD() == null ? null : new Link(domainObject.getParentD());
+    binding.parentD = domainObject.getParentD() == null ? null : new ObjectLinkBinding(domainObject.getParentD());
     return binding;
   }
 
@@ -715,7 +715,7 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentD = domainObject.getParentD() == null ? null : new Link(domainObject.getParentD());
+    binding.parentD = domainObject.getParentD() == null ? null : new ObjectLinkBinding(domainObject.getParentD());
     return binding;
   }
 
@@ -729,14 +729,14 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentDs = domainObject.getParentDs() == null ? null : new LinkCollection(0, domainObject.getParentDs());
+    binding.parentDs = domainObject.getParentDs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentDs());
     return binding;
   }
 
   public static void toDomain(ParentDChildCBinding binding, ParentDChildC domainObject) {
     domainObject.setName(binding.name);
     final List<ParentD> parentDs = new ArrayList<ParentD>();
-    for (final Link l : binding.parentDs.getLinks()) {
+    for (final ObjectLinkBinding l : binding.parentDs.getLinks()) {
       ParentD o = l.getId() == null ? null : ParentD.queries.find(l.getId());
       parentDs.add(o);
     }
@@ -747,8 +747,8 @@ public class BindingMapper {
     ParentDToChildCBinding binding = new ParentDToChildCBinding();
     binding.id = domainObject.getId();
     binding.version = domainObject.getVersion();
-    binding.parentDChildC = domainObject.getParentDChildC() == null ? null : new Link(domainObject.getParentDChildC());
-    binding.parentD = domainObject.getParentD() == null ? null : new Link(domainObject.getParentD());
+    binding.parentDChildC = domainObject.getParentDChildC() == null ? null : new ObjectLinkBinding(domainObject.getParentDChildC());
+    binding.parentD = domainObject.getParentD() == null ? null : new ObjectLinkBinding(domainObject.getParentD());
     return binding;
   }
 
@@ -762,8 +762,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentE = domainObject.getParentE() == null ? null : new Link(domainObject.getParentE());
-    binding.parentEs = domainObject.getParentEs() == null ? null : new LinkCollection(0, domainObject.getParentEs());
+    binding.parentE = domainObject.getParentE() == null ? null : new ObjectLinkBinding(domainObject.getParentE());
+    binding.parentEs = domainObject.getParentEs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentEs());
     return binding;
   }
 
@@ -772,7 +772,7 @@ public class BindingMapper {
     domainObject.setParentE(binding.parentE == null ? null : binding.parentE.getId() == null ? null : ParentE.queries.find(binding.parentE.getId()));
     final List<ParentE> parentEs = new ArrayList<ParentE>();
     if (binding.parentEs != null) {
-      for (final Link l : binding.parentEs.getLinks()) {
+      for (final ObjectLinkBinding l : binding.parentEs.getLinks()) {
         ParentE o = l.getId() == null ? null : ParentE.queries.find(l.getId());
         parentEs.add(o);
       }
@@ -785,8 +785,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.childOne = domainObject.getChildOne() == null ? null : new Link(domainObject.getChildOne());
-    binding.childTwo = domainObject.getChildTwo() == null ? null : new Link(domainObject.getChildTwo());
+    binding.childOne = domainObject.getChildOne() == null ? null : new ObjectLinkBinding(domainObject.getChildOne());
+    binding.childTwo = domainObject.getChildTwo() == null ? null : new ObjectLinkBinding(domainObject.getChildTwo());
     return binding;
   }
 
@@ -801,8 +801,8 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentOneChildGs = domainObject.getParentOneChildG() == null ? null : new Link(domainObject.getParentOneChildG());
-    binding.parentTwoChildGs = domainObject.getParentTwoChildG() == null ? null : new Link(domainObject.getParentTwoChildG());
+    binding.parentOneChildGs = domainObject.getParentOneChildG() == null ? null : new ObjectLinkBinding(domainObject.getParentOneChildG());
+    binding.parentTwoChildGs = domainObject.getParentTwoChildG() == null ? null : new ObjectLinkBinding(domainObject.getParentTwoChildG());
     return binding;
   }
 

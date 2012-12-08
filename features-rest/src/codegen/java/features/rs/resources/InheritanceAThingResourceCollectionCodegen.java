@@ -4,6 +4,7 @@ import features.domain.InheritanceAThing;
 import features.domain.InheritanceAThingAlias;
 import features.rs.binding.InheritanceAThingBinding;
 import features.rs.helpers.BindingMapper;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,25 +16,37 @@ import joist.domain.orm.Repository;
 import joist.domain.orm.queries.Select;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
-import joist.rs.LinkCollection;
+import joist.rs.CollectionLinkBinding;
+import joist.rs.PagedCollectionBinding;
 
 @Path("/inheritanceAThings")
 public class InheritanceAThingResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndex, final @QueryParam("maxResults") Integer maxResults, final @QueryParam("name") String name) {
-    return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
-      public LinkCollection go() {
+  public PagedCollectionBinding get(final @Context Repository repo, final @QueryParam("startIndex") Integer startIndexParam, final @QueryParam("maxResults") Integer maxResultsParam, final @QueryParam("name") String name) {
+    return UoW.read(repo, new BlockWithReturn<PagedCollectionBinding>() {
+      public PagedCollectionBinding go() {
+        Integer startIndex = startIndexParam == null ? 0 : startIndexParam;
+        Integer maxResults = maxResultsParam == null ? 20 : maxResultsParam;
         InheritanceAThingAlias iat0 = new InheritanceAThingAlias();
         Select<InheritanceAThing> q = Select.from(iat0);
         if(name != null) {
           q.where(iat0.name.eq(name));
         }
         q.orderBy(iat0.id.asc());
-        q.offset(startIndex == null ? 0 : startIndex);
-        q.limit(maxResults == null ? 20: maxResults);
-        return new LinkCollection(0, q.list());
+        q.offset(startIndex);
+        q.limit(maxResults );
+        List<InheritanceAThing> list = q.list();
+        PagedCollectionBinding result = new PagedCollectionBinding();
+        result.setLinksFromDomainObjects(list);
+        if (startIndex > 0) {
+          result.setPrevious(new CollectionLinkBinding(InheritanceAThing.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+        }
+        if (!list.isEmpty() && list.size() == maxResults) {
+          result.setNext(new CollectionLinkBinding(InheritanceAThing.class, startIndex + maxResults, maxResults));
+        }
+        return result;
       }
     });
   }

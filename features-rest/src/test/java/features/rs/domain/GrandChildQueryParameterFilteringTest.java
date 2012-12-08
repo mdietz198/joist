@@ -5,7 +5,7 @@ import static features.domain.builders.Builders.aGrandChild;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import joist.domain.uow.UoW;
-import joist.rs.LinkCollection;
+import joist.rs.PagedCollectionBinding;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,38 +34,38 @@ public class GrandChildQueryParameterFilteringTest extends AbstractFeaturesTest 
 
   @Test
   public void testGetWithNoFilters() {
-    LinkCollection grandChildren = this.resource.get(repo, null, null, null, null);
+    PagedCollectionBinding grandChildren = this.resource.get(repo, null, null, null, null);
     assertThat(grandChildren.getLinks().size(), is(2));
   }
 
   @Test
   public void testGetWithNameFilter() {
-    LinkCollection grandChildren = this.resource.get(repo, null, null, this.grandChild.name(), null);
+    PagedCollectionBinding grandChildren = this.resource.get(repo, null, null, this.grandChild.name(), null);
     assertThat(grandChildren.getLinks().size(), is(1));
   }
 
   @Test
   public void testGetWithNameFilterNotFound() {
-    LinkCollection grandChildren = this.resource.get(repo, null, null, "this name does not exist", null);
+    PagedCollectionBinding grandChildren = this.resource.get(repo, null, null, "this name does not exist", null);
     assertThat(grandChildren.getLinks().size(), is(0));
   }
 
   @Test
   public void testGetWithChildFilter() {
-    LinkCollection grandChildren = this.resource.get(repo, null, null, null, this.child.id());
+    PagedCollectionBinding grandChildren = this.resource.get(repo, null, null, null, this.child.id());
     assertThat(grandChildren.getLinks().size(), is(1));
   }
 
   @Test
   public void testGetOnlyFirstItem() {
-    LinkCollection grandChildren = this.resource.get(repo, 0, 1, null, null);
+    PagedCollectionBinding grandChildren = this.resource.get(repo, 0, 1, null, null);
     assertThat(grandChildren.getLinks().size(), is(1));
     assertThat(grandChildren.getLinks().get(0).getId(), is(1L));
   }
 
   @Test
   public void testGetOnlySecondItem() {
-    LinkCollection grandChildren = this.resource.get(repo, 1, 1, null, null);
+    PagedCollectionBinding grandChildren = this.resource.get(repo, 1, 1, null, null);
     assertThat(grandChildren.getLinks().size(), is(1));
     assertThat(grandChildren.getLinks().get(0).getId(), is(2L));
   }
