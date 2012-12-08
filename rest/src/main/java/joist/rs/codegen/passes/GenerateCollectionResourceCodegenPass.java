@@ -58,9 +58,7 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
         resourceCodegen.addImports(QueryParam.class);
       }
     }
-    // TODO See if Joist can emit super class object relationships in alias so I can use
-    // getManyToOnePropertiesIncludingInherited
-    for (ManyToOneProperty p : restEntity.entity.getManyToOneProperties()) {
+    for (ManyToOneProperty p : restEntity.getManyToOnePropertiesIncludingInherited()) {
       Class<?> paramType = p.getOneSide().isCodeEntity() ? String.class : Long.class;
       get.argument("final @QueryParam(\"" + p.getVariableName() + "\") " + paramType.getSimpleName(), p.getVariableName());
       resourceCodegen.addImports(QueryParam.class);
@@ -77,9 +75,7 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
         get.body.line("_   _   }");
       }
     }
-    // TODO See if Joist can emit super class object relationships in alias so I can use
-    // getManyToOnePropertiesIncludingInherited
-    for (ManyToOneProperty p : restEntity.entity.getManyToOneProperties()) {
+    for (ManyToOneProperty p : restEntity.getManyToOnePropertiesIncludingInherited()) {
       get.body.line("_   _   if({} != null) {", p.getVariableName());
       String eqExpr;
       Entity propEntity = p.getOneSide();

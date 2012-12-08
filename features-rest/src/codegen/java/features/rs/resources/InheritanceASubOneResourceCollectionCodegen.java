@@ -22,7 +22,7 @@ public class InheritanceASubOneResourceCollectionCodegen {
 
   @GET
   @Produces({ "application/json", "application/xml" })
-  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("one") String one, final @QueryParam("inheritanceAThing") Long inheritanceAThing) {
+  public LinkCollection get(final @Context Repository repo, final @QueryParam("name") String name, final @QueryParam("one") String one, final @QueryParam("inheritanceAOwner") Long inheritanceAOwner, final @QueryParam("inheritanceAThing") Long inheritanceAThing) {
     return UoW.read(repo, new BlockWithReturn<LinkCollection>() {
       public LinkCollection go() {
         InheritanceASubOneAlias iaso0 = new InheritanceASubOneAlias();
@@ -32,6 +32,9 @@ public class InheritanceASubOneResourceCollectionCodegen {
         }
         if(one != null) {
           q.where(iaso0.one.eq(one));
+        }
+        if(inheritanceAOwner != null) {
+          q.where(iaso0.inheritanceAOwner.eq(inheritanceAOwner));
         }
         if(inheritanceAThing != null) {
           q.where(iaso0.inheritanceAThing.eq(inheritanceAThing));
