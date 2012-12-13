@@ -1,5 +1,6 @@
 package features.rs.resources;
 
+import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.InheritanceBBottom;
 import features.domain.InheritanceBBottomAlias;
 import features.rs.binding.InheritanceBBottomBinding;
@@ -47,10 +48,10 @@ public class InheritanceBBottomResourceCollectionCodegen {
         PagedCollectionBinding result = new PagedCollectionBinding();
         result.setLinksFromDomainObjects(list);
         if (startIndex > 0) {
-          result.setPrevious(new CollectionLinkBinding(InheritanceBBottom.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+          result.setPrevious(new CollectionLinkBinding("previous", new UriBuilderImpl().path(InheritanceBBottomResourceCollectionCodegen.class) .queryParam("startIndex", Math.max(0, startIndex - maxResults)).queryParam("maxResults", Math.min(startIndex, maxResults)).build().toString()));
         }
         if (!list.isEmpty() && list.size() == maxResults) {
-          result.setNext(new CollectionLinkBinding(InheritanceBBottom.class, startIndex + maxResults, maxResults));
+          result.setNext(new CollectionLinkBinding("next", new UriBuilderImpl().path(InheritanceBBottomResourceCollectionCodegen.class).queryParam("startIndex", startIndex + maxResults).queryParam("maxResults", maxResults).build().toString()));
         }
         return result;
       }

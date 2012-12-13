@@ -25,6 +25,8 @@ import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
 import joist.sourcegen.GMethod;
 
+import com.sun.jersey.api.uri.UriBuilderImpl;
+
 public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> {
 
   public void pass(RestCodegen codegen) {
@@ -102,14 +104,16 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
     get.body.line("_   _   PagedCollectionBinding result = new PagedCollectionBinding();");
     get.body.line("_   _   result.setLinksFromDomainObjects(list);");
     get.body.line("_   _   if (startIndex > 0) {");
-    get.body.line(
-      "_   _   _   result.setPrevious(new CollectionLinkBinding({}.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));",
-      restEntity.entity.getClassName());
+    get.body
+      .line(
+        "_   _   _   result.setPrevious(new CollectionLinkBinding(\"previous\", new UriBuilderImpl().path({}.class) .queryParam(\"startIndex\", Math.max(0, startIndex - maxResults)).queryParam(\"maxResults\", Math.min(startIndex, maxResults)).build().toString()));",
+        restEntity.getResourceCollectionClassName());
     get.body.line("_   _   }");
     get.body.line("_   _   if (!list.isEmpty() && list.size() == maxResults) {");
-    get.body.line(
-      "_   _   _   result.setNext(new CollectionLinkBinding({}.class, startIndex + maxResults, maxResults));",
-      restEntity.entity.getClassName());
+    get.body
+      .line(
+        "_   _   _   result.setNext(new CollectionLinkBinding(\"next\", new UriBuilderImpl().path({}.class).queryParam(\"startIndex\", startIndex + maxResults).queryParam(\"maxResults\", maxResults).build().toString()));",
+        restEntity.getResourceCollectionClassName());
     get.body.line("_   _   }");
     get.body.line("_   _   return result;");
     get.body.line("_   }");
@@ -123,7 +127,8 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
       Select.class,
       List.class,
       CollectionLinkBinding.class,
-      Math.class);
+      Math.class,
+      UriBuilderImpl.class);
     resourceCodegen.addImports(restEntity.entity.getFullAliasClassName());
   }
 

@@ -1,5 +1,6 @@
 package features.rs.helpers;
 
+import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.Child;
 import features.domain.ChildF;
 import features.domain.ChildG;
@@ -94,8 +95,52 @@ import features.rs.binding.UserTypesAFooBinding;
 import features.rs.binding.ValidationAFooBinding;
 import features.rs.binding.ValuesABinding;
 import features.rs.binding.ValuesBBinding;
-import java.util.ArrayList;
-import java.util.List;
+import features.rs.resources.ChildFResourceCollectionCodegen;
+import features.rs.resources.ChildGResourceCollectionCodegen;
+import features.rs.resources.ChildResourceCollectionCodegen;
+import features.rs.resources.CodeADomainObjectResourceCollectionCodegen;
+import features.rs.resources.GrandChildResourceCollectionCodegen;
+import features.rs.resources.HistoryEntryResourceCollectionCodegen;
+import features.rs.resources.InheritanceAOwnerResourceCollectionCodegen;
+import features.rs.resources.InheritanceASubOneResourceCollectionCodegen;
+import features.rs.resources.InheritanceASubTwoResourceCollectionCodegen;
+import features.rs.resources.InheritanceAThingResourceCollectionCodegen;
+import features.rs.resources.InheritanceBBottomResourceCollectionCodegen;
+import features.rs.resources.InheritanceBRootChildResourceCollectionCodegen;
+import features.rs.resources.InheritanceCFoo1ResourceCollectionCodegen;
+import features.rs.resources.InheritanceCFoo2ResourceCollectionCodegen;
+import features.rs.resources.ManyToManyABarResourceCollectionCodegen;
+import features.rs.resources.ManyToManyAFooResourceCollectionCodegen;
+import features.rs.resources.ManyToManyAFooToBarResourceCollectionCodegen;
+import features.rs.resources.ManyToManyBBarResourceCollectionCodegen;
+import features.rs.resources.ManyToManyBFooResourceCollectionCodegen;
+import features.rs.resources.ManyToManyBFooToBarResourceCollectionCodegen;
+import features.rs.resources.OneToOneABarResourceCollectionCodegen;
+import features.rs.resources.OneToOneAFooResourceCollectionCodegen;
+import features.rs.resources.OneToOneBBarResourceCollectionCodegen;
+import features.rs.resources.OneToOneBFooResourceCollectionCodegen;
+import features.rs.resources.ParentBChildBarResourceCollectionCodegen;
+import features.rs.resources.ParentBChildFooResourceCollectionCodegen;
+import features.rs.resources.ParentBParentResourceCollectionCodegen;
+import features.rs.resources.ParentCBarResourceCollectionCodegen;
+import features.rs.resources.ParentCFooResourceCollectionCodegen;
+import features.rs.resources.ParentDChildAResourceCollectionCodegen;
+import features.rs.resources.ParentDChildBResourceCollectionCodegen;
+import features.rs.resources.ParentDChildCResourceCollectionCodegen;
+import features.rs.resources.ParentDResourceCollectionCodegen;
+import features.rs.resources.ParentDToChildCResourceCollectionCodegen;
+import features.rs.resources.ParentEResourceCollectionCodegen;
+import features.rs.resources.ParentFResourceCollectionCodegen;
+import features.rs.resources.ParentGResourceCollectionCodegen;
+import features.rs.resources.ParentResourceCollectionCodegen;
+import features.rs.resources.PrimitivesBResourceCollectionCodegen;
+import features.rs.resources.PrimitivesCResourceCollectionCodegen;
+import features.rs.resources.PrimitivesResourceCollectionCodegen;
+import features.rs.resources.UserTypesAFooResourceCollectionCodegen;
+import features.rs.resources.ValidationAFooResourceCollectionCodegen;
+import features.rs.resources.ValuesAResourceCollectionCodegen;
+import features.rs.resources.ValuesBResourceCollectionCodegen;
+import joist.rs.CollectionLinkBinding;
 import joist.rs.ObjectLinkBinding;
 import joist.rs.PagedCollectionBinding;
 
@@ -110,21 +155,13 @@ public class BindingMapper {
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
     binding.parent = domainObject.getParent() == null ? null : new ObjectLinkBinding(domainObject.getParent());
-    binding.grandChilds = domainObject.getGrandChilds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getGrandChilds());
+    binding.grandChilds = new CollectionLinkBinding("grandChilds", new UriBuilderImpl().path(GrandChildResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("child", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ChildBinding binding, Child domainObject) {
     domainObject.setName(binding.name);
     domainObject.setParent(binding.parent == null ? null : binding.parent.getId() == null ? null : Parent.queries.find(binding.parent.getId()));
-    final List<GrandChild> grandChilds = new ArrayList<GrandChild>();
-    if (binding.grandChilds != null) {
-      for (final ObjectLinkBinding l : binding.grandChilds.getLinks()) {
-        GrandChild o = l.getId() == null ? null : GrandChild.queries.find(l.getId());
-        grandChilds.add(o);
-      }
-    }
-    domainObject.setGrandChilds(grandChilds);
   }
 
   public static ChildFBinding toBinding(ChildF domainObject) {
@@ -132,29 +169,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.childOneParentFs = domainObject.getChildOneParentFs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getChildOneParentFs());
-    binding.childTwoParentFs = domainObject.getChildTwoParentFs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getChildTwoParentFs());
+    binding.childOneParentFs = new CollectionLinkBinding("childOneParentFs", new UriBuilderImpl().path(ParentFResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("childF", domainObject.getId()).build().toString());
+    binding.childTwoParentFs = new CollectionLinkBinding("childTwoParentFs", new UriBuilderImpl().path(ParentFResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("childF", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ChildFBinding binding, ChildF domainObject) {
     domainObject.setName(binding.name);
-    final List<ParentF> childOneParentFs = new ArrayList<ParentF>();
-    if (binding.childOneParentFs != null) {
-      for (final ObjectLinkBinding l : binding.childOneParentFs.getLinks()) {
-        ParentF o = l.getId() == null ? null : ParentF.queries.find(l.getId());
-        childOneParentFs.add(o);
-      }
-    }
-    domainObject.setChildOneParentFs(childOneParentFs);
-    final List<ParentF> childTwoParentFs = new ArrayList<ParentF>();
-    if (binding.childTwoParentFs != null) {
-      for (final ObjectLinkBinding l : binding.childTwoParentFs.getLinks()) {
-        ParentF o = l.getId() == null ? null : ParentF.queries.find(l.getId());
-        childTwoParentFs.add(o);
-      }
-    }
-    domainObject.setChildTwoParentFs(childTwoParentFs);
   }
 
   public static ChildGBinding toBinding(ChildG domainObject) {
@@ -234,20 +255,12 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.inheritanceABases = domainObject.getInheritanceABases() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceABases());
+    binding.inheritanceABases = new CollectionLinkBinding("inheritanceABases", new UriBuilderImpl().path(InheritanceABaseResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("inheritanceAOwner", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(InheritanceAOwnerBinding binding, InheritanceAOwner domainObject) {
     domainObject.setName(binding.name);
-    final List<InheritanceABase> inheritanceABases = new ArrayList<InheritanceABase>();
-    if (binding.inheritanceABases != null) {
-      for (final ObjectLinkBinding l : binding.inheritanceABases.getLinks()) {
-        InheritanceABase o = l.getId() == null ? null : InheritanceABase.queries.find(l.getId());
-        inheritanceABases.add(o);
-      }
-    }
-    domainObject.setInheritanceABases(inheritanceABases);
   }
 
   public static InheritanceASubOneBinding toBinding(InheritanceASubOne domainObject) {
@@ -291,29 +304,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.inheritanceASubOnes = domainObject.getInheritanceASubOnes() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceASubOnes());
-    binding.inheritanceASubTwos = domainObject.getInheritanceASubTwos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceASubTwos());
+    binding.inheritanceASubOnes = new CollectionLinkBinding("inheritanceASubOnes", new UriBuilderImpl().path(InheritanceASubOneResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("inheritanceAThing", domainObject.getId()).build().toString());
+    binding.inheritanceASubTwos = new CollectionLinkBinding("inheritanceASubTwos", new UriBuilderImpl().path(InheritanceASubTwoResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("inheritanceAThing", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(InheritanceAThingBinding binding, InheritanceAThing domainObject) {
     domainObject.setName(binding.name);
-    final List<InheritanceASubOne> inheritanceASubOnes = new ArrayList<InheritanceASubOne>();
-    if (binding.inheritanceASubOnes != null) {
-      for (final ObjectLinkBinding l : binding.inheritanceASubOnes.getLinks()) {
-        InheritanceASubOne o = l.getId() == null ? null : InheritanceASubOne.queries.find(l.getId());
-        inheritanceASubOnes.add(o);
-      }
-    }
-    domainObject.setInheritanceASubOnes(inheritanceASubOnes);
-    final List<InheritanceASubTwo> inheritanceASubTwos = new ArrayList<InheritanceASubTwo>();
-    if (binding.inheritanceASubTwos != null) {
-      for (final ObjectLinkBinding l : binding.inheritanceASubTwos.getLinks()) {
-        InheritanceASubTwo o = l.getId() == null ? null : InheritanceASubTwo.queries.find(l.getId());
-        inheritanceASubTwos.add(o);
-      }
-    }
-    domainObject.setInheritanceASubTwos(inheritanceASubTwos);
   }
 
   public static InheritanceBBottomBinding toBinding(InheritanceBBottom domainObject) {
@@ -323,7 +320,7 @@ public class BindingMapper {
     binding.version = domainObject.getVersion();
     binding.middleName = domainObject.getMiddleName();
     binding.bottomName = domainObject.getBottomName();
-    binding.inheritanceBRootChilds = domainObject.getInheritanceBRootChilds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getInheritanceBRootChilds());
+    binding.inheritanceBRootChilds = new CollectionLinkBinding("inheritanceBRootChilds", new UriBuilderImpl().path(InheritanceBRootChildResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("inheritanceBBottom", domainObject.getId()).build().toString());
     return binding;
   }
 
@@ -331,14 +328,6 @@ public class BindingMapper {
     domainObject.setName(binding.name);
     domainObject.setMiddleName(binding.middleName);
     domainObject.setBottomName(binding.bottomName);
-    final List<InheritanceBRootChild> inheritanceBRootChilds = new ArrayList<InheritanceBRootChild>();
-    if (binding.inheritanceBRootChilds != null) {
-      for (final ObjectLinkBinding l : binding.inheritanceBRootChilds.getLinks()) {
-        InheritanceBRootChild o = l.getId() == null ? null : InheritanceBRootChild.queries.find(l.getId());
-        inheritanceBRootChilds.add(o);
-      }
-    }
-    domainObject.setInheritanceBRootChilds(inheritanceBRootChilds);
   }
 
   public static InheritanceBRootChildBinding toBinding(InheritanceBRootChild domainObject) {
@@ -388,18 +377,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.manyToManyAFoos = domainObject.getManyToManyAFoos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getManyToManyAFoos());
+    binding.manyToManyAFooToBars = new CollectionLinkBinding("manyToManyAFooToBars", new UriBuilderImpl().path(ManyToManyAFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyABar", domainObject.getId()).build().toString());
+    binding.manyToManyAFoos = new CollectionLinkBinding("manyToManyAFoos", new UriBuilderImpl().path(ManyToManyAFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyABar", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ManyToManyABarBinding binding, ManyToManyABar domainObject) {
     domainObject.setName(binding.name);
-    final List<ManyToManyAFoo> manyToManyAFoos = new ArrayList<ManyToManyAFoo>();
-    for (final ObjectLinkBinding l : binding.manyToManyAFoos.getLinks()) {
-      ManyToManyAFoo o = l.getId() == null ? null : ManyToManyAFoo.queries.find(l.getId());
-      manyToManyAFoos.add(o);
-    }
-    domainObject.setManyToManyAFoos(manyToManyAFoos);
   }
 
   public static ManyToManyAFooBinding toBinding(ManyToManyAFoo domainObject) {
@@ -407,18 +391,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.manyToManyABars = domainObject.getManyToManyABars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getManyToManyABars());
+    binding.manyToManyAFooToBars = new CollectionLinkBinding("manyToManyAFooToBars", new UriBuilderImpl().path(ManyToManyAFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyAFoo", domainObject.getId()).build().toString());
+    binding.manyToManyABars = new CollectionLinkBinding("manyToManyABars", new UriBuilderImpl().path(ManyToManyAFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyAFoo", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ManyToManyAFooBinding binding, ManyToManyAFoo domainObject) {
     domainObject.setName(binding.name);
-    final List<ManyToManyABar> manyToManyABars = new ArrayList<ManyToManyABar>();
-    for (final ObjectLinkBinding l : binding.manyToManyABars.getLinks()) {
-      ManyToManyABar o = l.getId() == null ? null : ManyToManyABar.queries.find(l.getId());
-      manyToManyABars.add(o);
-    }
-    domainObject.setManyToManyABars(manyToManyABars);
   }
 
   public static ManyToManyAFooToBarBinding toBinding(ManyToManyAFooToBar domainObject) {
@@ -440,18 +419,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.ownerManyToManyBFoos = domainObject.getOwnerManyToManyBFoos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getOwnerManyToManyBFoos());
+    binding.ownedManyToManyBFooToBars = new CollectionLinkBinding("ownedManyToManyBFooToBars", new UriBuilderImpl().path(ManyToManyBFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyBBar", domainObject.getId()).build().toString());
+    binding.ownerManyToManyBFoos = new CollectionLinkBinding("ownerManyToManyBFoos", new UriBuilderImpl().path(ManyToManyBFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyBBar", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ManyToManyBBarBinding binding, ManyToManyBBar domainObject) {
     domainObject.setName(binding.name);
-    final List<ManyToManyBFoo> ownerManyToManyBFoos = new ArrayList<ManyToManyBFoo>();
-    for (final ObjectLinkBinding l : binding.ownerManyToManyBFoos.getLinks()) {
-      ManyToManyBFoo o = l.getId() == null ? null : ManyToManyBFoo.queries.find(l.getId());
-      ownerManyToManyBFoos.add(o);
-    }
-    domainObject.setOwnerManyToManyBFoos(ownerManyToManyBFoos);
   }
 
   public static ManyToManyBFooBinding toBinding(ManyToManyBFoo domainObject) {
@@ -459,18 +433,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.owneds = domainObject.getOwneds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getOwneds());
+    binding.ownerManyToManyBFooToBars = new CollectionLinkBinding("ownerManyToManyBFooToBars", new UriBuilderImpl().path(ManyToManyBFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyBFoo", domainObject.getId()).build().toString());
+    binding.owneds = new CollectionLinkBinding("owneds", new UriBuilderImpl().path(ManyToManyBFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyBFoo", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ManyToManyBFooBinding binding, ManyToManyBFoo domainObject) {
     domainObject.setName(binding.name);
-    final List<ManyToManyBBar> owneds = new ArrayList<ManyToManyBBar>();
-    for (final ObjectLinkBinding l : binding.owneds.getLinks()) {
-      ManyToManyBBar o = l.getId() == null ? null : ManyToManyBBar.queries.find(l.getId());
-      owneds.add(o);
-    }
-    domainObject.setOwneds(owneds);
   }
 
   public static ManyToManyBFooToBarBinding toBinding(ManyToManyBFooToBar domainObject) {
@@ -534,20 +503,12 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.oneToOneBBars = domainObject.getOneToOneBBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getOneToOneBBars());
+    binding.oneToOneBBars = new CollectionLinkBinding("oneToOneBBars", new UriBuilderImpl().path(OneToOneBBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("oneToOneBFoo", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(OneToOneBFooBinding binding, OneToOneBFoo domainObject) {
     domainObject.setName(binding.name);
-    final List<OneToOneBBar> oneToOneBBars = new ArrayList<OneToOneBBar>();
-    if (binding.oneToOneBBars != null) {
-      for (final ObjectLinkBinding l : binding.oneToOneBBars.getLinks()) {
-        OneToOneBBar o = l.getId() == null ? null : OneToOneBBar.queries.find(l.getId());
-        oneToOneBBars.add(o);
-      }
-    }
-    domainObject.setOneToOneBBars(oneToOneBBars);
   }
 
   public static ParentBinding toBinding(Parent domainObject) {
@@ -555,20 +516,12 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.childs = domainObject.getChilds() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getChilds());
+    binding.childs = new CollectionLinkBinding("childs", new UriBuilderImpl().path(ChildResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parent", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ParentBinding binding, Parent domainObject) {
     domainObject.setName(binding.name);
-    final List<Child> childs = new ArrayList<Child>();
-    if (binding.childs != null) {
-      for (final ObjectLinkBinding l : binding.childs.getLinks()) {
-        Child o = l.getId() == null ? null : Child.queries.find(l.getId());
-        childs.add(o);
-      }
-    }
-    domainObject.setChilds(childs);
   }
 
   public static ParentBChildBarBinding toBinding(ParentBChildBar domainObject) {
@@ -604,29 +557,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentBChildBars = domainObject.getParentBChildBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentBChildBars());
-    binding.parentBChildFoos = domainObject.getParentBChildFoos() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentBChildFoos());
+    binding.parentBChildBars = new CollectionLinkBinding("parentBChildBars", new UriBuilderImpl().path(ParentBChildBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentBParent", domainObject.getId()).build().toString());
+    binding.parentBChildFoos = new CollectionLinkBinding("parentBChildFoos", new UriBuilderImpl().path(ParentBChildFooResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentBParent", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ParentBParentBinding binding, ParentBParent domainObject) {
     domainObject.setName(binding.name);
-    final List<ParentBChildBar> parentBChildBars = new ArrayList<ParentBChildBar>();
-    if (binding.parentBChildBars != null) {
-      for (final ObjectLinkBinding l : binding.parentBChildBars.getLinks()) {
-        ParentBChildBar o = l.getId() == null ? null : ParentBChildBar.queries.find(l.getId());
-        parentBChildBars.add(o);
-      }
-    }
-    domainObject.setParentBChildBars(parentBChildBars);
-    final List<ParentBChildFoo> parentBChildFoos = new ArrayList<ParentBChildFoo>();
-    if (binding.parentBChildFoos != null) {
-      for (final ObjectLinkBinding l : binding.parentBChildFoos.getLinks()) {
-        ParentBChildFoo o = l.getId() == null ? null : ParentBChildFoo.queries.find(l.getId());
-        parentBChildFoos.add(o);
-      }
-    }
-    domainObject.setParentBChildFoos(parentBChildFoos);
   }
 
   public static ParentCBarBinding toBinding(ParentCBar domainObject) {
@@ -650,29 +587,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.firstParentParentCBars = domainObject.getFirstParentParentCBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getFirstParentParentCBars());
-    binding.secondParentParentCBars = domainObject.getSecondParentParentCBars() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getSecondParentParentCBars());
+    binding.firstParentParentCBars = new CollectionLinkBinding("firstParentParentCBars", new UriBuilderImpl().path(ParentCBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentCFoo", domainObject.getId()).build().toString());
+    binding.secondParentParentCBars = new CollectionLinkBinding("secondParentParentCBars", new UriBuilderImpl().path(ParentCBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentCFoo", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ParentCFooBinding binding, ParentCFoo domainObject) {
     domainObject.setName(binding.name);
-    final List<ParentCBar> firstParentParentCBars = new ArrayList<ParentCBar>();
-    if (binding.firstParentParentCBars != null) {
-      for (final ObjectLinkBinding l : binding.firstParentParentCBars.getLinks()) {
-        ParentCBar o = l.getId() == null ? null : ParentCBar.queries.find(l.getId());
-        firstParentParentCBars.add(o);
-      }
-    }
-    domainObject.setFirstParentParentCBars(firstParentParentCBars);
-    final List<ParentCBar> secondParentParentCBars = new ArrayList<ParentCBar>();
-    if (binding.secondParentParentCBars != null) {
-      for (final ObjectLinkBinding l : binding.secondParentParentCBars.getLinks()) {
-        ParentCBar o = l.getId() == null ? null : ParentCBar.queries.find(l.getId());
-        secondParentParentCBars.add(o);
-      }
-    }
-    domainObject.setSecondParentParentCBars(secondParentParentCBars);
   }
 
   public static ParentDBinding toBinding(ParentD domainObject) {
@@ -680,20 +601,15 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentDChildBs = domainObject.getParentDChildBs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentDChildBs());
+    binding.parentDChildAs = new CollectionLinkBinding("parentDChildAs", new UriBuilderImpl().path(ParentDChildAResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentD", domainObject.getId()).build().toString());
+    binding.parentDChildBs = new CollectionLinkBinding("parentDChildBs", new UriBuilderImpl().path(ParentDChildBResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentD", domainObject.getId()).build().toString());
+    binding.parentDToChildCs = new CollectionLinkBinding("parentDToChildCs", new UriBuilderImpl().path(ParentDToChildCResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentD", domainObject.getId()).build().toString());
+    binding.parentDChildCs = new CollectionLinkBinding("parentDChildCs", new UriBuilderImpl().path(ParentDToChildCResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentD", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ParentDBinding binding, ParentD domainObject) {
     domainObject.setName(binding.name);
-    final List<ParentDChildB> parentDChildBs = new ArrayList<ParentDChildB>();
-    if (binding.parentDChildBs != null) {
-      for (final ObjectLinkBinding l : binding.parentDChildBs.getLinks()) {
-        ParentDChildB o = l.getId() == null ? null : ParentDChildB.queries.find(l.getId());
-        parentDChildBs.add(o);
-      }
-    }
-    domainObject.setParentDChildBs(parentDChildBs);
   }
 
   public static ParentDChildABinding toBinding(ParentDChildA domainObject) {
@@ -729,18 +645,13 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.parentDs = domainObject.getParentDs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentDs());
+    binding.parentDToChildCs = new CollectionLinkBinding("parentDToChildCs", new UriBuilderImpl().path(ParentDToChildCResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentDChildC", domainObject.getId()).build().toString());
+    binding.parentDs = new CollectionLinkBinding("parentDs", new UriBuilderImpl().path(ParentDToChildCResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentDChildC", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ParentDChildCBinding binding, ParentDChildC domainObject) {
     domainObject.setName(binding.name);
-    final List<ParentD> parentDs = new ArrayList<ParentD>();
-    for (final ObjectLinkBinding l : binding.parentDs.getLinks()) {
-      ParentD o = l.getId() == null ? null : ParentD.queries.find(l.getId());
-      parentDs.add(o);
-    }
-    domainObject.setParentDs(parentDs);
   }
 
   public static ParentDToChildCBinding toBinding(ParentDToChildC domainObject) {
@@ -763,21 +674,13 @@ public class BindingMapper {
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
     binding.parentE = domainObject.getParentE() == null ? null : new ObjectLinkBinding(domainObject.getParentE());
-    binding.parentEs = domainObject.getParentEs() == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects(domainObject.getParentEs());
+    binding.parentEs = new CollectionLinkBinding("parentEs", new UriBuilderImpl().path(ParentEResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentE", domainObject.getId()).build().toString());
     return binding;
   }
 
   public static void toDomain(ParentEBinding binding, ParentE domainObject) {
     domainObject.setName(binding.name);
     domainObject.setParentE(binding.parentE == null ? null : binding.parentE.getId() == null ? null : ParentE.queries.find(binding.parentE.getId()));
-    final List<ParentE> parentEs = new ArrayList<ParentE>();
-    if (binding.parentEs != null) {
-      for (final ObjectLinkBinding l : binding.parentEs.getLinks()) {
-        ParentE o = l.getId() == null ? null : ParentE.queries.find(l.getId());
-        parentEs.add(o);
-      }
-    }
-    domainObject.setParentEs(parentEs);
   }
 
   public static ParentFBinding toBinding(ParentF domainObject) {

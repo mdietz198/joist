@@ -2,10 +2,11 @@ package features.rs.domain;
 
 import static features.domain.builders.Builders.aChild;
 import static features.domain.builders.Builders.aGrandChild;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import joist.domain.exceptions.NotFoundException;
 import joist.domain.uow.UoW;
 import joist.rs.ObjectLinkBinding;
-import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -31,9 +32,7 @@ public class SimpleResourceTest extends AbstractFeaturesTest {
     UoW.close();
 
     ChildBinding binding = this.resource.get(repo, id);
-    Assert.assertEquals(binding.grandChilds.getLinks().size(), 2);
-    Assert.assertEquals(binding.grandChilds.getLinks().get(0).getRelativeUrl(), "/grandChilds/1");
-    Assert.assertEquals(binding.grandChilds.getLinks().get(1).getRelativeUrl(), "/grandChilds/2");
+    assertThat(binding.grandChilds.getRelativeUrl(), is("/grandChilds?startIndex=0&maxResults=20&child=1"));
   }
 
   @Test
@@ -49,7 +48,7 @@ public class SimpleResourceTest extends AbstractFeaturesTest {
     UoW.close();
     this.resource.put(repo, id, binding);
     UoW.open(Registry.getRepository(), null);
-    Assert.assertEquals(child.name(), "new name");
+    assertThat(child.name(), is("new name"));
   }
 
   @Test(expected = NotFoundException.class)

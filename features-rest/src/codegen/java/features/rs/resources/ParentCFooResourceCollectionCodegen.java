@@ -1,5 +1,6 @@
 package features.rs.resources;
 
+import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ParentCFoo;
 import features.domain.ParentCFooAlias;
 import features.rs.binding.ParentCFooBinding;
@@ -41,10 +42,10 @@ public class ParentCFooResourceCollectionCodegen {
         PagedCollectionBinding result = new PagedCollectionBinding();
         result.setLinksFromDomainObjects(list);
         if (startIndex > 0) {
-          result.setPrevious(new CollectionLinkBinding(ParentCFoo.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+          result.setPrevious(new CollectionLinkBinding("previous", new UriBuilderImpl().path(ParentCFooResourceCollectionCodegen.class) .queryParam("startIndex", Math.max(0, startIndex - maxResults)).queryParam("maxResults", Math.min(startIndex, maxResults)).build().toString()));
         }
         if (!list.isEmpty() && list.size() == maxResults) {
-          result.setNext(new CollectionLinkBinding(ParentCFoo.class, startIndex + maxResults, maxResults));
+          result.setNext(new CollectionLinkBinding("next", new UriBuilderImpl().path(ParentCFooResourceCollectionCodegen.class).queryParam("startIndex", startIndex + maxResults).queryParam("maxResults", maxResults).build().toString()));
         }
         return result;
       }

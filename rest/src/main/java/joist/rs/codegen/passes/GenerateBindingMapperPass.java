@@ -1,14 +1,12 @@
 package joist.rs.codegen.passes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import joist.codegen.dtos.Entity;
 import joist.codegen.dtos.ManyToManyProperty;
 import joist.codegen.dtos.ManyToOneProperty;
 import joist.codegen.dtos.OneToManyProperty;
 import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
+import joist.rs.CollectionLinkBinding;
 import joist.rs.ObjectLinkBinding;
 import joist.rs.PagedCollectionBinding;
 import joist.rs.codegen.RestCodegen;
@@ -16,6 +14,8 @@ import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.Argument;
 import joist.sourcegen.GClass;
 import joist.sourcegen.GMethod;
+
+import com.sun.jersey.api.uri.UriBuilderImpl;
 
 public class GenerateBindingMapperPass implements Pass<RestCodegen> {
 
@@ -47,8 +47,11 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
     this.copyManyToManyPropertiesToBinding(to, restEntity);
     to.body.line("return binding;");
 
-    bindingMapper.addImports(ObjectLinkBinding.class, PagedCollectionBinding.class);
-    bindingMapper.addImports(restEntity.entity.getFullClassName(), restEntity.getFullBindingClassName());
+    bindingMapper.addImports(ObjectLinkBinding.class, PagedCollectionBinding.class, UriBuilderImpl.class, CollectionLinkBinding.class);
+    bindingMapper.addImports(
+      restEntity.entity.getFullClassName(),
+      restEntity.getFullBindingClassName(),
+      restEntity.getFullResourceCollectionClassName());
   }
 
   private void copyPrimitivePropertiesToBinding(GMethod to, RestEntity restEntity) {
@@ -70,34 +73,32 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
 
   private void copyOneToManyPropertiesToBinding(GMethod to, RestEntity restEntity) {
     for (OneToManyProperty p : restEntity.getOneToManyPropertiesIncludingInherited()) {
-      if (p.isCollectionSkipped() || p.isManyToMany()) {
-        continue;
-      }
       if (p.isOneToOne()) {
         String domainGetter = "domainObject.get" + p.getCapitalVariableNameSingular() + "()";
         to.body.line("binding.{} = {} == null ? null : new ObjectLinkBinding({});", p.getVariableName(), domainGetter, domainGetter);
       } else {
-        String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
-        to.body.line(
-          "binding.{} = {} == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects({});",
-          p.getVariableName(),
-          domainGetter,
-          domainGetter);
+        to.body
+          .line(
+            "binding.{} = new CollectionLinkBinding(\"{}\", new UriBuilderImpl().path({}.class).queryParam(\"startIndex\", 0).queryParam(\"maxResults\", {}).queryParam(\"{}\", domainObject.getId()).build().toString());",
+            p.getVariableName(),
+            p.getVariableName(),
+            new RestEntity(p.getManySide(), restEntity.getConfig()).getResourceCollectionClassName(),
+            restEntity.getConfig().defaultMaxResults,
+            restEntity.entity.getVariableName());
       }
     }
   }
 
   private void copyManyToManyPropertiesToBinding(GMethod to, RestEntity restEntity) {
     for (ManyToManyProperty p : restEntity.getManyToManyPropertiesIncludingInherited()) {
-      if (p.getMySideOneToMany().isCollectionSkipped()) {
-        continue;
-      }
-      String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
-      to.body.line(
-        "binding.{} = {} == null ? null : new PagedCollectionBinding().setLinksFromDomainObjects({});",
-        p.getVariableName(),
-        domainGetter,
-        domainGetter);
+      to.body
+        .line(
+          "binding.{} = new CollectionLinkBinding(\"{}\", new UriBuilderImpl().path({}.class).queryParam(\"startIndex\", 0).queryParam(\"maxResults\", {}).queryParam(\"{}\", domainObject.getId()).build().toString());",
+          p.getVariableName(),
+          p.getVariableName(),
+          new RestEntity(p.getMySideOneToMany().getManySide(), restEntity.getConfig()).getResourceCollectionClassName(),
+          restEntity.getConfig().defaultMaxResults,
+          restEntity.entity.getVariableName());
     }
   }
 
@@ -109,8 +110,7 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
 
     this.copyPrimitivePropertiesToDomain(to, restEntity);
     this.copyManyToOnePropertiesToDomain(bindingMapper, to, restEntity);
-    this.copyOneToManyPropertiesToDomain(bindingMapper, to, restEntity);
-    this.copyManyToManyPropertiesToDomain(bindingMapper, to, restEntity);
+    this.copyOneToOnePropertiesToDomain(bindingMapper, to, restEntity);
 
     bindingMapper.addImports(restEntity.getBindingClassName(), restEntity.entity.getFullClassName());
   }
@@ -146,11 +146,8 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
     }
   }
 
-  private void copyOneToManyPropertiesToDomain(GClass bindingMapper, GMethod to, RestEntity restEntity) {
+  private void copyOneToOnePropertiesToDomain(GClass bindingMapper, GMethod to, RestEntity restEntity) {
     for (OneToManyProperty p : restEntity.getOneToManyPropertiesIncludingInherited()) {
-      if (p.isCollectionSkipped() || p.isManyToMany()) {
-        continue;
-      }
       if (p.isOneToOne()) {
         to.body.line(
           "domainObject.set{}(binding.{} == null ? null : binding.{}.getId() == null ? null : {}.queries.find(binding.{}.getId()));",
@@ -159,36 +156,9 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
           p.getVariableName(),
           p.getManySide().getClassName(),
           p.getVariableName());
-      } else {
-        to.body.line("final " + p.getJavaType() + " " + p.getVariableName() + " = new ArrayList<" + p.getManySide().getClassName() + ">();");
-        to.body.line("if (binding.{} != null) {", p.getVariableName());
-        to.body.line("_   for (final ObjectLinkBinding l : binding.{}.getLinks()) {", p.getVariableName());
-        to.body.line("_   _   {} o = l.getId() == null ? null : {}.queries.find(l.getId());",//
-          p.getManySide().getClassName(),
-          p.getManySide().getClassName());
-        to.body.line("_   _   {}.add(o);", p.getVariableName());
-        to.body.line("_   }");
-        to.body.line("}");
-        to.body.line("domainObject.set{}({});", p.getCapitalVariableName(), p.getVariableName());
-        bindingMapper.addImports(List.class, ArrayList.class);
       }
       bindingMapper.addImports(p.getManySide().getFullClassName());
       bindingMapper.addImports(ObjectLinkBinding.class);
-    }
-  }
-
-  private void copyManyToManyPropertiesToDomain(GClass bindingMapper, GMethod to, RestEntity restEntity) {
-    for (ManyToManyProperty p : restEntity.getManyToManyPropertiesIncludingInherited()) {
-      if (p.getMySideOneToMany().isCollectionSkipped()) {
-        continue;
-      }
-      to.body.line("final " + p.getJavaType() + " " + p.getVariableName() + " = new ArrayList<" + p.getTargetJavaType() + ">();");
-      to.body.line("for (final ObjectLinkBinding l : binding.{}.getLinks()) {", p.getVariableName());
-      to.body.line("_   {} o = l.getId() == null ? null : {}.queries.find(l.getId());", p.getTargetJavaType(), p.getTargetJavaType());
-      to.body.line("_   {}.add(o);", p.getVariableName());
-      to.body.line("}");
-      to.body.line("domainObject.set{}({});", p.getCapitalVariableName(), p.getVariableName());
-      bindingMapper.addImports(List.class, ArrayList.class);
     }
   }
 }

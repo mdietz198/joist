@@ -3,8 +3,8 @@ package features.rs.binding;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import joist.rs.CollectionLinkBinding;
 import joist.rs.ObjectLinkBinding;
-import joist.rs.PagedCollectionBinding;
 
 @XmlRootElement(name="child")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -14,6 +14,6 @@ public class ChildBinding extends Object {
   public String name;
   public Long version;
   public ObjectLinkBinding parent;
-  public PagedCollectionBinding grandChilds;
+  public CollectionLinkBinding grandChilds;
 
 }

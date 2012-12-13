@@ -1,5 +1,6 @@
 package features.rs.resources;
 
+import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ParentBParent;
 import features.domain.ParentBParentAlias;
 import features.rs.binding.ParentBParentBinding;
@@ -41,10 +42,10 @@ public class ParentBParentResourceCollectionCodegen {
         PagedCollectionBinding result = new PagedCollectionBinding();
         result.setLinksFromDomainObjects(list);
         if (startIndex > 0) {
-          result.setPrevious(new CollectionLinkBinding(ParentBParent.class, Math.max(0, startIndex - maxResults), Math.min(startIndex, maxResults)));
+          result.setPrevious(new CollectionLinkBinding("previous", new UriBuilderImpl().path(ParentBParentResourceCollectionCodegen.class) .queryParam("startIndex", Math.max(0, startIndex - maxResults)).queryParam("maxResults", Math.min(startIndex, maxResults)).build().toString()));
         }
         if (!list.isEmpty() && list.size() == maxResults) {
-          result.setNext(new CollectionLinkBinding(ParentBParent.class, startIndex + maxResults, maxResults));
+          result.setNext(new CollectionLinkBinding("next", new UriBuilderImpl().path(ParentBParentResourceCollectionCodegen.class).queryParam("startIndex", startIndex + maxResults).queryParam("maxResults", maxResults).build().toString()));
         }
         return result;
       }

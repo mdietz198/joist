@@ -10,8 +10,8 @@ import joist.codegen.dtos.ManyToOneProperty;
 import joist.codegen.dtos.OneToManyProperty;
 import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
+import joist.rs.CollectionLinkBinding;
 import joist.rs.ObjectLinkBinding;
-import joist.rs.PagedCollectionBinding;
 import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.GClass;
@@ -66,30 +66,22 @@ public class GenerateBindingCodegenPass implements Pass<RestCodegen> {
 
   private void oneToManyProperties(GClass bindingCodegen, RestEntity restEntity) {
     for (OneToManyProperty p : restEntity.entity.getOneToManyProperties()) {
-      if (p.isCollectionSkipped() || p.isManyToMany()) {
-        continue;
-      }
-
       GField field = bindingCodegen.getField(p.getVariableName()).setPublic();
       if (p.isOneToOne()) {
         field.type(ObjectLinkBinding.class);
         bindingCodegen.addImports(ObjectLinkBinding.class);
       } else {
-        field.type(PagedCollectionBinding.class);
-        bindingCodegen.addImports(PagedCollectionBinding.class);
+        field.type(CollectionLinkBinding.class);
+        bindingCodegen.addImports(CollectionLinkBinding.class);
       }
     }
   }
 
   private void manyToManyProperties(GClass bindingCodegen, RestEntity restEntity) {
     for (ManyToManyProperty p : restEntity.entity.getManyToManyProperties()) {
-      if (p.getMySideOneToMany().isCollectionSkipped()) {
-        continue;
-      }
-
       GField field = bindingCodegen.getField(p.getVariableName()).setPublic();
-      field.type(PagedCollectionBinding.class);
-      bindingCodegen.addImports(PagedCollectionBinding.class);
+      field.type(CollectionLinkBinding.class);
+      bindingCodegen.addImports(CollectionLinkBinding.class);
     }
   }
 }
