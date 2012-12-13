@@ -77,28 +77,29 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
         String domainGetter = "domainObject.get" + p.getCapitalVariableNameSingular() + "()";
         to.body.line("binding.{} = {} == null ? null : new ObjectLinkBinding({});", p.getVariableName(), domainGetter, domainGetter);
       } else {
-        to.body
-          .line(
-            "binding.{} = new CollectionLinkBinding(\"{}\", new UriBuilderImpl().path({}.class).queryParam(\"startIndex\", 0).queryParam(\"maxResults\", {}).queryParam(\"{}\", domainObject.getId()).build().toString());",
-            p.getVariableName(),
-            p.getVariableName(),
-            new RestEntity(p.getManySide(), restEntity.getConfig()).getResourceCollectionClassName(),
-            restEntity.getConfig().defaultMaxResults,
-            restEntity.entity.getVariableName());
+        this.addBindingCollectionAssignmentIfNeeded(to, p.getVariableName(), restEntity, new RestEntity(p.getManySide(), restEntity.getConfig()));
       }
     }
   }
 
   private void copyManyToManyPropertiesToBinding(GMethod to, RestEntity restEntity) {
     for (ManyToManyProperty p : restEntity.getManyToManyPropertiesIncludingInherited()) {
+      this.addBindingCollectionAssignmentIfNeeded(to, p.getVariableName(), restEntity, new RestEntity(
+        p.getMySideOneToMany().getManySide(),
+        restEntity.getConfig()));
+    }
+  }
+
+  private void addBindingCollectionAssignmentIfNeeded(GMethod to, String variableName, RestEntity oneSideEntity, RestEntity manySideEntity) {
+    if (!manySideEntity.entity.isAbstract()) {
       to.body
         .line(
           "binding.{} = new CollectionLinkBinding(\"{}\", new UriBuilderImpl().path({}.class).queryParam(\"startIndex\", 0).queryParam(\"maxResults\", {}).queryParam(\"{}\", domainObject.getId()).build().toString());",
-          p.getVariableName(),
-          p.getVariableName(),
-          new RestEntity(p.getMySideOneToMany().getManySide(), restEntity.getConfig()).getResourceCollectionClassName(),
-          restEntity.getConfig().defaultMaxResults,
-          restEntity.entity.getVariableName());
+          variableName,
+          variableName,
+          manySideEntity.getResourceCollectionClassName(),
+          oneSideEntity.getConfig().defaultMaxResults,
+          oneSideEntity.entity.getVariableName());
     }
   }
 

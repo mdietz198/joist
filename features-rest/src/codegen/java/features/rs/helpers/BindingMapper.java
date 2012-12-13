@@ -255,7 +255,6 @@ public class BindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.inheritanceABases = new CollectionLinkBinding("inheritanceABases", new UriBuilderImpl().path(InheritanceABaseResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("inheritanceAOwner", domainObject.getId()).build().toString());
     return binding;
   }
 
