@@ -8,7 +8,6 @@ import joist.codegen.dtos.PrimitiveProperty;
 import joist.codegen.passes.Pass;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.ObjectLinkBinding;
-import joist.rs.PagedCollectionBinding;
 import joist.rs.codegen.RestCodegen;
 import joist.rs.codegen.entities.RestEntity;
 import joist.sourcegen.Argument;
@@ -17,18 +16,18 @@ import joist.sourcegen.GMethod;
 
 import com.sun.jersey.api.uri.UriBuilderImpl;
 
-public class GenerateBindingMapperPass implements Pass<RestCodegen> {
+public class GenerateBindingMappersPass implements Pass<RestCodegen> {
 
   public void pass(RestCodegen codegen) {
-    GClass bindingMapper = codegen.getOutputCodegenDirectory().getClass(codegen.getConfig().getRestHelpersPackage() + ".BindingMapper");
-    bindingMapper.getConstructor().setPrivate();
-
     for (Entity entity : codegen.getSchema().getEntities().values()) {
       if (entity.isAbstract() || entity.isCodeEntity()) {
         continue;
       }
-      RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
 
+      RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
+      GClass bindingMapper = codegen.getOutputCodegenDirectory().getClass(
+        codegen.getConfig().getRestMappersPackage() + "." + restEntity.getBindingMapperClassName());
+      bindingMapper.getConstructor().setPrivate();
       this.addToBinding(bindingMapper, restEntity);
       this.addToDomain(bindingMapper, restEntity);
     }
@@ -42,16 +41,12 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
 
     to.body.line("{} binding = new {}();", restEntity.getBindingClassName(), restEntity.getBindingClassName());
     this.copyPrimitivePropertiesToBinding(to, restEntity);
-    this.copyManyToOnePropertiesToBinding(to, restEntity);
-    this.copyOneToManyPropertiesToBinding(to, restEntity);
-    this.copyManyToManyPropertiesToBinding(to, restEntity);
+    this.copyManyToOnePropertiesToBinding(bindingMapper, to, restEntity);
+    this.copyOneToManyPropertiesToBinding(bindingMapper, to, restEntity);
+    this.copyManyToManyPropertiesToBinding(bindingMapper, to, restEntity);
     to.body.line("return binding;");
 
-    bindingMapper.addImports(ObjectLinkBinding.class, PagedCollectionBinding.class, UriBuilderImpl.class, CollectionLinkBinding.class);
-    bindingMapper.addImports(
-      restEntity.entity.getFullClassName(),
-      restEntity.getFullBindingClassName(),
-      restEntity.getFullResourceCollectionClassName());
+    bindingMapper.addImports(restEntity.entity.getFullClassName(), restEntity.getFullBindingClassName());
   }
 
   private void copyPrimitivePropertiesToBinding(GMethod to, RestEntity restEntity) {
@@ -60,37 +55,49 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
     }
   }
 
-  private void copyManyToOnePropertiesToBinding(GMethod to, RestEntity restEntity) {
+  private void copyManyToOnePropertiesToBinding(GClass bindingMapper, GMethod to, RestEntity restEntity) {
     for (ManyToOneProperty p : restEntity.getManyToOnePropertiesIncludingInherited()) {
       String domainGetter = "domainObject.get" + p.getCapitalVariableName() + "()";
       if (p.getOneSide().isCodeEntity()) {
         to.body.line("binding.{} = {} == null ? null : {}.toString();", p.getVariableName(), domainGetter, domainGetter);
       } else {
         to.body.line("binding.{} = {} == null ? null : new ObjectLinkBinding({});", p.getVariableName(), domainGetter, domainGetter);
+        bindingMapper.addImports(ObjectLinkBinding.class);
       }
     }
   }
 
-  private void copyOneToManyPropertiesToBinding(GMethod to, RestEntity restEntity) {
+  private void copyOneToManyPropertiesToBinding(GClass bindingMapper, GMethod to, RestEntity restEntity) {
     for (OneToManyProperty p : restEntity.getOneToManyPropertiesIncludingInherited()) {
       if (p.isOneToOne()) {
         String domainGetter = "domainObject.get" + p.getCapitalVariableNameSingular() + "()";
         to.body.line("binding.{} = {} == null ? null : new ObjectLinkBinding({});", p.getVariableName(), domainGetter, domainGetter);
+        bindingMapper.addImports(ObjectLinkBinding.class);
       } else {
-        this.addBindingCollectionAssignmentIfNeeded(to, p.getVariableName(), restEntity, new RestEntity(p.getManySide(), restEntity.getConfig()));
+        this.addBindingCollectionAssignmentIfNeeded(
+          bindingMapper,
+          to,
+          p.getVariableName(),
+          restEntity,
+          new RestEntity(p.getManySide(), restEntity.getConfig()));
       }
     }
   }
 
-  private void copyManyToManyPropertiesToBinding(GMethod to, RestEntity restEntity) {
+  private void copyManyToManyPropertiesToBinding(GClass bindingMapper, GMethod to, RestEntity restEntity) {
     for (ManyToManyProperty p : restEntity.getManyToManyPropertiesIncludingInherited()) {
-      this.addBindingCollectionAssignmentIfNeeded(to, p.getVariableName(), restEntity, new RestEntity(
-        p.getMySideOneToMany().getManySide(),
-        restEntity.getConfig()));
+      this.addBindingCollectionAssignmentIfNeeded(bindingMapper, to, p.getVariableName(), restEntity, new RestEntity(p
+        .getMySideOneToMany()
+        .getManySide(), restEntity.getConfig()));
     }
   }
 
-  private void addBindingCollectionAssignmentIfNeeded(GMethod to, String variableName, RestEntity oneSideEntity, RestEntity manySideEntity) {
+  private void addBindingCollectionAssignmentIfNeeded(
+    GClass bindingMapper,
+    GMethod to,
+    String variableName,
+    RestEntity oneSideEntity,
+    RestEntity manySideEntity) {
     if (!manySideEntity.entity.isAbstract()) {
       to.body
         .line(
@@ -100,6 +107,8 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
           manySideEntity.getResourceCollectionClassName(),
           oneSideEntity.getConfig().defaultMaxResults,
           oneSideEntity.entity.getVariableName());
+      bindingMapper.addImports(UriBuilderImpl.class, CollectionLinkBinding.class);
+      bindingMapper.addImports(manySideEntity.getFullResourceCollectionClassName());
     }
   }
 
@@ -157,9 +166,9 @@ public class GenerateBindingMapperPass implements Pass<RestCodegen> {
           p.getVariableName(),
           p.getManySide().getClassName(),
           p.getVariableName());
+        bindingMapper.addImports(p.getManySide().getFullClassName());
+        bindingMapper.addImports(ObjectLinkBinding.class);
       }
-      bindingMapper.addImports(p.getManySide().getFullClassName());
-      bindingMapper.addImports(ObjectLinkBinding.class);
     }
   }
 }

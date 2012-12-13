@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.ValidationAFoo;
 import features.rs.binding.ValidationAFooBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.ValidationAFooBindingMapper.toBinding;
+import static features.rs.mappers.ValidationAFooBindingMapper.toDomain;
 
 @Path("/validationAFoos/{id}")
 public class ValidationAFooResourceCodegen extends AbstractResource<ValidationAFooBinding> {
@@ -26,7 +27,7 @@ public class ValidationAFooResourceCodegen extends AbstractResource<ValidationAF
   public ValidationAFooBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ValidationAFooBinding>() {
       public ValidationAFooBinding go() {
-        return BindingMapper.toBinding(ValidationAFoo.queries.find(id));
+        return toBinding(ValidationAFoo.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class ValidationAFooResourceCodegen extends AbstractResource<ValidationAF
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ValidationAFooBinding validationAFoo) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(validationAFoo, ValidationAFoo.queries.find(id));
+        toDomain(validationAFoo, ValidationAFoo.queries.find(id));
       }
     });
   }

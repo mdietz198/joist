@@ -57,6 +57,14 @@ public class RestEntity {
     }
   }
 
+  public String getFullBindingMapperClassName() {
+    return this.getConfig().getRestMappersPackage() + "." + this.getBindingMapperClassName();
+  }
+
+  public String getBindingMapperClassName() {
+    return this.getBindingClassName() + "Mapper";
+  }
+
   public List<PrimitiveProperty> getPrimitivePropertiesIncludingInherited() {
     List<PrimitiveProperty> props = new ArrayList<PrimitiveProperty>();
     if (this.entity.getBaseEntity() != null) {

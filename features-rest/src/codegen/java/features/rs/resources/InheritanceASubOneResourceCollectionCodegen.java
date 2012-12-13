@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.InheritanceASubOne;
 import features.domain.InheritanceASubOneAlias;
 import features.rs.binding.InheritanceASubOneBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.InheritanceASubOneBindingMapper.toDomain;
 
 @Path("/inheritanceASubOnes")
 public class InheritanceASubOneResourceCollectionCodegen {
@@ -67,7 +67,7 @@ public class InheritanceASubOneResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<InheritanceASubOne>() {
       public InheritanceASubOne go() {
         InheritanceASubOne domainObject = new InheritanceASubOne();
-        BindingMapper.toDomain(inheritanceASubOne, domainObject);
+        toDomain(inheritanceASubOne, domainObject);
         return domainObject;
       }
     }).getId();

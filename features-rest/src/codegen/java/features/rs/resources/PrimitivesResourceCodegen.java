@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.Primitives;
 import features.rs.binding.PrimitivesBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.PrimitivesBindingMapper.toBinding;
+import static features.rs.mappers.PrimitivesBindingMapper.toDomain;
 
 @Path("/primitivess/{id}")
 public class PrimitivesResourceCodegen extends AbstractResource<PrimitivesBinding> {
@@ -26,7 +27,7 @@ public class PrimitivesResourceCodegen extends AbstractResource<PrimitivesBindin
   public PrimitivesBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<PrimitivesBinding>() {
       public PrimitivesBinding go() {
-        return BindingMapper.toBinding(Primitives.queries.find(id));
+        return toBinding(Primitives.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class PrimitivesResourceCodegen extends AbstractResource<PrimitivesBindin
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final PrimitivesBinding primitives) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(primitives, Primitives.queries.find(id));
+        toDomain(primitives, Primitives.queries.find(id));
       }
     });
   }

@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ParentF;
 import features.domain.ParentFAlias;
 import features.rs.binding.ParentFBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.ParentFBindingMapper.toDomain;
 
 @Path("/parentFs")
 public class ParentFResourceCollectionCodegen {
@@ -64,7 +64,7 @@ public class ParentFResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<ParentF>() {
       public ParentF go() {
         ParentF domainObject = new ParentF();
-        BindingMapper.toDomain(parentF, domainObject);
+        toDomain(parentF, domainObject);
         return domainObject;
       }
     }).getId();

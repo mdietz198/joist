@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.OneToOneBFoo;
 import features.rs.binding.OneToOneBFooBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.OneToOneBFooBindingMapper.toBinding;
+import static features.rs.mappers.OneToOneBFooBindingMapper.toDomain;
 
 @Path("/oneToOneBFoos/{id}")
 public class OneToOneBFooResourceCodegen extends AbstractResource<OneToOneBFooBinding> {
@@ -26,7 +27,7 @@ public class OneToOneBFooResourceCodegen extends AbstractResource<OneToOneBFooBi
   public OneToOneBFooBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<OneToOneBFooBinding>() {
       public OneToOneBFooBinding go() {
-        return BindingMapper.toBinding(OneToOneBFoo.queries.find(id));
+        return toBinding(OneToOneBFoo.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class OneToOneBFooResourceCodegen extends AbstractResource<OneToOneBFooBi
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final OneToOneBFooBinding oneToOneBFoo) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(oneToOneBFoo, OneToOneBFoo.queries.find(id));
+        toDomain(oneToOneBFoo, OneToOneBFoo.queries.find(id));
       }
     });
   }

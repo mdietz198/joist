@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.CodeADomainObject;
 import features.rs.binding.CodeADomainObjectBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.CodeADomainObjectBindingMapper.toBinding;
+import static features.rs.mappers.CodeADomainObjectBindingMapper.toDomain;
 
 @Path("/codeADomainObjects/{id}")
 public class CodeADomainObjectResourceCodegen extends AbstractResource<CodeADomainObjectBinding> {
@@ -26,7 +27,7 @@ public class CodeADomainObjectResourceCodegen extends AbstractResource<CodeADoma
   public CodeADomainObjectBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<CodeADomainObjectBinding>() {
       public CodeADomainObjectBinding go() {
-        return BindingMapper.toBinding(CodeADomainObject.queries.find(id));
+        return toBinding(CodeADomainObject.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class CodeADomainObjectResourceCodegen extends AbstractResource<CodeADoma
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final CodeADomainObjectBinding codeADomainObject) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(codeADomainObject, CodeADomainObject.queries.find(id));
+        toDomain(codeADomainObject, CodeADomainObject.queries.find(id));
       }
     });
   }

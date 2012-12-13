@@ -32,6 +32,8 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
 
       RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
       GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceClassName());
+      resourceCodegen.addImports("static " + restEntity.getFullBindingMapperClassName() + ".toDomain");
+      resourceCodegen.addImports("static " + restEntity.getFullBindingMapperClassName() + ".toBinding");
       resourceCodegen.addImports(entity.getFullClassName());
       resourceCodegen.addImports(Context.class, Repository.class, AbstractResource.class);
       resourceCodegen.baseClassName("AbstractResource<{}>", restEntity.getBindingClassName());
@@ -56,11 +58,11 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
     get.returnType(restEntity.getBindingClassName());
     get.body.line("return UoW.read(repo, new BlockWithReturn<{}>() {", restEntity.getBindingClassName());
     get.body.line("_   public {} go() {", restEntity.getBindingClassName());
-    get.body.line("_   _   return BindingMapper.toBinding({}.queries.find(id));", restEntity.entity.getClassName());
+    get.body.line("_   _   return toBinding({}.queries.find(id));", restEntity.entity.getClassName());
     get.body.line("_   }");
     get.body.line("});");
     resourceCodegen.addImports(GET.class, Produces.class, PathParam.class, UoW.class, BlockWithReturn.class);
-    resourceCodegen.addImports(restEntity.getFullBindingClassName(), restEntity.getConfig().getRestHelpersPackage() + ".BindingMapper");
+    resourceCodegen.addImports(restEntity.getFullBindingClassName());
   }
 
   private void addPut(GClass resourceCodegen, RestEntity restEntity) {
@@ -74,7 +76,7 @@ public class GenerateResourceCodegenPass implements Pass<RestCodegen> {
     put.argument("final " + restEntity.getBindingClassName(), varName);
     put.body.line("UoW.go(repo, null, new Block() {");
     put.body.line("_   public void go() {");
-    put.body.line("_   _   BindingMapper.toDomain(" + varName + ", " + className + ".queries.find(id));");
+    put.body.line("_   _   toDomain(" + varName + ", " + className + ".queries.find(id));");
     put.body.line("_   }");
     put.body.line("});");
     resourceCodegen.addImports(PUT.class, Consumes.class, PathParam.class, Block.class);

@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.PrimitivesC;
 import features.domain.PrimitivesCAlias;
 import features.rs.binding.PrimitivesCBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.PrimitivesCBindingMapper.toDomain;
 
 @Path("/primitivesCs")
 public class PrimitivesCResourceCollectionCodegen {
@@ -58,7 +58,7 @@ public class PrimitivesCResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<PrimitivesC>() {
       public PrimitivesC go() {
         PrimitivesC domainObject = new PrimitivesC();
-        BindingMapper.toDomain(primitivesC, domainObject);
+        toDomain(primitivesC, domainObject);
         return domainObject;
       }
     }).getId();

@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.InheritanceBRootChild;
 import features.domain.InheritanceBRootChildAlias;
 import features.rs.binding.InheritanceBRootChildBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.InheritanceBRootChildBindingMapper.toDomain;
 
 @Path("/inheritanceBRootChilds")
 public class InheritanceBRootChildResourceCollectionCodegen {
@@ -61,7 +61,7 @@ public class InheritanceBRootChildResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<InheritanceBRootChild>() {
       public InheritanceBRootChild go() {
         InheritanceBRootChild domainObject = new InheritanceBRootChild();
-        BindingMapper.toDomain(inheritanceBRootChild, domainObject);
+        toDomain(inheritanceBRootChild, domainObject);
         return domainObject;
       }
     }).getId();

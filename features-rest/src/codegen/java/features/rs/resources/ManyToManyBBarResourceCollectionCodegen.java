@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ManyToManyBBar;
 import features.domain.ManyToManyBBarAlias;
 import features.rs.binding.ManyToManyBBarBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.ManyToManyBBarBindingMapper.toDomain;
 
 @Path("/manyToManyBBars")
 public class ManyToManyBBarResourceCollectionCodegen {
@@ -58,7 +58,7 @@ public class ManyToManyBBarResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<ManyToManyBBar>() {
       public ManyToManyBBar go() {
         ManyToManyBBar domainObject = new ManyToManyBBar();
-        BindingMapper.toDomain(manyToManyBBar, domainObject);
+        toDomain(manyToManyBBar, domainObject);
         return domainObject;
       }
     }).getId();

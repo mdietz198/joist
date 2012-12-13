@@ -6,7 +6,6 @@ import features.domain.CodeADomainObject;
 import features.domain.CodeADomainObjectAlias;
 import features.domain.CodeASize;
 import features.rs.binding.CodeADomainObjectBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,6 +20,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.CodeADomainObjectBindingMapper.toDomain;
 
 @Path("/codeADomainObjects")
 public class CodeADomainObjectResourceCollectionCodegen {
@@ -66,7 +66,7 @@ public class CodeADomainObjectResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<CodeADomainObject>() {
       public CodeADomainObject go() {
         CodeADomainObject domainObject = new CodeADomainObject();
-        BindingMapper.toDomain(codeADomainObject, domainObject);
+        toDomain(codeADomainObject, domainObject);
         return domainObject;
       }
     }).getId();

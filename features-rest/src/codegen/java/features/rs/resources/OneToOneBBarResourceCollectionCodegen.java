@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.OneToOneBBar;
 import features.domain.OneToOneBBarAlias;
 import features.rs.binding.OneToOneBBarBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.OneToOneBBarBindingMapper.toDomain;
 
 @Path("/oneToOneBBars")
 public class OneToOneBBarResourceCollectionCodegen {
@@ -61,7 +61,7 @@ public class OneToOneBBarResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<OneToOneBBar>() {
       public OneToOneBBar go() {
         OneToOneBBar domainObject = new OneToOneBBar();
-        BindingMapper.toDomain(oneToOneBBar, domainObject);
+        toDomain(oneToOneBBar, domainObject);
         return domainObject;
       }
     }).getId();

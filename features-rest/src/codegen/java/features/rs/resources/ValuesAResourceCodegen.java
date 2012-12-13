@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.ValuesA;
 import features.rs.binding.ValuesABinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.ValuesABindingMapper.toBinding;
+import static features.rs.mappers.ValuesABindingMapper.toDomain;
 
 @Path("/valuesAs/{id}")
 public class ValuesAResourceCodegen extends AbstractResource<ValuesABinding> {
@@ -26,7 +27,7 @@ public class ValuesAResourceCodegen extends AbstractResource<ValuesABinding> {
   public ValuesABinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ValuesABinding>() {
       public ValuesABinding go() {
-        return BindingMapper.toBinding(ValuesA.queries.find(id));
+        return toBinding(ValuesA.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class ValuesAResourceCodegen extends AbstractResource<ValuesABinding> {
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ValuesABinding valuesA) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(valuesA, ValuesA.queries.find(id));
+        toDomain(valuesA, ValuesA.queries.find(id));
       }
     });
   }

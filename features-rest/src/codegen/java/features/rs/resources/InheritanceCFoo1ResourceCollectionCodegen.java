@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.InheritanceCFoo1;
 import features.domain.InheritanceCFoo1Alias;
 import features.rs.binding.InheritanceCFoo1Binding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.InheritanceCFoo1BindingMapper.toDomain;
 
 @Path("/inheritanceCFoo1s")
 public class InheritanceCFoo1ResourceCollectionCodegen {
@@ -61,7 +61,7 @@ public class InheritanceCFoo1ResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<InheritanceCFoo1>() {
       public InheritanceCFoo1 go() {
         InheritanceCFoo1 domainObject = new InheritanceCFoo1();
-        BindingMapper.toDomain(inheritanceCFoo1, domainObject);
+        toDomain(inheritanceCFoo1, domainObject);
         return domainObject;
       }
     }).getId();

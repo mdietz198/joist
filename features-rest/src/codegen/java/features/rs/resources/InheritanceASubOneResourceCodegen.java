@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.InheritanceASubOne;
 import features.rs.binding.InheritanceASubOneBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.InheritanceASubOneBindingMapper.toBinding;
+import static features.rs.mappers.InheritanceASubOneBindingMapper.toDomain;
 
 @Path("/inheritanceASubOnes/{id}")
 public class InheritanceASubOneResourceCodegen extends AbstractResource<InheritanceASubOneBinding> {
@@ -26,7 +27,7 @@ public class InheritanceASubOneResourceCodegen extends AbstractResource<Inherita
   public InheritanceASubOneBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<InheritanceASubOneBinding>() {
       public InheritanceASubOneBinding go() {
-        return BindingMapper.toBinding(InheritanceASubOne.queries.find(id));
+        return toBinding(InheritanceASubOne.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class InheritanceASubOneResourceCodegen extends AbstractResource<Inherita
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final InheritanceASubOneBinding inheritanceASubOne) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(inheritanceASubOne, InheritanceASubOne.queries.find(id));
+        toDomain(inheritanceASubOne, InheritanceASubOne.queries.find(id));
       }
     });
   }

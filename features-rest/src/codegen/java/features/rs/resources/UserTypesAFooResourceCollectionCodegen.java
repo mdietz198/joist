@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.UserTypesAFoo;
 import features.domain.UserTypesAFooAlias;
 import features.rs.binding.UserTypesAFooBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.UserTypesAFooBindingMapper.toDomain;
 
 @Path("/userTypesAFoos")
 public class UserTypesAFooResourceCollectionCodegen {
@@ -58,7 +58,7 @@ public class UserTypesAFooResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<UserTypesAFoo>() {
       public UserTypesAFoo go() {
         UserTypesAFoo domainObject = new UserTypesAFoo();
-        BindingMapper.toDomain(userTypesAFoo, domainObject);
+        toDomain(userTypesAFoo, domainObject);
         return domainObject;
       }
     }).getId();

@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.HistoryEntry;
 import features.domain.HistoryEntryAlias;
 import features.rs.binding.HistoryEntryBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.HistoryEntryBindingMapper.toDomain;
 
 @Path("/historyEntrys")
 public class HistoryEntryResourceCollectionCodegen {
@@ -76,7 +76,7 @@ public class HistoryEntryResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<HistoryEntry>() {
       public HistoryEntry go() {
         HistoryEntry domainObject = new HistoryEntry();
-        BindingMapper.toDomain(historyEntry, domainObject);
+        toDomain(historyEntry, domainObject);
         return domainObject;
       }
     }).getId();

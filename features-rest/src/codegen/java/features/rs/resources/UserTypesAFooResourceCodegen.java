@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.UserTypesAFoo;
 import features.rs.binding.UserTypesAFooBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.UserTypesAFooBindingMapper.toBinding;
+import static features.rs.mappers.UserTypesAFooBindingMapper.toDomain;
 
 @Path("/userTypesAFoos/{id}")
 public class UserTypesAFooResourceCodegen extends AbstractResource<UserTypesAFooBinding> {
@@ -26,7 +27,7 @@ public class UserTypesAFooResourceCodegen extends AbstractResource<UserTypesAFoo
   public UserTypesAFooBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<UserTypesAFooBinding>() {
       public UserTypesAFooBinding go() {
-        return BindingMapper.toBinding(UserTypesAFoo.queries.find(id));
+        return toBinding(UserTypesAFoo.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class UserTypesAFooResourceCodegen extends AbstractResource<UserTypesAFoo
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final UserTypesAFooBinding userTypesAFoo) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(userTypesAFoo, UserTypesAFoo.queries.find(id));
+        toDomain(userTypesAFoo, UserTypesAFoo.queries.find(id));
       }
     });
   }

@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.InheritanceBBottom;
 import features.rs.binding.InheritanceBBottomBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.InheritanceBBottomBindingMapper.toBinding;
+import static features.rs.mappers.InheritanceBBottomBindingMapper.toDomain;
 
 @Path("/inheritanceBBottoms/{id}")
 public class InheritanceBBottomResourceCodegen extends AbstractResource<InheritanceBBottomBinding> {
@@ -26,7 +27,7 @@ public class InheritanceBBottomResourceCodegen extends AbstractResource<Inherita
   public InheritanceBBottomBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<InheritanceBBottomBinding>() {
       public InheritanceBBottomBinding go() {
-        return BindingMapper.toBinding(InheritanceBBottom.queries.find(id));
+        return toBinding(InheritanceBBottom.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class InheritanceBBottomResourceCodegen extends AbstractResource<Inherita
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final InheritanceBBottomBinding inheritanceBBottom) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(inheritanceBBottom, InheritanceBBottom.queries.find(id));
+        toDomain(inheritanceBBottom, InheritanceBBottom.queries.find(id));
       }
     });
   }

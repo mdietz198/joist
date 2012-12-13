@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ParentBChildBar;
 import features.domain.ParentBChildBarAlias;
 import features.rs.binding.ParentBChildBarBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.ParentBChildBarBindingMapper.toDomain;
 
 @Path("/parentBChildBars")
 public class ParentBChildBarResourceCollectionCodegen {
@@ -61,7 +61,7 @@ public class ParentBChildBarResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<ParentBChildBar>() {
       public ParentBChildBar go() {
         ParentBChildBar domainObject = new ParentBChildBar();
-        BindingMapper.toDomain(parentBChildBar, domainObject);
+        toDomain(parentBChildBar, domainObject);
         return domainObject;
       }
     }).getId();

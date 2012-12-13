@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.ParentCFoo;
 import features.rs.binding.ParentCFooBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.ParentCFooBindingMapper.toBinding;
+import static features.rs.mappers.ParentCFooBindingMapper.toDomain;
 
 @Path("/parentCFoos/{id}")
 public class ParentCFooResourceCodegen extends AbstractResource<ParentCFooBinding> {
@@ -26,7 +27,7 @@ public class ParentCFooResourceCodegen extends AbstractResource<ParentCFooBindin
   public ParentCFooBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ParentCFooBinding>() {
       public ParentCFooBinding go() {
-        return BindingMapper.toBinding(ParentCFoo.queries.find(id));
+        return toBinding(ParentCFoo.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class ParentCFooResourceCodegen extends AbstractResource<ParentCFooBindin
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ParentCFooBinding parentCFoo) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(parentCFoo, ParentCFoo.queries.find(id));
+        toDomain(parentCFoo, ParentCFoo.queries.find(id));
       }
     });
   }

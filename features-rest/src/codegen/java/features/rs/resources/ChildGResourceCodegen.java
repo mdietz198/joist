@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.ChildG;
 import features.rs.binding.ChildGBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.ChildGBindingMapper.toBinding;
+import static features.rs.mappers.ChildGBindingMapper.toDomain;
 
 @Path("/childGs/{id}")
 public class ChildGResourceCodegen extends AbstractResource<ChildGBinding> {
@@ -26,7 +27,7 @@ public class ChildGResourceCodegen extends AbstractResource<ChildGBinding> {
   public ChildGBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ChildGBinding>() {
       public ChildGBinding go() {
-        return BindingMapper.toBinding(ChildG.queries.find(id));
+        return toBinding(ChildG.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class ChildGResourceCodegen extends AbstractResource<ChildGBinding> {
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ChildGBinding childG) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(childG, ChildG.queries.find(id));
+        toDomain(childG, ChildG.queries.find(id));
       }
     });
   }

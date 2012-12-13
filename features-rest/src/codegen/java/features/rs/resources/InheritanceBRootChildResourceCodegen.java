@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.InheritanceBRootChild;
 import features.rs.binding.InheritanceBRootChildBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.InheritanceBRootChildBindingMapper.toBinding;
+import static features.rs.mappers.InheritanceBRootChildBindingMapper.toDomain;
 
 @Path("/inheritanceBRootChilds/{id}")
 public class InheritanceBRootChildResourceCodegen extends AbstractResource<InheritanceBRootChildBinding> {
@@ -26,7 +27,7 @@ public class InheritanceBRootChildResourceCodegen extends AbstractResource<Inher
   public InheritanceBRootChildBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<InheritanceBRootChildBinding>() {
       public InheritanceBRootChildBinding go() {
-        return BindingMapper.toBinding(InheritanceBRootChild.queries.find(id));
+        return toBinding(InheritanceBRootChild.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class InheritanceBRootChildResourceCodegen extends AbstractResource<Inher
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final InheritanceBRootChildBinding inheritanceBRootChild) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(inheritanceBRootChild, InheritanceBRootChild.queries.find(id));
+        toDomain(inheritanceBRootChild, InheritanceBRootChild.queries.find(id));
       }
     });
   }

@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ValuesB;
 import features.domain.ValuesBAlias;
 import features.rs.binding.ValuesBBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.ValuesBBindingMapper.toDomain;
 
 @Path("/valuesBs")
 public class ValuesBResourceCollectionCodegen {
@@ -58,7 +58,7 @@ public class ValuesBResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<ValuesB>() {
       public ValuesB go() {
         ValuesB domainObject = new ValuesB();
-        BindingMapper.toDomain(valuesB, domainObject);
+        toDomain(valuesB, domainObject);
         return domainObject;
       }
     }).getId();

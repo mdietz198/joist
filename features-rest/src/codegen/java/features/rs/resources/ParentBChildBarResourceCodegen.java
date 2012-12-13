@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.ParentBChildBar;
 import features.rs.binding.ParentBChildBarBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.ParentBChildBarBindingMapper.toBinding;
+import static features.rs.mappers.ParentBChildBarBindingMapper.toDomain;
 
 @Path("/parentBChildBars/{id}")
 public class ParentBChildBarResourceCodegen extends AbstractResource<ParentBChildBarBinding> {
@@ -26,7 +27,7 @@ public class ParentBChildBarResourceCodegen extends AbstractResource<ParentBChil
   public ParentBChildBarBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ParentBChildBarBinding>() {
       public ParentBChildBarBinding go() {
-        return BindingMapper.toBinding(ParentBChildBar.queries.find(id));
+        return toBinding(ParentBChildBar.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class ParentBChildBarResourceCodegen extends AbstractResource<ParentBChil
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ParentBChildBarBinding parentBChildBar) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(parentBChildBar, ParentBChildBar.queries.find(id));
+        toDomain(parentBChildBar, ParentBChildBar.queries.find(id));
       }
     });
   }

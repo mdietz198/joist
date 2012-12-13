@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.InheritanceAThing;
 import features.rs.binding.InheritanceAThingBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.InheritanceAThingBindingMapper.toBinding;
+import static features.rs.mappers.InheritanceAThingBindingMapper.toDomain;
 
 @Path("/inheritanceAThings/{id}")
 public class InheritanceAThingResourceCodegen extends AbstractResource<InheritanceAThingBinding> {
@@ -26,7 +27,7 @@ public class InheritanceAThingResourceCodegen extends AbstractResource<Inheritan
   public InheritanceAThingBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<InheritanceAThingBinding>() {
       public InheritanceAThingBinding go() {
-        return BindingMapper.toBinding(InheritanceAThing.queries.find(id));
+        return toBinding(InheritanceAThing.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class InheritanceAThingResourceCodegen extends AbstractResource<Inheritan
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final InheritanceAThingBinding inheritanceAThing) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(inheritanceAThing, InheritanceAThing.queries.find(id));
+        toDomain(inheritanceAThing, InheritanceAThing.queries.find(id));
       }
     });
   }

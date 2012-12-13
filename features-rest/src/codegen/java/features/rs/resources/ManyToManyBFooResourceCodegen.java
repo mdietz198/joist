@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.ManyToManyBFoo;
 import features.rs.binding.ManyToManyBFooBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.ManyToManyBFooBindingMapper.toBinding;
+import static features.rs.mappers.ManyToManyBFooBindingMapper.toDomain;
 
 @Path("/manyToManyBFoos/{id}")
 public class ManyToManyBFooResourceCodegen extends AbstractResource<ManyToManyBFooBinding> {
@@ -26,7 +27,7 @@ public class ManyToManyBFooResourceCodegen extends AbstractResource<ManyToManyBF
   public ManyToManyBFooBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ManyToManyBFooBinding>() {
       public ManyToManyBFooBinding go() {
-        return BindingMapper.toBinding(ManyToManyBFoo.queries.find(id));
+        return toBinding(ManyToManyBFoo.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class ManyToManyBFooResourceCodegen extends AbstractResource<ManyToManyBF
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ManyToManyBFooBinding manyToManyBFoo) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(manyToManyBFoo, ManyToManyBFoo.queries.find(id));
+        toDomain(manyToManyBFoo, ManyToManyBFoo.queries.find(id));
       }
     });
   }

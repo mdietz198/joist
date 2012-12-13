@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ValidationAFoo;
 import features.domain.ValidationAFooAlias;
 import features.rs.binding.ValidationAFooBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.ValidationAFooBindingMapper.toDomain;
 
 @Path("/validationAFoos")
 public class ValidationAFooResourceCollectionCodegen {
@@ -58,7 +58,7 @@ public class ValidationAFooResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<ValidationAFoo>() {
       public ValidationAFoo go() {
         ValidationAFoo domainObject = new ValidationAFoo();
-        BindingMapper.toDomain(validationAFoo, domainObject);
+        toDomain(validationAFoo, domainObject);
         return domainObject;
       }
     }).getId();

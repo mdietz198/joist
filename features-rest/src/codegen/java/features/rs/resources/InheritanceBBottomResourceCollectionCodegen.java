@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.InheritanceBBottom;
 import features.domain.InheritanceBBottomAlias;
 import features.rs.binding.InheritanceBBottomBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.InheritanceBBottomBindingMapper.toDomain;
 
 @Path("/inheritanceBBottoms")
 public class InheritanceBBottomResourceCollectionCodegen {
@@ -64,7 +64,7 @@ public class InheritanceBBottomResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<InheritanceBBottom>() {
       public InheritanceBBottom go() {
         InheritanceBBottom domainObject = new InheritanceBBottom();
-        BindingMapper.toDomain(inheritanceBBottom, domainObject);
+        toDomain(inheritanceBBottom, domainObject);
         return domainObject;
       }
     }).getId();

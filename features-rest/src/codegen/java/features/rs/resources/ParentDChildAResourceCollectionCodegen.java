@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.ParentDChildA;
 import features.domain.ParentDChildAAlias;
 import features.rs.binding.ParentDChildABinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.ParentDChildABindingMapper.toDomain;
 
 @Path("/parentDChildAs")
 public class ParentDChildAResourceCollectionCodegen {
@@ -61,7 +61,7 @@ public class ParentDChildAResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<ParentDChildA>() {
       public ParentDChildA go() {
         ParentDChildA domainObject = new ParentDChildA();
-        BindingMapper.toDomain(parentDChildA, domainObject);
+        toDomain(parentDChildA, domainObject);
         return domainObject;
       }
     }).getId();

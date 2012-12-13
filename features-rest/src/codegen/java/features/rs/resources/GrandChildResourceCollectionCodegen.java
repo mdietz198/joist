@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.GrandChild;
 import features.domain.GrandChildAlias;
 import features.rs.binding.GrandChildBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.GrandChildBindingMapper.toDomain;
 
 @Path("/grandChilds")
 public class GrandChildResourceCollectionCodegen {
@@ -61,7 +61,7 @@ public class GrandChildResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<GrandChild>() {
       public GrandChild go() {
         GrandChild domainObject = new GrandChild();
-        BindingMapper.toDomain(grandChild, domainObject);
+        toDomain(grandChild, domainObject);
         return domainObject;
       }
     }).getId();

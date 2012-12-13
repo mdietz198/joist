@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.ParentD;
 import features.rs.binding.ParentDBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.ParentDBindingMapper.toBinding;
+import static features.rs.mappers.ParentDBindingMapper.toDomain;
 
 @Path("/parentDs/{id}")
 public class ParentDResourceCodegen extends AbstractResource<ParentDBinding> {
@@ -26,7 +27,7 @@ public class ParentDResourceCodegen extends AbstractResource<ParentDBinding> {
   public ParentDBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<ParentDBinding>() {
       public ParentDBinding go() {
-        return BindingMapper.toBinding(ParentD.queries.find(id));
+        return toBinding(ParentD.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class ParentDResourceCodegen extends AbstractResource<ParentDBinding> {
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final ParentDBinding parentD) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(parentD, ParentD.queries.find(id));
+        toDomain(parentD, ParentD.queries.find(id));
       }
     });
   }

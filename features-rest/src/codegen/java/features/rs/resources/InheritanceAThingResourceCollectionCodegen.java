@@ -4,7 +4,6 @@ import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.InheritanceAThing;
 import features.domain.InheritanceAThingAlias;
 import features.rs.binding.InheritanceAThingBinding;
-import features.rs.helpers.BindingMapper;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.PagedCollectionBinding;
+import static features.rs.mappers.InheritanceAThingBindingMapper.toDomain;
 
 @Path("/inheritanceAThings")
 public class InheritanceAThingResourceCollectionCodegen {
@@ -58,7 +58,7 @@ public class InheritanceAThingResourceCollectionCodegen {
     return UoW.go(repo, null, new BlockWithReturn<InheritanceAThing>() {
       public InheritanceAThing go() {
         InheritanceAThing domainObject = new InheritanceAThing();
-        BindingMapper.toDomain(inheritanceAThing, domainObject);
+        toDomain(inheritanceAThing, domainObject);
         return domainObject;
       }
     }).getId();

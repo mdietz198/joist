@@ -2,7 +2,6 @@ package features.rs.resources;
 
 import features.domain.OneToOneBBar;
 import features.rs.binding.OneToOneBBarBinding;
-import features.rs.helpers.BindingMapper;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import joist.domain.uow.Block;
 import joist.domain.uow.BlockWithReturn;
 import joist.domain.uow.UoW;
 import joist.rs.AbstractResource;
+import static features.rs.mappers.OneToOneBBarBindingMapper.toBinding;
+import static features.rs.mappers.OneToOneBBarBindingMapper.toDomain;
 
 @Path("/oneToOneBBars/{id}")
 public class OneToOneBBarResourceCodegen extends AbstractResource<OneToOneBBarBinding> {
@@ -26,7 +27,7 @@ public class OneToOneBBarResourceCodegen extends AbstractResource<OneToOneBBarBi
   public OneToOneBBarBinding get(final @Context Repository repo, final @PathParam("id") Long id) {
     return UoW.read(repo, new BlockWithReturn<OneToOneBBarBinding>() {
       public OneToOneBBarBinding go() {
-        return BindingMapper.toBinding(OneToOneBBar.queries.find(id));
+        return toBinding(OneToOneBBar.queries.find(id));
       }
     });
   }
@@ -36,7 +37,7 @@ public class OneToOneBBarResourceCodegen extends AbstractResource<OneToOneBBarBi
   public void put(final @Context Repository repo, final @PathParam("id") Long id, final OneToOneBBarBinding oneToOneBBar) {
     UoW.go(repo, null, new Block() {
       public void go() {
-        BindingMapper.toDomain(oneToOneBBar, OneToOneBBar.queries.find(id));
+        toDomain(oneToOneBBar, OneToOneBBar.queries.find(id));
       }
     });
   }

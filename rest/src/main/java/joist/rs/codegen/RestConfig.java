@@ -4,7 +4,7 @@ import java.util.List;
 
 import joist.codegen.passes.Pass;
 import joist.rs.codegen.passes.GenerateBindingCodegenPass;
-import joist.rs.codegen.passes.GenerateBindingMapperPass;
+import joist.rs.codegen.passes.GenerateBindingMappersPass;
 import joist.rs.codegen.passes.GenerateCollectionResourceCodegenPass;
 import joist.rs.codegen.passes.GenerateResourceCodegenPass;
 import joist.rs.codegen.passes.GenerateRootResourceCodegenPass;
@@ -21,8 +21,8 @@ public class RestConfig {
   public String resourcePackage;
   /** The package name of your domain REST binding classes. @return E.g. <code>app.rs.domain</code> */
   public String bindingPackage;
-  /** The package name of your generated helper classes @return E.g. <code>app.rs.helpers</code> */
-  public String restHelpersPackage;
+  /** The package name of your generated classes for mapping domaing objects to bindings and vice versa @return E.g. <code>app.rs.mappers</code> */
+  public String restMappersPackage;
   /** Whether the codegen directory will be pruned of un-needed (to us) files. Affects only directories that contained generated classes. */
   public boolean pruneCodegenDirectory = true;
   /** Whether we should remove un-needed files even outside of the directories that immediately contain classes. Assumes joist owns the entire output directory. */
@@ -40,14 +40,14 @@ public class RestConfig {
       new GenerateCollectionResourceCodegenPass(),
       new GenerateRootResourceCodegenPass(),
       new GenerateBindingCodegenPass(),
-      new GenerateBindingMapperPass(),
+      new GenerateBindingMappersPass(),
       new OutputPass());
   }
 
   public void setProjectNameForDefaults(String projectName) {
     this.resourcePackage = projectName + ".rs.resources";
     this.bindingPackage = projectName + ".rs.binding";
-    this.restHelpersPackage = projectName + ".rs.helpers";
+    this.restMappersPackage = projectName + ".rs.mappers";
   }
 
   public List<Pass<RestCodegen>> getCodegenPasses() {
@@ -70,7 +70,7 @@ public class RestConfig {
     return this.bindingPackage;
   }
 
-  public String getRestHelpersPackage() {
-    return this.restHelpersPackage;
+  public String getRestMappersPackage() {
+    return this.restMappersPackage;
   }
 }

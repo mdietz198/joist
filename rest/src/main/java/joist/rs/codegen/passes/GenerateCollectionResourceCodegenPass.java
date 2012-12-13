@@ -37,6 +37,7 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
 
       RestEntity restEntity = new RestEntity(entity, codegen.getConfig());
       GClass resourceCodegen = codegen.getOutputCodegenDirectory().getClass(restEntity.getFullResourceCollectionClassName());
+      resourceCodegen.addImports("static " + restEntity.getFullBindingMapperClassName() + ".toDomain");
       resourceCodegen.addImports(entity.getFullClassName());
       resourceCodegen.addImports(Context.class, Repository.class);
       // TODO do I need a base class?
@@ -152,12 +153,12 @@ public class GenerateCollectionResourceCodegenPass implements Pass<RestCodegen> 
     post.body.line("return UoW.go(repo, null, new BlockWithReturn<" + className + ">() {");
     post.body.line("_   public " + className + " go() {");
     post.body.line("_   _   " + className + " domainObject = new " + className + "();");
-    post.body.line("_   _   BindingMapper.toDomain(" + varName + ", domainObject);");
+    post.body.line("_   _   toDomain(" + varName + ", domainObject);");
     post.body.line("_   _   return domainObject;");
     post.body.line("_   }");
     post.body.line("}).getId();");
     // TODO make POST return the URL of the newly created object in the response header
     resourceCodegen.addImports(POST.class, Consumes.class);
-    resourceCodegen.addImports(restEntity.getFullBindingClassName(), restEntity.getConfig().getRestHelpersPackage() + ".BindingMapper");
+    resourceCodegen.addImports(restEntity.getFullBindingClassName());
   }
 }
