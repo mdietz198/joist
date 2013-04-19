@@ -1,10 +1,6 @@
 package joist.rs.codegen.passes;
 
-import joist.codegen.dtos.Entity;
-import joist.codegen.dtos.ManyToManyProperty;
-import joist.codegen.dtos.ManyToOneProperty;
-import joist.codegen.dtos.OneToManyProperty;
-import joist.codegen.dtos.PrimitiveProperty;
+import joist.codegen.dtos.*;
 import joist.codegen.passes.Pass;
 import joist.rs.CollectionLinkBinding;
 import joist.rs.ObjectLinkBinding;
@@ -139,9 +135,9 @@ public class GenerateBindingMappersPass implements Pass<RestCodegen> {
       if (p.getOneSide().isCodeEntity()) {
         to.body.line(
           "domainObject.set{}(binding.{} == null ? null : {}.fromCode(binding.{}));",
-          p.getJavaType(),
-          p.getVariableName(),
           p.getCapitalVariableName(),
+          p.getVariableName(),
+          p.getJavaType(),
           p.getVariableName());
       } else {
         to.body.line(
