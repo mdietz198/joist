@@ -12,6 +12,9 @@
 		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.1" conf="compile"/>
 		<!-- TODO figure out why jersey-core and jsr311 are not automatically pulled in with jersey-server -->
 		<dependency org="com.sun.jersey" name="jersey-grizzly2" rev="1.13" conf="compile"/>
+		<dependency org="com.sun.jersey" name="jersey-server" rev="1.13" conf="compile"/>
+		<dependency org="com.sun.jersey" name="jersey-core" rev="1.13" conf="compile"/>
+		<dependency org="com.sun.jersey" name="jersey-json" rev="1.13" conf="compile"/>
 
 		<dependency org="joist" name="joist-domain-testing" rev="${joist.version}" conf="test"/>
 		<dependency org="postgresql" name="postgresql" rev="8.4-701.jdbc4" conf="test"/>
