@@ -22,6 +22,12 @@ public class ServiceRootResource {
     links.add(link);
     link = new CollectionLinkBinding("childGs", new UriBuilderImpl().path(ChildGResourceCollectionCodegen.class).build().toString());
     links.add(link);
+    link = new CollectionLinkBinding("childHs", new UriBuilderImpl().path(ChildHResourceCollectionCodegen.class).build().toString());
+    links.add(link);
+    link = new CollectionLinkBinding("childIAs", new UriBuilderImpl().path(ChildIAResourceCollectionCodegen.class).build().toString());
+    links.add(link);
+    link = new CollectionLinkBinding("childIBs", new UriBuilderImpl().path(ChildIBResourceCollectionCodegen.class).build().toString());
+    links.add(link);
     link = new CollectionLinkBinding("codeADomainObjects", new UriBuilderImpl().path(CodeADomainObjectResourceCollectionCodegen.class).build().toString());
     links.add(link);
     link = new CollectionLinkBinding("grandChilds", new UriBuilderImpl().path(GrandChildResourceCollectionCodegen.class).build().toString());
@@ -91,6 +97,10 @@ public class ServiceRootResource {
     link = new CollectionLinkBinding("parentFs", new UriBuilderImpl().path(ParentFResourceCollectionCodegen.class).build().toString());
     links.add(link);
     link = new CollectionLinkBinding("parentGs", new UriBuilderImpl().path(ParentGResourceCollectionCodegen.class).build().toString());
+    links.add(link);
+    link = new CollectionLinkBinding("parentHs", new UriBuilderImpl().path(ParentHResourceCollectionCodegen.class).build().toString());
+    links.add(link);
+    link = new CollectionLinkBinding("parentIs", new UriBuilderImpl().path(ParentIResourceCollectionCodegen.class).build().toString());
     links.add(link);
     link = new CollectionLinkBinding("primitivess", new UriBuilderImpl().path(PrimitivesResourceCollectionCodegen.class).build().toString());
     links.add(link);

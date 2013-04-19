@@ -10,6 +10,7 @@ public class PrimitivesCBindingMapper {
 
   public static PrimitivesCBinding toBinding(PrimitivesC domainObject) {
     PrimitivesCBinding binding = new PrimitivesCBinding();
+    binding.day = domainObject.getDay();
     binding.dollarAmount = domainObject.getDollarAmount();
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
@@ -19,6 +20,7 @@ public class PrimitivesCBindingMapper {
   }
 
   public static void toDomain(PrimitivesCBinding binding, PrimitivesC domainObject) {
+    domainObject.setDay(binding.day);
     domainObject.setDollarAmount(binding.dollarAmount);
     domainObject.setName(binding.name);
     domainObject.setTimestamp(binding.timestamp);
