@@ -7,11 +7,12 @@
 		<ibiblio name="joist-m2" m2compatible="true" root="http://repo.joist.ws"/>
 		<ibiblio name="java.net.1" root="http://download.java.net/maven/1/" pattern="[organization]/jars/[module]-[revision].[ext]" /> <!-- For japex. -->
 		<ibiblio name="java.net.2" root="http://download.java.net/maven/2/" m2compatible="true" /> <!-- For jta. -->
+		<ibiblio name="maven-central" m2compatible="true" />
 		<chain name="default" changingPattern=".*SNAPSHOT">
 			<resolver ref="local-m2"/>
 			<resolver ref="java.net.1"/>
 			<resolver ref="java.net.2"/>
-			<resolver ref="public"/>
+			<resolver ref="maven-central"/>
 			<resolver ref="joist-m2"/>
 		</chain>
 	</resolvers>
