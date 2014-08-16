@@ -14,5 +14,6 @@ public class ParentBParentBinding extends Object {
   public Long version;
   public CollectionLinkBinding parentBChildBars;
   public CollectionLinkBinding parentBChildFoos;
+  public CollectionLinkBinding parentBChildZazs;
 
 }

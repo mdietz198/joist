@@ -16,7 +16,7 @@ public class ManyToManyBBarBindingMapper {
     binding.id = domainObject.getId();
     binding.name = domainObject.getName();
     binding.version = domainObject.getVersion();
-    binding.ownedManyToManyBFooToBars = new CollectionLinkBinding("ownedManyToManyBFooToBars", new UriBuilderImpl().path(ManyToManyBFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyBBar", domainObject.getId()).build().toString());
+    binding.manyToManyBFooToBars = new CollectionLinkBinding("manyToManyBFooToBars", new UriBuilderImpl().path(ManyToManyBFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyBBar", domainObject.getId()).build().toString());
     binding.ownerManyToManyBFoos = new CollectionLinkBinding("ownerManyToManyBFoos", new UriBuilderImpl().path(ManyToManyBFooToBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("manyToManyBBar", domainObject.getId()).build().toString());
     return binding;
   }

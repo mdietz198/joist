@@ -5,6 +5,7 @@ import features.domain.ParentBParent;
 import features.rs.binding.ParentBParentBinding;
 import features.rs.resources.ParentBChildBarResourceCollectionCodegen;
 import features.rs.resources.ParentBChildFooResourceCollectionCodegen;
+import features.rs.resources.ParentBChildZazResourceCollectionCodegen;
 import joist.rs.CollectionLinkBinding;
 
 public class ParentBParentBindingMapper {
@@ -19,6 +20,7 @@ public class ParentBParentBindingMapper {
     binding.version = domainObject.getVersion();
     binding.parentBChildBars = new CollectionLinkBinding("parentBChildBars", new UriBuilderImpl().path(ParentBChildBarResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentBParent", domainObject.getId()).build().toString());
     binding.parentBChildFoos = new CollectionLinkBinding("parentBChildFoos", new UriBuilderImpl().path(ParentBChildFooResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentBParent", domainObject.getId()).build().toString());
+    binding.parentBChildZazs = new CollectionLinkBinding("parentBChildZazs", new UriBuilderImpl().path(ParentBChildZazResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentBParent", domainObject.getId()).build().toString());
     return binding;
   }
 

@@ -1,9 +1,12 @@
 package features.rs.mappers;
 
+import com.sun.jersey.api.uri.UriBuilderImpl;
 import features.domain.InheritanceAOwner;
 import features.domain.InheritanceASubOne;
 import features.domain.InheritanceAThing;
 import features.rs.binding.InheritanceASubOneBinding;
+import features.rs.resources.InheritanceASubOneChildResourceCollectionCodegen;
+import joist.rs.CollectionLinkBinding;
 import joist.rs.ObjectLinkBinding;
 
 public class InheritanceASubOneBindingMapper {
@@ -19,6 +22,7 @@ public class InheritanceASubOneBindingMapper {
     binding.one = domainObject.getOne();
     binding.inheritanceAOwner = domainObject.getInheritanceAOwner() == null ? null : new ObjectLinkBinding(domainObject.getInheritanceAOwner());
     binding.inheritanceAThing = domainObject.getInheritanceAThing() == null ? null : new ObjectLinkBinding(domainObject.getInheritanceAThing());
+    binding.inheritanceASubOneChilds = new CollectionLinkBinding("inheritanceASubOneChilds", new UriBuilderImpl().path(InheritanceASubOneChildResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("inheritanceASubOne", domainObject.getId()).build().toString());
     return binding;
   }
 

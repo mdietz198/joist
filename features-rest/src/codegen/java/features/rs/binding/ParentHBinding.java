@@ -13,6 +13,6 @@ public class ParentHBinding extends Object {
   public String name;
   public Long threshold;
   public Long version;
-  public CollectionLinkBinding parentChildHs;
+  public CollectionLinkBinding childHs;
 
 }

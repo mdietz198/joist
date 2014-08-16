@@ -12,7 +12,7 @@ public class ManyToManyBBarBinding extends Object {
   public Long id;
   public String name;
   public Long version;
-  public CollectionLinkBinding ownedManyToManyBFooToBars;
+  public CollectionLinkBinding manyToManyBFooToBars;
   public CollectionLinkBinding ownerManyToManyBFoos;
 
 }

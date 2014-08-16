@@ -17,7 +17,7 @@ public class ParentHBindingMapper {
     binding.name = domainObject.getName();
     binding.threshold = domainObject.getThreshold();
     binding.version = domainObject.getVersion();
-    binding.parentChildHs = new CollectionLinkBinding("parentChildHs", new UriBuilderImpl().path(ChildHResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentH", domainObject.getId()).build().toString());
+    binding.childHs = new CollectionLinkBinding("childHs", new UriBuilderImpl().path(ChildHResourceCollectionCodegen.class).queryParam("startIndex", 0).queryParam("maxResults", 20).queryParam("parentH", domainObject.getId()).build().toString());
     return binding;
   }
 

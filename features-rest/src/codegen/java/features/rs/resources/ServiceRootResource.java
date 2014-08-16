@@ -38,6 +38,8 @@ public class ServiceRootResource {
     links.add(link);
     link = new CollectionLinkBinding("inheritanceASubOnes", new UriBuilderImpl().path(InheritanceASubOneResourceCollectionCodegen.class).build().toString());
     links.add(link);
+    link = new CollectionLinkBinding("inheritanceASubOneChilds", new UriBuilderImpl().path(InheritanceASubOneChildResourceCollectionCodegen.class).build().toString());
+    links.add(link);
     link = new CollectionLinkBinding("inheritanceASubTwos", new UriBuilderImpl().path(InheritanceASubTwoResourceCollectionCodegen.class).build().toString());
     links.add(link);
     link = new CollectionLinkBinding("inheritanceAThings", new UriBuilderImpl().path(InheritanceAThingResourceCollectionCodegen.class).build().toString());
@@ -75,6 +77,8 @@ public class ServiceRootResource {
     link = new CollectionLinkBinding("parentBChildBars", new UriBuilderImpl().path(ParentBChildBarResourceCollectionCodegen.class).build().toString());
     links.add(link);
     link = new CollectionLinkBinding("parentBChildFoos", new UriBuilderImpl().path(ParentBChildFooResourceCollectionCodegen.class).build().toString());
+    links.add(link);
+    link = new CollectionLinkBinding("parentBChildZazs", new UriBuilderImpl().path(ParentBChildZazResourceCollectionCodegen.class).build().toString());
     links.add(link);
     link = new CollectionLinkBinding("parentBParents", new UriBuilderImpl().path(ParentBParentResourceCollectionCodegen.class).build().toString());
     links.add(link);
